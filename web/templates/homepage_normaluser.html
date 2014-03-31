@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<!--
+Copyright (C) 2014 Frank Steiler <frank@steiler.eu>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<html>
+    <head>
+        <title>The Network</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <link rel="stylesheet" href="css/bootstrap.css" type="text/css"/>
+        <script type="text/javascript" src="javascript/jquery-2.1.0.min.js"></script>
+        <script type="text/javascript" src="javascript/bootstrap.min.js"></script>
+        <!--<script type="text/javascript">
+            $(document).ready(function(){
+                $(".dropdown-toggle").dropdown();
+            });
+        </script> -->
+    </head>
+    
+    <body>
+        
+        
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                  <a href="../" class="navbar-brand">The Network</a>
+                  <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>
+                </div>
+                <div class="navbar-collapse collapse" id="navbar-main">
+                  <ul class="nav navbar-nav">
+                    <li>
+                      <a href="../help/">Notifications <span class="badge-inverse">14</span></a>
+                    </li>
+                    <li>
+                      <a href="../messages">Messages</a>
+                    </li>
+                    <li>
+                      <a href="../friends">Friends</a>
+                    </li>
+                    <li>
+                      <a href="../fanpages">Fanpages</a>
+                    </li>
+                  </ul>
+                  <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                      <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="profile-selector">Your social profile<span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                        <li><a href="#">Your Fanpage #1</a></li>
+                        <li><a href="#">Your Fanpage #2</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">Admin Page</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">Logout</a></li>
+                      </ul>
+                    </li>
+                    <li><a href="#">Edit profile</a></li>
+                  </ul>
+                </div>
+              </div>
+        </div>
+        
+       <div id="wrap">
+       <div class="container"> 
+           <div class="col-sm-2 col-md-2 col-lg-2 hidden-xs"><div class="affix text-center">Advertisment</div></div>
+           <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 center-block text-center">
+                <div class="row">
+                    <div class="well bs-component">
+                        <form class="form-horizontal">
+                          <fieldset>
+                            <legend>Update your status here</legend>
+                            <div class="row center-block text-center">
+                            <div class="col-lg-12">
+                                <textarea class="form-control" rows="3" id="textArea" placeholder="Status"></textarea>
+                            </div>
+                            </div>
+                            <p></p>
+                            <div class="row center-block text-center">
+                            <div class="col-lg-8"></div>
+                            <div class="col-lg-2 text-center">
+                                <div class="form-group">
+                                    <select class="form-control" id="select">
+                                        <option>Public</option>
+                                        <option>Private</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 text-center">
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </div>
+                            </div>
+                          </fieldset>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <a href=#>
+                        <span><img class="img-thumbnail" src="http://wallgood.com/wp-content/uploads/2013/07/Not-Bad-Obama-Meme-Template.png" width="75" height="75"></span>
+                        <div class="text-center">Peter Carlos von und zu Lustig</div>
+                        </a>
+                    </div>
+                    <div class="col-lg-10">
+                         <div class="clearfix text-justify">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec egestas arcu. Vestibulum dictum faucibus nunc, eget vestibulum eros mattis eget. Nam ut est in nulla eleifend ultrices sed sodales enim. Phasellus arcu tellus, pharetra non tempor sit amet, faucibus vel lorem. Etiam semper, turpis at porttitor sodales, orci nulla congue nisi, in pulvinar tortor nisl et quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque egestas congue urna. Vestibulum consequat lobortis mauris nec fermentum. Mauris a dapibus nulla, sollicitudin tincidunt nunc. In elementum aliquet laoreet. Vestibulum imperdiet est ligula, id placerat odio posuere non. Morbi ac congue velit, ut pellentesque velit.</p>
+                            <p><a href=#>12 Comment</a> - Karma: +5 - <a href=#>Up-vote</a> - <a href=#>Down-vote</a></p>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <a href=#>
+                        <span><img class="img-thumbnail" src="http://wallgood.com/wp-content/uploads/2013/07/Not-Bad-Obama-Meme-Template.png" width="75" height="75"></span>
+                        <div class="text-center">Peter Carlos von und zu Lustig</div>
+                        </a>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-primary btn-xs">
+                                    <span class="glyphicon glyphicon-edit"></span> Edit
+                            </button>
+                            <button type="button" class="btn btn-primary btn-xs">
+                                    <span class="glyphicon glyphicon-remove"></span> Remove
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-lg-10">
+                         <div class="clearfix text-justify">
+                            <p>Lorem ipsum dolor sit amet, consectetur.</p>
+                            <p><a href=#>12 Comment</a> - Karma: +5 - <a href=#>Up-vote</a> - <a href=#>Down-vote</a></p>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <a href=#>
+                        <span><img class="img-thumbnail" src="http://wallgood.com/wp-content/uploads/2013/07/Not-Bad-Obama-Meme-Template.png" width="75" height="75"></span>
+                        <div class="text-center">Peter Carlos von und zu Lustig</div>
+                        </a>
+                    </div>
+                    <div class="col-lg-10">
+                         <div class="clearfix text-justify">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec egestas arcu. Vestibulum dictum faucibus nunc, eget vestibulum eros mattis eget. Nam ut est in nulla eleifend ultrices sed sodales enim. Phasellus arcu tellus, pharetra non tempor sit amet, faucibus vel lorem. Etiam semper, turpis at porttitor sodales, orci nulla congue nisi, in pulvinar tortor nisl et quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque egestas congue urna. Vestibulum consequat lobortis mauris nec fermentum. Mauris a dapibus nulla, sollicitudin tincidunt nunc. In elementum aliquet laoreet. Vestibulum imperdiet est ligula, id placerat odio posuere non. Morbi ac congue velit, ut pellentesque velit.</p>
+                            <p><a href=#>12 Comment</a> - Karma: +5 - <a href=#>Up-vote</a> - <a href=#>Down-vote</a></p>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <a href=#>
+                        <span><img class="img-thumbnail" src="http://wallgood.com/wp-content/uploads/2013/07/Not-Bad-Obama-Meme-Template.png" width="75" height="75"></span>
+                        <div class="text-center">Peter Carlos von und zu Lustig</div>
+                        </a>
+                    </div>
+                    <div class="col-lg-10">
+                         <div class="clearfix text-justify">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec egestas arcu. Vestibulum dictum faucibus nunc, eget vestibulum eros mattis eget. Nam ut est in nulla eleifend ultrices sed sodales enim. Phasellus arcu tellus, pharetra non tempor sit amet, faucibus vel lorem. Etiam semper, turpis at porttitor sodales, orci nulla congue nisi, in pulvinar tortor nisl et quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque egestas congue urna. Vestibulum consequat lobortis mauris nec fermentum. Mauris a dapibus nulla, sollicitudin tincidunt nunc. In elementum aliquet laoreet. Vestibulum imperdiet est ligula, id placerat odio posuere non. Morbi ac congue velit, ut pellentesque velit.</p>
+                            <p><a href=#>12 Comment</a> - Karma: +5 - <a href=#>Up-vote</a> - <a href=#>Down-vote</a></p>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <a href=#>
+                        <span><img class="img-thumbnail" src="http://wallgood.com/wp-content/uploads/2013/07/Not-Bad-Obama-Meme-Template.png" width="75" height="75"></span>
+                        <div class="text-center">Peter Carlos von und zu Lustig</div>
+                        </a>
+                    </div>
+                    <div class="col-lg-10">
+                         <div class="clearfix text-justify">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec egestas arcu. Vestibulum dictum faucibus nunc, eget vestibulum eros mattis eget. Nam ut est in nulla eleifend ultrices sed sodales enim. Phasellus arcu tellus, pharetra non tempor sit amet, faucibus vel lorem. Etiam semper, turpis at porttitor sodales, orci nulla congue nisi, in pulvinar tortor nisl et quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque egestas congue urna. Vestibulum consequat lobortis mauris nec fermentum. Mauris a dapibus nulla, sollicitudin tincidunt nunc. In elementum aliquet laoreet. Vestibulum imperdiet est ligula, id placerat odio posuere non. Morbi ac congue velit, ut pellentesque velit.</p>
+                            <p><a href=#>12 Comment</a> - Karma: +5 - <a href=#>Up-vote</a> - <a href=#>Down-vote</a></p>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <a href=#>
+                        <span><img class="img-thumbnail" src="http://wallgood.com/wp-content/uploads/2013/07/Not-Bad-Obama-Meme-Template.png" width="75" height="75"></span>
+                        <div class="text-center">Peter Carlos von und zu Lustig</div>
+                        </a>
+                    </div>
+                    <div class="col-lg-10">
+                         <div class="clearfix text-justify">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec egestas arcu. Vestibulum dictum faucibus nunc, eget vestibulum eros mattis eget. Nam ut est in nulla eleifend ultrices sed sodales enim. Phasellus arcu tellus, pharetra non tempor sit amet, faucibus vel lorem. Etiam semper, turpis at porttitor sodales, orci nulla congue nisi, in pulvinar tortor nisl et quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque egestas congue urna. Vestibulum consequat lobortis mauris nec fermentum. Mauris a dapibus nulla, sollicitudin tincidunt nunc. In elementum aliquet laoreet. Vestibulum imperdiet est ligula, id placerat odio posuere non. Morbi ac congue velit, ut pellentesque velit.</p>
+                            <p><a href=#>12 Comment</a> - Karma: +5 - <a href=#>Up-vote</a> - <a href=#>Down-vote</a></p>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <a href=#>
+                        <span><img class="img-thumbnail" src="http://wallgood.com/wp-content/uploads/2013/07/Not-Bad-Obama-Meme-Template.png" width="75" height="75"></span>
+                        <div class="text-center">Peter Carlos von und zu Lustig</div>
+                        </a>
+                    </div>
+                    <div class="col-lg-10">
+                         <div class="clearfix text-justify">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec egestas arcu. Vestibulum dictum faucibus nunc, eget vestibulum eros mattis eget. Nam ut est in nulla eleifend ultrices sed sodales enim. Phasellus arcu tellus, pharetra non tempor sit amet, faucibus vel lorem. Etiam semper, turpis at porttitor sodales, orci nulla congue nisi, in pulvinar tortor nisl et quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque egestas congue urna. Vestibulum consequat lobortis mauris nec fermentum. Mauris a dapibus nulla, sollicitudin tincidunt nunc. In elementum aliquet laoreet. Vestibulum imperdiet est ligula, id placerat odio posuere non. Morbi ac congue velit, ut pellentesque velit.</p>
+                            <p><a href=#>12 Comment</a> - Karma: +5 - <a href=#>Up-vote</a> - <a href=#>Down-vote</a></p>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <a href=#>
+                        <span><img class="img-thumbnail" src="http://wallgood.com/wp-content/uploads/2013/07/Not-Bad-Obama-Meme-Template.png" width="75" height="75"></span>
+                        <div class="text-center">Peter Carlos von und zu Lustig</div>
+                        </a>
+                    </div>
+                    <div class="col-lg-10">
+                         <div class="clearfix text-justify">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec egestas arcu. Vestibulum dictum faucibus nunc, eget vestibulum eros mattis eget. Nam ut est in nulla eleifend ultrices sed sodales enim. Phasellus arcu tellus, pharetra non tempor sit amet, faucibus vel lorem. Etiam semper, turpis at porttitor sodales, orci nulla congue nisi, in pulvinar tortor nisl et quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque egestas congue urna. Vestibulum consequat lobortis mauris nec fermentum. Mauris a dapibus nulla, sollicitudin tincidunt nunc. In elementum aliquet laoreet. Vestibulum imperdiet est ligula, id placerat odio posuere non. Morbi ac congue velit, ut pellentesque velit.</p>
+                            <p><a href=#>12 Comment</a> - Karma: +5 - <a href=#>Up-vote</a> - <a href=#>Down-vote</a></p>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-2">
+                        <a href=#>
+                        <span><img class="img-thumbnail" src="http://wallgood.com/wp-content/uploads/2013/07/Not-Bad-Obama-Meme-Template.png" width="75" height="75"></span>
+                        <div class="text-center">Peter Carlos von und zu Lustig</div>
+                        </a>
+                    </div>
+                    <div class="col-lg-10">
+                         <div class="clearfix text-justify">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec egestas arcu. Vestibulum dictum faucibus nunc, eget vestibulum eros mattis eget. Nam ut est in nulla eleifend ultrices sed sodales enim. Phasellus arcu tellus, pharetra non tempor sit amet, faucibus vel lorem. Etiam semper, turpis at porttitor sodales, orci nulla congue nisi, in pulvinar tortor nisl et quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque egestas congue urna. Vestibulum consequat lobortis mauris nec fermentum. Mauris a dapibus nulla, sollicitudin tincidunt nunc. In elementum aliquet laoreet. Vestibulum imperdiet est ligula, id placerat odio posuere non. Morbi ac congue velit, ut pellentesque velit.</p>
+                            <p><a href=#>12 Comment</a> - Karma: +5 - <a href=#>Up-vote</a> - <a href=#>Down-vote</a></p>
+                        </div>
+                    </div>
+                </div>        
+            </div>  
+            <div class="col-sm-2 col-md-2 col-lg-2 hidden-xs"><div class="affix text-center">Advertisment</div></div>
+            <div id="push"></div>
+       </div>
+        
+    <div id="footer">
+      <div class="container text-center">
+            (c) Frank Steiler 2014 - <a href=#>Legal information</a> - <a href=#>General business terms</a>
+      </div>
+    </div>
+    </div>
+    </body>
+</html>
