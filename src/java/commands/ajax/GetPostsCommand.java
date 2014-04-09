@@ -78,7 +78,7 @@ public class GetPostsCommand implements Command{
                 path = null;
             }
         }
-        if(request.getSession().getAttribute("lastItemTimestamp") != null)
+        if(request.getSession().getAttribute("lastItemTimestamp") != null || request.getSession().getAttribute("firstItemTimestamp") != null)
         {
             if(request.getParameter("older") != null)
             {

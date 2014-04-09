@@ -52,7 +52,11 @@ public class Controller extends HttpServlet {
         try 
         {
             viewPage = command.execute();
-            updateNavbar.update(request, response);
+            String userAgent = request.getHeader("user-agent").trim();
+            if(!userAgent.startsWith("xml-app_TheNetwork"))
+            {
+                updateNavbar.update(request, response);
+            }
         } 
         catch (Exception e) 
         {

@@ -76,7 +76,11 @@ public abstract class CommandFactory
                 command = new HomepageCommand(request, response);
             }
         } 
-        else
+        else if(request.getHeader("user-agent").trim().startsWith("xml-app_TheNetwork"))
+        {
+            command = new XMLAppCommand(request, response);
+        } 
+        else    
         {
             if(request.getRequestURI().startsWith("/signup/user"))
             {

@@ -224,7 +224,6 @@ public class FriendManagementCommand implements Command {
                 }
                 else if (request.getRequestURI().endsWith("/list"))
                 {
-                    System.err.println("More User");
                     viewPage = "/ajax_view/error.jsp";
                     request.setAttribute("errorCode", "Feature to be implemented");
                 }

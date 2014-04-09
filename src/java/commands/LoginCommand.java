@@ -179,11 +179,20 @@ public class LoginCommand implements Command{
                     }
                     else
                     {
-                        //Redirect to select appropriate account.
-                        request.setAttribute("admin", sysAdmin);
-                        request.setAttribute("page", page);
-                        request.setAttribute("user", normalUser);
-                        viewPage = "/loginSecondStep.jsp";
+                        //If XML App is loging on, use the normal user account.
+                        if(request.getHeader("user-agent").trim().startsWith("xml-app_TheNetwork") && !normalUser.isEmpty())
+                        {
+                            request.setAttribute("userLogin", "u" + normalUser.get(0).getUserID()); 
+                            viewPage = "/login";
+                        }
+                        else
+                        {
+                            //Redirect to select appropriate account.
+                            request.setAttribute("admin", sysAdmin);
+                            request.setAttribute("page", page);
+                            request.setAttribute("user", normalUser);
+                            viewPage = "/loginSecondStep.jsp";
+                        }
                     }
                 }
             }

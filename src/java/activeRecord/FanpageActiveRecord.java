@@ -22,6 +22,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 /**
@@ -487,7 +488,7 @@ public class FanpageActiveRecord extends DatabaseUtility{
             ResultSet rs = null;
             try
             {
-                stmt = con.prepareStatement(INSERT_INTO);
+                stmt = con.prepareStatement(INSERT_INTO, Statement.RETURN_GENERATED_KEYS);
                 
                 stmt.setString(1, displayName);
                 stmt.setString(2, pageName);
@@ -509,6 +510,10 @@ public class FanpageActiveRecord extends DatabaseUtility{
                 {
                     success = true;
                 }
+                
+                rs = stmt.getGeneratedKeys();
+                rs.next();
+                pageID = rs.getInt(1);
                 
                 stmt.close();
             }

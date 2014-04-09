@@ -136,17 +136,19 @@ public class UserCommand implements Command{
                                 userRec.setGender(null);
                                 userRec.setHouseNr(Integer.valueOf(request.getParameter("streetNr")));
                                 userRec.setLastName(request.getParameter("lastName"));
-
-                                PasswordEncryptionService passwd = new PasswordEncryptionService();
-                                String salt = userRec.getSalt();
-                                String encryptedPassword = passwd.getEncryptedPassword(request.getParameter("newPassword"), userRec.getSalt());
-                                if(encryptedPassword == null)
+                                if(!request.getParameter("oldPassword").isEmpty())
                                 {
-                                    throw new IOException();
-                                }
-                                else
-                                {
-                                    userRec.setPassword(encryptedPassword);
+                                    PasswordEncryptionService passwd = new PasswordEncryptionService();
+                                    String salt = userRec.getSalt();
+                                    String encryptedPassword = passwd.getEncryptedPassword(request.getParameter("newPassword"), userRec.getSalt());
+                                    if(encryptedPassword == null)
+                                    {
+                                        throw new IOException();
+                                    }
+                                    else
+                                    {
+                                        userRec.setPassword(encryptedPassword);
+                                    }
                                 }
                                 userRec.setPremium(false);
                                 userRec.setStreet(request.getParameter("street"));

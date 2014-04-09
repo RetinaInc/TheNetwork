@@ -153,16 +153,18 @@ public class PageCommand implements Command{
                                     pageRec.setSubject(request.getParameter("subjectPage"));
                                 }
                                 pageRec.setEmail(request.getParameter("newEmailPage"));
-
-                                PasswordEncryptionService passwd = new PasswordEncryptionService();
-                                String encryptedPassword = passwd.getEncryptedPassword(request.getParameter("newPassword"), pageRec.getSalt());
-                                if(encryptedPassword == null)
+                                if(!request.getParameter("oldPassword").isEmpty())
                                 {
-                                    throw new IOException();
-                                }
-                                else
-                                {
-                                    pageRec.setPassword(encryptedPassword);
+                                    PasswordEncryptionService passwd = new PasswordEncryptionService();
+                                    String encryptedPassword = passwd.getEncryptedPassword(request.getParameter("newPassword"), pageRec.getSalt());
+                                    if(encryptedPassword == null)
+                                    {
+                                        throw new IOException();
+                                    }
+                                    else
+                                    {
+                                        pageRec.setPassword(encryptedPassword);
+                                    }
                                 }
                                 
                                 if(pageRec.update())
