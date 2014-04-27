@@ -1,6 +1,6 @@
 <%-- 
-    Document   : getProfileButtons
-    Created on : 28.03.2014, 01:28:28
+    Document   : getPageListButtons
+    Description: This JSP is called to adjust the buttons of a fanpage within a list, based on the connection between the viewing user and the fanpage.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
 
@@ -13,11 +13,10 @@
 
 <div class="row text-center">
     <%
-        
         if(fanPage.getPageIDString().equals(viewingUser))
         {%> 
             <button type="button" onClick="location.href='/page/edit'" class="btn btn-primary">
-                <span class="glyphicon glyphicon-edit"></span> Edit profile
+                <span class="glyphicon glyphicon-edit"></span> Edit page
             </button>
         <%}
         else if(viewingUser.startsWith("a"))
@@ -42,5 +41,6 @@
             <button type="button" onClick="followPageList(<%=fanPage.getPageID() %>)" class="btn btn-primary">
                 <span class="glyphicon glyphicon-plus"></span> Follow page
             </button>
-        <%}%>
+        <%}
+    %>
 </div>

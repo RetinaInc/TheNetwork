@@ -47,7 +47,6 @@ public class Controller extends HttpServlet {
             throws ServletException, IOException {
         String viewPage;
         RequestDispatcher rd = null;
-        //System.err.println(request.getRequestURI());
         Command command = CommandFactory.createCommand(request, response);
         try 
         {

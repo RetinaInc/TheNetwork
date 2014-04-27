@@ -1,6 +1,6 @@
 <%-- 
     Document   : include_header
-    Created on : 20.03.2014, 21:34:44
+    Description: This file is included at the top of every JSP to import neccessary files.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">

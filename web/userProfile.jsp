@@ -1,7 +1,6 @@
 <%-- 
-    Document   : userEditProfile
-    Created on : 27.03.2014, 04:52:19
-    Description: This page provides the possibility for the user to edit his page.
+    Document   : userProfile
+    Description: This page presents a profile page with all his posts and user information.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
 <%@page import="activeRecord.NormalUserActiveRecord"%>

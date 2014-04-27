@@ -1,8 +1,7 @@
 <%-- 
     Document   : error
-    Description: This page gets called whenever an unexpected error happens. It tries to provide an error description.
-    Created on : 21.03.2014, 21:35:49
     Author     : Frank Steiler <frank@steiler.eu>
+    Description: This page gets called whenever an unexpected error happens. It tries to provide an error description.
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>

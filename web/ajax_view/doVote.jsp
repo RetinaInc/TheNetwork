@@ -1,7 +1,6 @@
 <%-- 
     Document   : doVote
-    Created on : 25.03.2014, 20:06:58
-    Description: This page is returned after the ajax command of the homepage is received to vote on a post or comment.
+    Description: This JSP is returned after a comment or post was voted using an AJAX command.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
 

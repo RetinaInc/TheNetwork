@@ -1,9 +1,9 @@
 <%-- 
     Document   : loginSecondStep
-    Description: This server page is called if the log in failed because the password was incorrect or the email address is used by several accounts.
-    Created on : 22.03.2014, 20:53:17
+    Description: This JSP is called if the log in failed because the credentials were incorrect or the email address is used by several accounts.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
+
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="cst" uri="/WEB-INF/tlds/TheNetwork_tl.tld" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>

@@ -14,10 +14,6 @@
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  /*.dow {
-    border-top: 1px solid #ddd !important;
-  }*/
-
 }
 .datepicker:before {
   content: '';
@@ -82,7 +78,6 @@
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #0044cc;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   color: #fff;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -138,7 +133,6 @@
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
   *background-color: #0044cc;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
-
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   color: #fff;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);

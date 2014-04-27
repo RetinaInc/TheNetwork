@@ -1,6 +1,6 @@
 <%-- 
     Document   : getProfileButtons
-    Created on : 28.03.2014, 01:28:28
+    Description: This JSP is called to adjust the buttons on a viewed profile based on the connection between the viewing user and the other user.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
 
@@ -13,7 +13,6 @@
 
 <div id="profileButtons" class="row text-center">
     <%
-        
         if(user.getUserIDString().equals(viewingUser))
         {%> 
             <button type="button" onClick="location.href='/user/edit'" class="btn btn-primary">
@@ -52,5 +51,6 @@
             <button type="button" onClick="addFriend(<%=user.getUserID()%>)" class="btn btn-primary">
                 <span class="glyphicon glyphicon-user"></span> Add as friend
             </button>
-        <%}%>
+        <%}
+    %>
 </div>

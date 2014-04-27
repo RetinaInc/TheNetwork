@@ -1,6 +1,5 @@
 <%-- 
     Document   : notificationPage
-    Created on : 30.03.2014, 16:02:58
     Description: This page will display all notifications of a user.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>

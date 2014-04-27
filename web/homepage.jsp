@@ -1,6 +1,5 @@
 <%-- 
     Document   : homepage
-    Created on : 23.03.2014, 22:55:29
     Description: This page provides the homepage of every user, presenting the most recent posts of friends.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
@@ -27,28 +26,28 @@
                             <form class="form-horizontal" action="/postStatus" method="post">
                                 <fieldset>
                                 <legend>Update your status here</legend>
-                                <div class="row center-block text-center">
-                                <div class="col-lg-12">
-                                    <textarea class="form-control" rows="3" id="textArea" name ="newStatus" placeholder="Status"></textarea>
-                                </div>
-                                </div>
-                                <p></p>
-                                <div class="row center-block text-center">
-                                <div class="col-lg-8"></div>
-                                <div class="col-lg-2 text-center">
-                                    <div class="form-group">
-                                        <select name="postPublic" class="form-control" id="select">
-                                            <% if(((String)request.getSession().getAttribute("userID")).startsWith("u")){%> <option>Private</option> <%}%>
-                                          <option>Public</option>
-                                        </select>
+                                    <div class="row center-block text-center">
+                                        <div class="col-lg-12">
+                                            <textarea class="form-control" rows="3" id="textArea" name ="newStatus" placeholder="Status"></textarea>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-2 text-center">
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    <p></p>
+                                    <div class="row center-block text-center">
+                                        <div class="col-lg-8"></div>
+                                        <div class="col-lg-2 text-center">
+                                            <div class="form-group">
+                                                <select name="postPublic" class="form-control" id="select">
+                                                    <% if(((String)request.getSession().getAttribute("userID")).startsWith("u")){%> <option>Private</option> <%}%>
+                                                  <option>Public</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2 text-center">
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                </div>
                                </fieldset>
                             </form>
                         </div>

@@ -1,7 +1,6 @@
 <%-- 
-    Document   : homepage
-    Created on : 23.03.2014, 22:55:29
-    Description: This page provides the homepage of every user, presenting the most recent posts of friends.
+    Document   : homepage_admin
+    Description: This page provides the homepage of an administrator.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
 

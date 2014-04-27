@@ -1,6 +1,6 @@
 <%-- 
-    Document   : include_comment
-    Created on : 26.03.2014, 20:22:13
+    Document   : getComment
+    Description: This JSP is called to create and return a list of comments.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
 
@@ -10,48 +10,46 @@
 <cst:ArrayListJSP itemList="<%=request.getAttribute("commentArray")%>" itemName="nextComment">
     <% activeRecord.CommentActiveRecord comment = (activeRecord.CommentActiveRecord)pageContext.getAttribute("nextComment");%>
 
-        <div id="c<%=comment.getCommentID()%>" class="row">
+    <div id="c<%=comment.getCommentID()%>" class="row">
         <div class="col-xs-2">
             <a href=
-                                    <%if(comment.getPublishingUser() != 0)
-                                    {%>
-                                        "/user/<%=comment.getPublishingUser()%>">
-                                    <%}
-                                    else if(comment.getPublishingPage() != 0)
-                                    {%>
-                                        "/fanpage/<%=comment.getPublishingPage()%>">
-                                    <%}%>
+                    <%if(comment.getPublishingUser() != 0)
+                    {%>
+                        "/user/<%=comment.getPublishingUser()%>">
+                    <%}
+                    else if(comment.getPublishingPage() != 0)
+                    {%>
+                        "/fanpage/<%=comment.getPublishingPage()%>">
+                    <%}%>
+                    <span><img  class="img-thumbnail" 
+                                src="
+                                <%
+                                     if(pageContext.getServletContext().getResource("/pictures/u" + comment.getPublishingUser() + ".jpg") != null)
+                                     {%>
+                                         /pictures/u<%=comment.getPublishingUser()%>.jpg
 
-                            <span><img  class="img-thumbnail" 
-                                        src="
-                                        <%
-                                             if(pageContext.getServletContext().getResource("/pictures/u" + comment.getPublishingUser() + ".jpg") != null)
-                                             {%>
-                                                 /pictures/u<%=comment.getPublishingUser()%>.jpg
+                                     <%}
+                                     else if(pageContext.getServletContext().getResource("/pictures/f" + comment.getPublishingPage()+ ".jpg") != null)
+                                     {%>
+                                         /pictures/f<%=comment.getPublishingPage()%>.jpg
 
-                                             <%}
-                                             else if(pageContext.getServletContext().getResource("/pictures/f" + comment.getPublishingPage()+ ".jpg") != null)
-                                             {%>
-                                                 /pictures/f<%=comment.getPublishingPage()%>.jpg
-
-                                             <%}
-                                             else
-                                             {%>
-                                                 /pictures/default.jpg
-                                             <%}
-                                         %>" 
-                                         alt="Profile/Page Picture of the publishing user."
-                                         width="50" 
-                                         height="50">
-                            </span>
-                            <div class="text-center"><%=comment.getPublisherName()%></div>
-                            </a>
+                                     <%}
+                                     else
+                                     {%>
+                                         /pictures/default.jpg
+                                     <%}
+                                 %>" 
+                                 alt="Picture of the publishing user."
+                                 width="50" 
+                                 height="50">
+                    </span>
+                    <div class="text-center"><%=comment.getPublisherName()%></div>
+            </a>
         </div>
         <div class="col-xs-10">
              <div class="clearfix text-justify">
                  <%
                     String tempCompare = " ";
-                    boolean ownPost = false;
                     if(comment.getPublishingPage() != 0)
                     {
                         tempCompare = "f" + comment.getPublishingPage();
@@ -61,11 +59,10 @@
                         tempCompare = "u" + comment.getPublishingUser();
                     }
                     if(tempCompare.equals(request.getSession().getAttribute("userID")))
-                    {
-                        ownPost = true;%>
+                    {%>
                         <button type="button" class="close" onClick="removeComment(<%=comment.getCommentID()%>)">×</button>
-                    <%}%>
-                    
+                    <%}
+                %>
                 <p><%=comment.getContent()%></p>
                 <p id="cv<%=comment.getCommentID()%>">              
                     Karma: <%=comment.getKarma()%> 
@@ -88,8 +85,8 @@
                  </p>
             </div>
         </div>
-        </div>
-        <hr>
+    </div>
+    <hr>
 </cst:ArrayListJSP>
                             
                             

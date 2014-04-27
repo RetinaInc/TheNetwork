@@ -1,7 +1,6 @@
 <%-- 
     Document   : listFriends
-    Description: This page will present a list of all friends of the current user.
-    Created on : 29.03.2014, 17:52:31
+    Description: This page will present a list of all user.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
 

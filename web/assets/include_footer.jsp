@@ -1,6 +1,6 @@
 <%-- 
     Document   : include_footer
-    Created on : 21.03.2014, 00:20:57
+    Description: This file is included at the bottom of every page and contains the footer information.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
 

@@ -1,7 +1,6 @@
 <%-- 
     Document   : listPages#
     Description: This page will present a list of all followed fanpages of the current user.
-    Created on : 29.03.2014, 17:53:01
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
 

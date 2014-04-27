@@ -75,7 +75,6 @@ class XMLAppCommand implements Command {
                     getPosts = new HomepageCommand(request, response);
                 }
                 String postViewPage = getPosts.execute();
-                System.err.println(postViewPage);
                 if(!postViewPage.equals("/homepage.jsp") && !postViewPage.equals("/ajax_view/getPosts.jsp"))
                 {
                     request.setAttribute("errorMessage", "The entered credentials are wrong.");

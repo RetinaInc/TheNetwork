@@ -1,7 +1,7 @@
 <%-- 
-    Document   : userEditProfile
+    Document   : pageProfile
     Created on : 27.03.2014, 04:52:19
-    Description: This page provides the possibility for the user to edit his page.
+    Description: This page presents a fanpage with all his posts and information.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
 <%@page import="activeRecord.FanpageActiveRecord"%>

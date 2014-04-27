@@ -1,6 +1,6 @@
 <%-- 
     Document   : include_message
-    Created on : 24.03.2014, 12:46:35
+    Description: This page is included at the top of several JSP to communicate with the user by providing a dismissable message box.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
 

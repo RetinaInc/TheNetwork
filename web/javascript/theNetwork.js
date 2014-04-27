@@ -97,7 +97,7 @@ function unvotePost(postid)
 }
 
 /**
- * This function delets a specific post.
+ * This function deletes a specific post.
  * @param {int} postid The post which needs to be deleted.
  * @returns {undefined}
  */
@@ -301,7 +301,7 @@ function removeFriendList(friendid)
 }
 
 /**
- * This function accepts a friend request.
+ * This function accepts a friend request from the friend list.
  * @param {type} friendid The id of the user who requested the friendship.
  * @returns {undefined}
  */
@@ -317,7 +317,7 @@ function acceptFriendList(friendid)
 }
 
 /**
- * This function rejects a friend request.
+ * This function rejects a friend request from the friend list.
  * @param {int} friendid The id of the user who requested the friendship.
  * @returns {undefined}
  */
@@ -350,7 +350,7 @@ function moreUser(amountOfUser)
 };
 
 /**
- * This function follows a page.
+ * This function follows a page from the fanpage list.
  * @param {int} pageid The id of the page which is followed.
  * @returns {undefined}
  */
@@ -366,7 +366,7 @@ function followPageList(pageid)
 }
 
 /**
- * This function unfollows a page.
+ * This function unfollows a page  from the fanpage list.
  * @param {int} pageid The id of the page which is unfollowed.
  * @returns {undefined}
  */

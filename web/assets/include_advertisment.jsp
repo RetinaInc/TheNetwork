@@ -1,7 +1,6 @@
 <%-- 
     Document   : include_advertisment
-    Description: This file will hold the advertisment shown on the left and right of the page of a free user.
-    Created on : 29.03.2014, 18:01:55
+    Description: This file is included at the positions where an advertisment needs to be shown.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
 
@@ -15,4 +14,5 @@
     else
     {%>
             <div class="affix text-center"><p>Not logged in!</p></div>
-    <%}%>
+    <%}
+%>

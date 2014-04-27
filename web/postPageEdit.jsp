@@ -1,7 +1,6 @@
 <%-- 
-    Document   : postPage
-    Created on : 26.03.2014, 19:30:34
-    Description: This JSP shows a single post which is editable.
+    Document   : postPageEdit
+    Description: This JSP provides the possibility to edit a specific post.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
 
@@ -12,7 +11,7 @@
 <html>
     <head>
         <jsp:include page="/assets/include_headerfiles.jsp"></jsp:include>
-        <title>The Network - Post</title>
+        <title>The Network - Edit Post</title>
     </head>
     <body>
         <div id="wrap">

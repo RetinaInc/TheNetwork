@@ -1,7 +1,6 @@
 <%-- 
-    Document   : getUserListItem
-    Created on : 29.03.2014, 20:41:26
-    Description: This page is returned after an ajax command to provide fanpages within a fanpage list.
+    Document   : getPageListItem
+    Description: This JSP is called to create and return a list of fanpages within a list.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
 
@@ -18,28 +17,26 @@
                      request.setAttribute("nextPage", fanpage);
                 %>
                 <div id="f<%=fanpage.getPageID()%>" class="row">
-
                      <div class="col-lg-2 text-center">
                          <a href= "/page/<%=fanpage.getPageID()%>">
-                         <span><img  class="img-thumbnail" 
-                                     src="
-                                     <%
-                                          if(pageContext.getServletContext().getResource("/pictures/" + fanpage.getPageIDString()+ ".jpg") != null)
-                                          {%>
-                                              /pictures/<%=fanpage.getPageIDString()%>.jpg
+                            <span><img  class="img-thumbnail" 
+                                        src="
+                                        <%
+                                             if(pageContext.getServletContext().getResource("/pictures/" + fanpage.getPageIDString()+ ".jpg") != null)
+                                             {%>
+                                                 /pictures/<%=fanpage.getPageIDString()%>.jpg
 
-                                          <%}
-                                          else
-                                          {%>
-                                              /pictures/default.jpg
-                                          <%}
-                                      %>" 
-                                      alt="Profile Picture of <%=fanpage.getDisplayName() %>."
-                                      width="50" 
-                                      height="50">
-                         </span>
+                                             <%}
+                                             else
+                                             {%>
+                                                 /pictures/default.jpg
+                                             <%}
+                                         %>" 
+                                         alt="Profile Picture of <%=fanpage.getDisplayName() %>."
+                                         width="50" 
+                                         height="50">
+                            </span>
                          </a>
-
                      </div>  
                      <div class="col-lg-4">
                          <div class="text-left"><p>Display Name: <a href= "/page/<%=fanpage.getPageID()%>"><%=fanpage.getDisplayName() %></a></p></div>
@@ -49,12 +46,11 @@
                             <jsp:include page="/ajax_view/getPageListButtons.jsp"></jsp:include>
                          </div>
                      </div>
-                 </div>
-                         <hr>
+                </div>
+                <hr>
             </cst:ArrayListJSP>
-               <div id="EOD" class="text-center"><p><a onclick="morePages(10)">Load more fanpages...</a></p></div>
-        </c:when>
-                                
+            <div id="EOD" class="text-center"><p><a onclick="morePages(10)">Load more fanpages...</a></p></div>
+        </c:when>                
         <c:otherwise>
             <div class="alert alert-warning">There are no (more) fanpages to show.</div>
         </c:otherwise>

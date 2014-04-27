@@ -1,7 +1,6 @@
 <%-- 
-    Document   : getUserListItem
-    Created on : 29.03.2014, 20:41:26
-    Description: This page is returned after an ajax command to provide fanpages within a fanpage list.
+    Document   : getNotificationItem
+    Description: This JSP is called to create and return a list of notifications.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
 
@@ -19,37 +18,38 @@
                 <div id="<%= post.getPostID()%>" class="row">
                      <div class="col-lg-2 text-center">
                             <a href=
-                                    <%if(post.getPublishingUser() != 0)
-                                    {%>
-                                        "/user/<%=post.getPublishingUser()%>">
-                                    <%}
-                                    else if(post.getPublishingPage() != 0)
-                                    {%>
-                                        "/page/<%=post.getPublishingPage()%>">
-                                    <%}%>
+                                    <%
+                                        if(post.getPublishingUser() != 0)
+                                        {%>
+                                            "/user/<%=post.getPublishingUser()%>">
+                                        <%}
+                                        else if(post.getPublishingPage() != 0)
+                                        {%>
+                                            "/page/<%=post.getPublishingPage()%>">
+                                        <%}
+                                    %>
+                                    <span><img  class="img-thumbnail" 
+                                                src="
+                                                <%
+                                                     if(pageContext.getServletContext().getResource("/pictures/u" + post.getPublishingUser() + ".jpg") != null)
+                                                     {%>
+                                                         /pictures/u<%=post.getPublishingUser()%>.jpg
 
-                            <span><img  class="img-thumbnail" 
-                                        src="
-                                        <%
-                                             if(pageContext.getServletContext().getResource("/pictures/u" + post.getPublishingUser() + ".jpg") != null)
-                                             {%>
-                                                 /pictures/u<%=post.getPublishingUser()%>.jpg
+                                                     <%}
+                                                     else if(pageContext.getServletContext().getResource("/pictures/f" + post.getPublishingPage()+ ".jpg") != null)
+                                                     {%>
+                                                         /pictures/f<%=post.getPublishingPage()%>.jpg
 
-                                             <%}
-                                             else if(pageContext.getServletContext().getResource("/pictures/f" + post.getPublishingPage()+ ".jpg") != null)
-                                             {%>
-                                                 /pictures/f<%=post.getPublishingPage()%>.jpg
-
-                                             <%}
-                                             else
-                                             {%>
-                                                 /pictures/default.jpg
-                                             <%}
-                                         %>" 
-                                         alt="Profile/Page Picture of the publishing user."
-                                         width="75" 
-                                         height="75">
-                            </span>
+                                                     <%}
+                                                     else
+                                                     {%>
+                                                         /pictures/default.jpg
+                                                     <%}
+                                                 %>" 
+                                                 alt="Picture of the publishing user."
+                                                 width="75" 
+                                                 height="75">
+                                    </span>
                             </a>
                         </div>
                      <div class="col-lg-10">
@@ -63,8 +63,7 @@
                  </div>
                 <hr>
             </cst:ArrayListJSP>
-        </c:when>
-                                
+        </c:when>      
         <c:otherwise>
             <div class="alert alert-warning">There are no new activities on any post you follow.</div>
             <hr>

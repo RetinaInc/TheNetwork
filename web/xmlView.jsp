@@ -1,6 +1,6 @@
 <%-- 
     Document   : xmlView
-    Created on : 08.04.2014, 13:28:57
+    Description: This xml page is returned to the desktop client providing a set of posts.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
 

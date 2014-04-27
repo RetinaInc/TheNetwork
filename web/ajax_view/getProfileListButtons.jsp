@@ -1,14 +1,12 @@
 <%-- 
     Document   : getProfileButtons
-    Created on : 28.03.2014, 01:28:28
-    Description: This page selects the correct button for a user entry in a list.
+    Description: This JSP is called to adjust the buttons of a user within a list, based on the connection between the viewing user and the other user.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
 
 <%@page import="activeRecord.SysAdminActiveRecord"%>
 <%@page import="activeRecord.NormalUserActiveRecord"%>
 <%
-    
     String viewingUser = (String)request.getSession().getAttribute("userID");
     NormalUserActiveRecord user = (activeRecord.NormalUserActiveRecord)request.getAttribute("nextUser");
     int viewingUserID = Integer.valueOf(viewingUser.substring(1));

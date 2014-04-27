@@ -1,7 +1,6 @@
 <%-- 
     Document   : login
-    Description: This ServerPage is the welcome page for every user. Unregistered user can subscribe to the service, existing user can log into their account.
-    Created on : 20.03.2014, 21:30:52
+    Description: This JSP is the welcome page for every user. Unregistered user can subscribe, existing user can log into their account.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>

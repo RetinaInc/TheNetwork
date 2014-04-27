@@ -1,6 +1,5 @@
 <%-- 
     Document   : postPage
-    Created on : 26.03.2014, 19:30:34
     Description: This JSP shows a single post with all his comments.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
