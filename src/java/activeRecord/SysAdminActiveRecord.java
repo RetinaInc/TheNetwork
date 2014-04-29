@@ -17,75 +17,33 @@
 
 package activeRecord;
 
-import static activeRecord.DatabaseUtility.getDatabaseConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 /**
- * This class represents a row of the SysAdmin table providing functions to find, insert, update and delete these rows.
+ * This class represents a row of the SysAdmin table providing functions to insert and update these rows.
  * @author Frank Steiler <frank@steiler.eu>
  */
-public class SysAdminActiveRecord extends DatabaseUtility{
+public class SysAdminActiveRecord extends DatabaseUtility {
     
     /**
      * This String contains the SQL command to insert data into the database.
      */
-    private static final String INSERT_INTO =
+    private final String INSERT_INTO =
             "Insert into SysAdmin(Email, Password, Salt, ConnectedUser)" +
             "Values (?, ?, ?, ?)";
     
     /**
-     * This String contains the part of the SQL command selecting the AdminID from the table.
-     */
-    private static final String SELECT_ID =
-            "Select AdminID " +
-            "from SysAdmin";
-    
-    /**
-     * This String contains the part of the SQL command selecting the complete row from the table.
-     */
-    private static final String SELECT_ALL =
-            "Select * " +
-            "from SysAdmin";
-    
-    /**
-     * This String contains the part of the SQL command selecting the UserID of the administrating user from the table.
-     */
-    private static final String SELECT_ADMINISTRATINGUSER =
-            "Select ConnectedUser " +
-            "from SysAdmin";
-    
-    /**
      * This String contains the part of the SQL command reducing the selection to a specific adminID.
      */
-    private static final String BY_ID =
+    private final String BY_ID =
             " Where AdminID=?";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to a specific userID.
-     */
-    private static final String BY_ADMINISTRATINGUSER =
-            " Where ConnectedUser=?";
-    
-     /**
-     * This String contains the part of the SQL command reducing the selection to a specific eMail.
-     */
-    private static final String BY_EMAIL =
-            " Where Email=?";
-    
-    /**
-     * This String contains the part of the SQL command putting the result into descending order according to the UserID.
-     */
-    private static final String ORDER_BY_ID_DESC =
-            " Order by AdminID desc";
     
      /**
      * This String cointains the SQL command to update data in the database.
      */
-    private static final String UPDATE =
+    private final String UPDATE =
             " Update SysAdmin" + 
             " Set Email = ?, Password = ?, Salt = ?, ConnectedUser = ?";
     
@@ -96,251 +54,38 @@ public class SysAdminActiveRecord extends DatabaseUtility{
     private int connectedUser;
     
     /**
-     * Finds the administrting user for a system administrator.
-     * @param adminID The admin ID of the admin whose administrating user is searched.
-     * @return The userID of the administrating user. '0' if there is no administrating user.
-     */
-    public static int findAdministratingUser(int adminID)
-    {
-        int result = 0;
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            stmt = con.prepareStatement(SELECT_ADMINISTRATINGUSER + BY_ID);
-            stmt.setInt(1, adminID);
-            ResultSet rs = stmt.executeQuery();
-            if(rs.next())
-            {
-                result = rs.getInt("ConnectedUser");
-            }
-        }
-        catch (Exception e)
-        {
-            result = 0;
-        }
-        return result;
-    }
-    
-    /**
      * Updates the row with the adminID of the object with the data within this object.
      * @return True if update was successful, false otherwise.
      */
     public boolean update()
     {
-        boolean success = false;
+        boolean success;
         try
         {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-            try
+            PreparedStatement stmt = getDatabaseConnection().prepareStatement(UPDATE + BY_ID);
+            stmt.setString(1, eMail);
+            stmt.setString(2, password);
+            stmt.setString(3, salt);
+
+            if(connectedUser == 0)
             {
-                stmt = con.prepareStatement(UPDATE + BY_ID);
-                
-                stmt.setString(1, eMail);
-                stmt.setString(2, password);
-                stmt.setString(3, salt);
-                
-                if(connectedUser == 0)
-                {
-                    stmt.setNull(4, java.sql.Types.INTEGER);
-                }
-                else
-                {
-                    stmt.setInt(4, connectedUser);
-                }
-               
-                stmt.setInt(5, adminID);
-                
-                if(stmt.executeUpdate()>0)
-                {
-                    success = true;
-                }
-                
-                stmt.close();
+                stmt.setNull(4, java.sql.Types.INTEGER);
             }
-            catch (SQLException sqle)
+            else
             {
-                sqle.printStackTrace();
-                success = false;
+                stmt.setInt(4, connectedUser);
             }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
+
+            stmt.setInt(5, adminID);
+
+            success = executeUpdate(stmt);
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             success = false;
         }
         return success;
     }
-    
-    /**
-     * This function will return an array with all adminID's administrated by a specific user
-     * @param userID The userID of the administrating user.
-     * @return An ArrayList with all admins administrated by the user.
-     */
-    public static ArrayList<SysAdminActiveRecord> findAdminsByAdministratingUser(int userID)
-    {
-        ArrayList<SysAdminActiveRecord> recs = new ArrayList<SysAdminActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(SELECT_ALL + BY_ADMINISTRATINGUSER);
-                stmt.setInt(1, userID);
-                
-                rs = stmt.executeQuery();
-                
-                while (rs.next())
-                {
-                    SysAdminActiveRecord e = createSysAdmin(rs);
-                    recs.add(e);
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-
-    /**
-     * This function retrieves all system administrators matching the provided eMail from the database.
-     * @param eMail The Email of the searched system administrator.
-     * @return An array list with all admins matching the Email.
-     */
-    public static ArrayList<SysAdminActiveRecord> findAdminByEmail(String eMail)
-    {
-        ArrayList<SysAdminActiveRecord> recs = new ArrayList<SysAdminActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(SELECT_ALL + BY_EMAIL);
-                stmt.setString(1, eMail);
-                
-                rs = stmt.executeQuery();
-                
-                while (rs.next())
-                {
-                    SysAdminActiveRecord e = createSysAdmin(rs);
-                    recs.add(e);
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function retrieves all system administrators matching the provided AdminID from the database.
-     * @param adminID The adminID of the searched page.
-     * @return An array list with all admins matching the adminID (Should only contain one element since AdminID is primary key).
-     */
-    public static ArrayList<SysAdminActiveRecord> findAdminByID(int adminID)
-    {
-        ArrayList<SysAdminActiveRecord> recs = new ArrayList<SysAdminActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(SELECT_ALL + BY_ID);
-                stmt.setInt(1, adminID);
-                
-                rs = stmt.executeQuery();
-                
-                while (rs.next())
-                {
-                    SysAdminActiveRecord e = createSysAdmin(rs);
-                    recs.add(e);
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-
-    /**
-     * This function creates a new system administrator using the data from the current position of the result set.
-     * @param rs The data source for the new fanpage.
-     * @return The new created fanpage.
-     */
-    protected static SysAdminActiveRecord createSysAdmin(ResultSet rs)
-    {
-        SysAdminActiveRecord d = new SysAdminActiveRecord();
-        try
-        {
-            d.setAdminID(rs.getInt("AdminID"));
-            d.setPassword(rs.getString("Password"));
-            d.setEmail(rs.getString("Email"));
-            d.setSalt(rs.getString("Salt"));
-            d.setConnectedUser(rs.getInt("ConnectedUser"));
-        }
-        catch (SQLException sqle)
-        {
-            d = null;
-        }
-        finally
-        {
-            return d;
-        }
-    }    
     
     /**
      * This function inserts the object into the database.
@@ -348,28 +93,44 @@ public class SysAdminActiveRecord extends DatabaseUtility{
      */
     public boolean insert()
     {
+        boolean success;
+        try
+        {
+            PreparedStatement stmt = getDatabaseConnection().prepareStatement(INSERT_INTO);
+            stmt.setString(1, eMail);
+            stmt.setString(2, password);
+            stmt.setString(3, salt);
+            if(connectedUser == 0)
+            {
+                stmt.setNull(4, java.sql.Types.INTEGER);
+            }
+            else
+            {
+                stmt.setInt(4, connectedUser);
+            }
+                
+            success = executeUpdate(stmt);
+        }
+        catch (Exception e)
+        {
+            success = false;
+        }
+        return success;
+    }
+    
+    /**
+     * This function executes the query for a given prepared statement.
+     * @param stmt The prepared statement which needs to be executed.
+     * @return True if successful, false otherwise.
+     */
+    private boolean executeUpdate(PreparedStatement stmt)
+    {
         boolean success = false;
         try
         {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
+            Connection con = stmt.getConnection();
             try
-            {
-                stmt = con.prepareStatement(INSERT_INTO);
-                
-                stmt.setString(1, eMail);
-                stmt.setString(2, password);
-                stmt.setString(3, salt);
-                if(connectedUser == 0)
-                {
-                    stmt.setNull(4, java.sql.Types.INTEGER);
-                }
-                else
-                {
-                    stmt.setInt(4, connectedUser);
-                }
-                
+            {               
                 if(stmt.executeUpdate()>0)
                 {
                     success = true;
@@ -379,7 +140,6 @@ public class SysAdminActiveRecord extends DatabaseUtility{
             }
             catch (SQLException sqle)
             {
-                sqle.printStackTrace();
                 success = false;
             }
             finally
@@ -389,7 +149,6 @@ public class SysAdminActiveRecord extends DatabaseUtility{
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             success = false;
         }
         return success;
@@ -485,5 +244,4 @@ public class SysAdminActiveRecord extends DatabaseUtility{
             this.adminID = Integer.valueOf(adminID.substring(1));
         }
     }
-    
 }

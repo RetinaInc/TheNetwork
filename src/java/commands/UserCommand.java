@@ -18,9 +18,13 @@
 package commands;
 
 import activeRecord.FanpageActiveRecord;
+import activeRecord.FanpageActiveRecordFactory;
 import activeRecord.NormalUserActiveRecord;
+import activeRecord.NormalUserActiveRecordFactory;
 import activeRecord.PostActiveRecord;
+import activeRecord.PostActiveRecordFactory;
 import activeRecord.SysAdminActiveRecord;
+import activeRecord.SysAdminActiveRecordFactory;
 import assets.PasswordEncryptionService;
 import java.io.IOException;
 import java.text.ParseException;
@@ -77,7 +81,7 @@ public class UserCommand implements Command{
                 if(uri.isEmpty())
                 {
                     //Show friends list
-                    ArrayList<NormalUserActiveRecord> friendArray = NormalUserActiveRecord.findAllFriends(viewingUserID, 10);
+                    ArrayList<NormalUserActiveRecord> friendArray = NormalUserActiveRecordFactory.findAllFriends(viewingUserID, 10);
                     request.setAttribute("friendArray", friendArray);
                     if(!friendArray.isEmpty())
                     {
@@ -87,13 +91,13 @@ public class UserCommand implements Command{
                     {
                         request.getSession().removeAttribute("lastFriend");
                     }
-                    ArrayList<NormalUserActiveRecord> requestingArray = NormalUserActiveRecord.findAllRequestingFriends(viewingUserID);
+                    ArrayList<NormalUserActiveRecord> requestingArray = NormalUserActiveRecordFactory.findAllRequestingFriends(viewingUserID);
                     request.setAttribute("requestingArray", requestingArray);
                     viewPage = "/listFriends.jsp";
                 }
                 else if(uri.startsWith("/edit"))
                 {
-                    ArrayList<NormalUserActiveRecord> userArray = NormalUserActiveRecord.findUserByID(viewingUserID);
+                    ArrayList<NormalUserActiveRecord> userArray = NormalUserActiveRecordFactory.findUserByID(viewingUserID);
                     if(userArray.size() != 1)
                     {
                         viewPage = "/error.jsp";
@@ -103,7 +107,7 @@ public class UserCommand implements Command{
                     {
                         viewPage = "/userEditProfile.jsp";
                         request.setAttribute("user", userArray.get(0));
-                        ArrayList<PostActiveRecord> postArray = PostActiveRecord.findAllPostByUserIDAndAmount(viewingUserID, 10, viewingUser);
+                        ArrayList<PostActiveRecord> postArray = PostActiveRecordFactory.findAllPostByUserIDAndAmount(viewingUserID, 10, viewingUser);
                         request.setAttribute("postArray", postArray);
                         if(!postArray.isEmpty())
                         {
@@ -121,7 +125,7 @@ public class UserCommand implements Command{
                 {
                     if(validate(viewingUserID))
                     {
-                        ArrayList<NormalUserActiveRecord> users = NormalUserActiveRecord.findUserByID(viewingUserID);
+                        ArrayList<NormalUserActiveRecord> users = NormalUserActiveRecordFactory.findUserByID(viewingUserID);
                         if(users.size() == 1)
                         {
                             try 
@@ -196,7 +200,7 @@ public class UserCommand implements Command{
                         int userID = Integer.valueOf(user.substring(1));
                         if(user.startsWith("f"))
                         {
-                            ArrayList<FanpageActiveRecord> page = FanpageActiveRecord.findPageByID(userID);
+                            ArrayList<FanpageActiveRecord> page = FanpageActiveRecordFactory.findPageByID(userID);
                             if(page.size() == 1)
                             {
                                 if(page.get(0).getAdministratingUser() == viewingUserID)
@@ -228,7 +232,7 @@ public class UserCommand implements Command{
                         }
                         else if(user.startsWith("a"))
                         {
-                            ArrayList<SysAdminActiveRecord> admin = SysAdminActiveRecord.findAdminByID(userID);
+                            ArrayList<SysAdminActiveRecord> admin = SysAdminActiveRecordFactory.findAdminByID(userID);
                             if(admin.size() == 1)
                             {
                                 if(admin.get(0).getConnectedUser() == viewingUserID)
@@ -275,7 +279,7 @@ public class UserCommand implements Command{
                     try
                     {
                         int userID = Integer.valueOf(uri.substring(1));
-                        ArrayList<NormalUserActiveRecord> userArray = NormalUserActiveRecord.findUserByID(userID);
+                        ArrayList<NormalUserActiveRecord> userArray = NormalUserActiveRecordFactory.findUserByID(userID);
                         if(userArray.size() != 1)
                         {
                             viewPage = "/error.jsp";
@@ -285,7 +289,7 @@ public class UserCommand implements Command{
                         {
                             viewPage = "/userProfile.jsp";
                             request.setAttribute("user", userArray.get(0));
-                            ArrayList<PostActiveRecord> postArray = PostActiveRecord.findAllPostByUserIDAndAmount(userID, 10, viewingUser);
+                            ArrayList<PostActiveRecord> postArray = PostActiveRecordFactory.findAllPostByUserIDAndAmount(userID, 10, viewingUser);
                             request.setAttribute("postArray", postArray);
                             if(!postArray.isEmpty())
                             {
@@ -314,7 +318,7 @@ public class UserCommand implements Command{
                     int userID = Integer.valueOf(user.substring(1));
                     if(user.startsWith("u"))
                     {
-                        ArrayList<SysAdminActiveRecord> admin = SysAdminActiveRecord.findAdminByID(viewingUserID);
+                        ArrayList<SysAdminActiveRecord> admin = SysAdminActiveRecordFactory.findAdminByID(viewingUserID);
                         if(admin.size() == 1)
                         {
                             admin.get(0).setConnectedUser(userID);
@@ -345,7 +349,7 @@ public class UserCommand implements Command{
                 else
                 {
                     //Show user list
-                    ArrayList<NormalUserActiveRecord> userArray = NormalUserActiveRecord.findAllUser(10);
+                    ArrayList<NormalUserActiveRecord> userArray = NormalUserActiveRecordFactory.findAllUser(10);
                     request.setAttribute("userArray", userArray);
                     if(!userArray.isEmpty())
                     {
@@ -529,7 +533,7 @@ public class UserCommand implements Command{
                 }
                 else
                 {
-                    ArrayList<NormalUserActiveRecord> user = NormalUserActiveRecord.findUserByID(userID);
+                    ArrayList<NormalUserActiveRecord> user = NormalUserActiveRecordFactory.findUserByID(userID);
                     if(user.size() == 1)
                     {
                         if(!passwd.authenticate(request.getParameter("oldPassword"), user.get(0).getPassword(), user.get(0).getSalt()))

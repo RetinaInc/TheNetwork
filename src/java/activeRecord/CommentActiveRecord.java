@@ -17,16 +17,14 @@
 
 package activeRecord;
 
-import static activeRecord.DatabaseUtility.getDatabaseConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
 /**
- * This class represents a row of the Comment table providing functions to find, insert, update and delete these rows.
+ * This class represents a row of the Comment table providing functions to insert, update and delete these rows.
  * @author Frank Steiler <frank@steiler.eu>
  */
 public class CommentActiveRecord extends DatabaseUtility{
@@ -34,69 +32,29 @@ public class CommentActiveRecord extends DatabaseUtility{
     /**
      * This String contains the SQL command to insert data into the database.
      */
-    private static final String INSERT_INTO =
+    private final String INSERT_INTO =
             "Insert into Comment(CommentTimestamp, Content, RelatedPost, PublishingUser, PublishingPage)" +
             " Values (CURRENT_TIMESTAMP, ?, ?, ?, ?)";
     
     /**
      * This String cointains the SQL command to update data in the database.
      */
-    private static final String UPDATE =
+    private final String UPDATE =
             " Update Post" + 
             " Set PostTimestamp = ?, Content = ?, RelatedPost = ?, PublishingUser = ?, PublishingPage = ?";
     
     /**
-     * This String contains the part of the SQL command selecting the CommentID from the table.
-     */
-    private static final String SELECT_ID =
-            " Select CommentID" +
-            " from Comment";
-    
-    /**
-     * This String contains the part of the SQL command selecting the complete row from the table.
-     */
-    private static final String SELECT_ALL =
-            " Select *" +
-            " from Comment";
-    
-    /**
-     * This String contains the part of the SQL command counting the number of rows.
-     */
-    private static final String COUNT_ROWS =
-            " Select count(*) as Number" + 
-            " From Comment";
-    
-    /**
      * This String contains the part of the SQL command deleting the row.
      */
-    private static final String DELETE =
+    private final String DELETE =
             " Delete" +
             " from Comment";
     
     /**
      * This String contains the part of the SQL command reducing the selection to a specific commentID.
      */
-    private static final String BY_ID =
+    private final String BY_ID =
             " Where CommentID=?";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to a specific postID.
-     */
-    private static final String BY_POSTID =
-            " Where RelatedPost=?";
-    
-    /**
-     * This String contains the part of the SQL command putting the result into descending order according to the CommentID.
-     */
-    private static final String ORDER_BY_ID_DESC =
-            " Order by CommentID desc";
-    
-    /**
-     * This String contains the part of the SQL command putting the result into ascending order according to the Timestamp.
-     */
-    private static final String ORDER_BY_TIME_DESC =
-            " Order by PostTimestamp asc";
-    
     
     private int commentID;
     private Timestamp commentTimestamp;
@@ -106,334 +64,6 @@ public class CommentActiveRecord extends DatabaseUtility{
     private int publishingPage = 0;
     private String publisherName;
     private VotingActiveRecord voteRecord;
-    
-    /**
-     * This counts all fanpages subscibed to the network.
-     * @return The number of following user.
-     */
-    public static int countComments()
-    {
-        int result = 0;
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(COUNT_ROWS);
-                
-                rs = stmt.executeQuery();
-                
-                if(rs.next())
-                {
-                    result = rs.getInt("Number");
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            result = 0;
-        }
-        return result;
-    }
-    
-    /**
-     * This counts all comments of a post subscibed to the network.
-     * @param postID The ID of the post.
-     * @return The number of following user.
-     */
-    public static int countCommentsByPostID(int postID)
-    {
-        int result = 0;
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(COUNT_ROWS + BY_POSTID);
-                stmt.setInt(1, postID);
-                rs = stmt.executeQuery();
-                
-                if(rs.next())
-                {
-                    result = rs.getInt("Number");
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            result = 0;
-        }
-        return result;
-    }
-    
-    /**
-     * This function retrieves all comments matching the provided postID from the database.
-     * @param postID The postID of the searched comments.
-     * @return An array list with all comments matching the postID.
-     */
-    public static ArrayList<CommentActiveRecord> findCommentByPostID(int postID)
-    {
-        ArrayList<CommentActiveRecord> recs = new ArrayList<CommentActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(SELECT_ALL + BY_POSTID);
-                stmt.setInt(1, postID);
-                
-                rs = stmt.executeQuery();
-                
-                while (rs.next())
-                {
-                    CommentActiveRecord e = createComment(rs);
-                    recs.add(e);
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function retrieves all comments matching the provided postID from the database using the viewing user.
-     * @param postID The postID of the searched comments.
-     * @param user The viewing user.
-     * @return An array list with all comments matching the postID.
-     */
-    public static ArrayList<CommentActiveRecord> findCommentByPostID(int postID, String user)
-    {
-        ArrayList<CommentActiveRecord> recs = new ArrayList<CommentActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(SELECT_ALL + BY_POSTID);
-                stmt.setInt(1, postID);
-                
-                rs = stmt.executeQuery();
-                
-                while (rs.next())
-                {
-                    CommentActiveRecord e = createComment(rs, user);
-                    recs.add(e);
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function retrieves all comments matching the provided commentID from the database using the viewing user.
-     * @param commentID The commentID of the searched comments.
-     * @param user The viewing user.
-     * @return An array list with all comments matching the postID.
-     */
-    public static ArrayList<CommentActiveRecord> findCommentByCommentID(int commentID, String user)
-    {
-        ArrayList<CommentActiveRecord> recs = new ArrayList<CommentActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(SELECT_ALL + BY_ID);
-                stmt.setInt(1, commentID);
-                
-                rs = stmt.executeQuery();
-                
-                while (rs.next())
-                {
-                    CommentActiveRecord e = createComment(rs, user);
-                    recs.add(e);
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function creates a new comment using the data from the current position of the result set.
-     * @param rs The data source for the new fanpage.
-     * @return The new created comment.
-     */
-    protected static CommentActiveRecord createComment(ResultSet rs)
-    {
-        CommentActiveRecord d = new CommentActiveRecord();
-        try
-        {
-            d.setCommentID(rs.getInt("CommentID"));
-            d.setCommentTimestamp(rs.getTimestamp("CommentTimestamp"));
-            d.setContent(rs.getString("Content"));
-            d.setPublishingUser(rs.getInt("PublishingUser"));
-            d.setPublishingPage(rs.getInt("PublishingPage"));
-            d.setRelatedPost(rs.getInt("RelatedPost"));
-            if(d.getPublishingPage()!=0)
-            {
-                d.setPublisherName(FanpageActiveRecord.findPageByID(d.getPublishingPage()).get(0).getDisplayName());
-            }
-            else if(d.getPublishingUser()!=0)
-            {
-                d.setPublisherName(NormalUserActiveRecord.findUserByID(d.getPublishingUser()).get(0).getDisplayName());
-            }
-            d.setVoteRecord(null);
-        }
-        catch (SQLException sqle)
-        {
-            d = null;
-        }
-        finally
-        {
-            return d;
-        }
-    }    
-    
-    /**
-     * This function creates a new comment using the data from the current position of the result set and the viewing user.
-     * @param rs The data source for the new fanpage.
-     * @param userID The viewing user.
-     * @return The new created post.
-     */
-    protected static CommentActiveRecord createComment(ResultSet rs, String userID)
-    {
-        CommentActiveRecord d = new CommentActiveRecord();
-        try
-        {   
-            d.setCommentID(rs.getInt("CommentID"));
-            d.setCommentTimestamp(rs.getTimestamp("CommentTimestamp"));
-            d.setContent(rs.getString("Content"));
-            d.setPublishingUser(rs.getInt("PublishingUser"));
-            d.setPublishingPage(rs.getInt("PublishingPage"));
-            d.setRelatedPost(rs.getInt("RelatedPost"));
-            if(d.getPublishingPage()!=0)
-            {
-                d.setPublisherName(FanpageActiveRecord.findPageByID(d.getPublishingPage()).get(0).getDisplayName());
-            }
-            else if(d.getPublishingUser()!=0)
-            {
-                d.setPublisherName(NormalUserActiveRecord.findUserByID(d.getPublishingUser()).get(0).getDisplayName());
-            }
-            ArrayList<VotingActiveRecord> temp;
-            if(userID.startsWith("u"))
-            {
-                temp = VotingActiveRecord.findVoteByUserAndComment(Integer.valueOf(userID.substring(1)), d.getCommentID());
-                if(!temp.isEmpty())
-                {
-                    d.setVoteRecord(temp.get(0));
-                }
-                else
-                {
-                    d.setVoteRecord(null);
-                }
-            }
-            else if (userID.startsWith("f"))
-            {
-                temp = VotingActiveRecord.findVoteByPageAndComment(Integer.valueOf(userID.substring(1)), d.getCommentID());
-                if(!temp.isEmpty())
-                {
-                    d.setVoteRecord(temp.get(0));
-                }
-                else
-                {
-                    d.setVoteRecord(null);
-                }
-            }
-            else
-            {
-                d.setVoteRecord(null);
-            }
-        }
-        catch (SQLException sqle)
-        {
-            d = null;
-        }
-        finally
-        {
-            return d;
-        }
-    }
     
     /**
      * Upvotes the current post using the provided userID.
@@ -542,109 +172,69 @@ public class CommentActiveRecord extends DatabaseUtility{
      */
     public boolean insert()
     {
-        boolean success = false;
+        boolean success;
         try
         {
             Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-            try
+            PreparedStatement stmt = con.prepareStatement(INSERT_INTO);
+                
+            stmt.setString(1, content);
+            stmt.setInt(2, relatedPost);
+            if(publishingUser == 0)
             {
-                stmt = con.prepareStatement(INSERT_INTO);
-                
-                stmt.setString(1, content);
-                stmt.setInt(2, relatedPost);
-                if(publishingUser == 0)
-                {
-                    stmt.setNull(3, java.sql.Types.INTEGER);
-                }
-                else
-                {
-                    stmt.setInt(3, publishingUser);
-                }
-                
-                if(publishingPage == 0)
-                {
-                    stmt.setNull(4, java.sql.Types.INTEGER);
-                }
-                else
-                {
-                    stmt.setInt(4, publishingPage);
-                }
-                
-                if(stmt.executeUpdate()>0)
-                {
-                    success = true;
-                }
-                
-                stmt.close();
+                stmt.setNull(3, java.sql.Types.INTEGER);
             }
-            catch (SQLException sqle)
+            else
             {
-                sqle.printStackTrace();
-                success = false;
+                stmt.setInt(3, publishingUser);
             }
-            finally
+
+            if(publishingPage == 0)
             {
-                closeDatabaseConnection(con);
+                stmt.setNull(4, java.sql.Types.INTEGER);
             }
+            else
+            {
+                stmt.setInt(4, publishingPage);
+            }
+
+            success = executeUpdate(stmt);
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             success = false;
         }
         return success;
     }
     
     /**
-     * Removes the row, the object is representing from the database.
+     * Removes the row with the commentID of the object from the database.
      * @return True if remove was successful, false otherwise.
      */
     public boolean remove()
     {
-        boolean success = false;
+        boolean success = true;
         try
         {
             Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-            try
+            
+            ArrayList<VotingActiveRecord> votings = VotingActiveRecordFactory.findVoteByComment(commentID);
+            for(int i = 0; i<votings.size() && success; i++)
             {
-                success = true;
-                ArrayList<VotingActiveRecord> votings = VotingActiveRecord.findVoteByComment(commentID);
-                for(int i = 0; i<votings.size() && success; i++)
-                {
-                    success = votings.get(i).remove();
-                }
-                
-                if(success)
-                {
-                    stmt = con.prepareStatement(DELETE + BY_ID);
-
-                    stmt.setInt(1, commentID);
-
-                    if(stmt.executeUpdate()==0)
-                    {
-                        success = false;
-                    }
-
-                    stmt.close();
-                }
+                success = votings.get(i).remove();
             }
-            catch (SQLException sqle)
+
+            if(success)
             {
-                sqle.printStackTrace();
-                success = false;
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
+                PreparedStatement stmt = con.prepareStatement(DELETE + BY_ID);
+
+                stmt.setInt(1, commentID);
+
+                success = executeUpdate(stmt);
             }
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             success = false;
         }
         return success;
@@ -656,49 +246,69 @@ public class CommentActiveRecord extends DatabaseUtility{
      */
     public boolean update()
     {
-        boolean success = false;
+        boolean success;
         try
         {
             Connection con = getDatabaseConnection();
             PreparedStatement stmt = null;
-            ResultSet rs = null;
-            try
+            
+            stmt = con.prepareStatement(UPDATE + BY_ID);
+
+            stmt.setTimestamp(1, commentTimestamp);
+            stmt.setString(2, content);
+            stmt.setInt(3, relatedPost);
+            if(publishingUser == 0)
             {
-                stmt = con.prepareStatement(UPDATE + BY_ID);
-                
-                stmt.setTimestamp(1, commentTimestamp);
-                stmt.setString(2, content);
-                stmt.setInt(3, relatedPost);
-                if(publishingUser == 0)
-                {
-                    stmt.setNull(4, java.sql.Types.INTEGER);
-                }
-                else
-                {
-                    stmt.setInt(4, publishingUser);
-                }
-                
-                if(publishingPage == 0)
-                {
-                    stmt.setNull(5, java.sql.Types.INTEGER);
-                }
-                else
-                {
-                    stmt.setInt(5, publishingPage);
-                }
-                stmt.setInt(6, commentID);
-                
+                stmt.setNull(4, java.sql.Types.INTEGER);
+            }
+            else
+            {
+                stmt.setInt(4, publishingUser);
+            }
+
+            if(publishingPage == 0)
+            {
+                stmt.setNull(5, java.sql.Types.INTEGER);
+            }
+            else
+            {
+                stmt.setInt(5, publishingPage);
+            }
+            stmt.setInt(6, commentID);
+            
+            success = executeUpdate(stmt);
+            
+        }
+        catch (Exception e)
+        {
+            success = false;
+        }
+        return success;
+    }
+    
+    /**
+     * This function executes the query for a given prepared statement.
+     * @param stmt The prepared statement which needs to be executed.
+     * @return True if successful, false otherwise.
+     */
+    private boolean executeUpdate(PreparedStatement stmt)
+    {
+        boolean success = false;
+        ArrayList<CommentActiveRecord> recs = new ArrayList<CommentActiveRecord>();
+        try
+        {
+            Connection con = stmt.getConnection();
+            
+            try
+            {               
                 if(stmt.executeUpdate()>0)
                 {
                     success = true;
                 }
-                
                 stmt.close();
-                
             }
             catch (SQLException sqle)
             {
-                sqle.printStackTrace();
                 success = false;
             }
             finally
@@ -708,9 +318,9 @@ public class CommentActiveRecord extends DatabaseUtility{
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             success = false;
         }
+        
         return success;
     }
     
@@ -747,7 +357,7 @@ public class CommentActiveRecord extends DatabaseUtility{
      */
     public int getKarma() {
         int karma = 0;
-        ArrayList<VotingActiveRecord> votings = VotingActiveRecord.findVoteByComment(commentID);
+        ArrayList<VotingActiveRecord> votings = VotingActiveRecordFactory.findVoteByComment(commentID);
         for(int i = 0; i< votings.size(); i++)
         {
             if(votings.get(i).isUpvote())

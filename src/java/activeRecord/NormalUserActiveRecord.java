@@ -19,111 +19,37 @@ package activeRecord;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
 /**
- * This class represents a row of the NormalUser table providing functions to find, insert, update and delete these rows.
+ * This class represents a row of the NormalUser table providing functions to insert and update these rows.
  * @author Frank Steiler <frank@steiler.eu>
  */
-public class NormalUserActiveRecord extends DatabaseUtility{
+public class NormalUserActiveRecord extends DatabaseUtility {
     
     /**
      * This String contains the SQL command to insert data into the database.
      */
-    private static final String INSERT_INTO =
+    private final String INSERT_INTO =
             "Insert into NormalUser(DisplayName, FirstName, LastName, DateOfBirth, RelationshipStatus, Gender, Email, Street, HouseNr, Town, Zip, Premium, Password, Salt)" +
             "Values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    
+        
     /**
-     * This String contains the part of the SQL command selecting the UserID from the table.
+     * This String cointains the SQL command to update data in the database.
      */
-    private static final String SELECT_ID =
-            "Select UserID " +
-            "from NormalUser";
-    
-    /**
-     * This String contains the part of the SQL command selecting the complete row from the table.
-     */
-    private static final String SELECT_ALL =
-            "Select * " +
-            "from NormalUser";
-    
-    /**
-     * This String contains the part of the SQL command selecting the columns provided by the normal user table from the table.
-     */
-    private static final String SELECT_ALL_USER =
-            " Select NormalUser.*" +
-            " from NormalUser";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to all friends.
-     */
-    private static final String FROM_FRIENDS =
-            " Inner Join AllFriends" +
-            " On NormalUser.UserID = AllFriends.Friend" + 
-            " Where AllFriends.CurrentUser = ? AND AllFriends.Accepted = True";
-    
-     /**
-     * This String contains the part of the SQL command reducing the selection to all requesting users.
-     */
-    private static final String FROM_REQUESTING =
-            " Inner Join AllFriends" +
-            " On NormalUser.UserID = AllFriends.Friend" + 
-            " Where AllFriends.CurrentUser = ? AND AllFriends.Accepted = False AND AllFriends.Rejected = False";
-    
-    /**
-     * This String contains the part of the SQL command counting the number of rows.
-     */
-    private static final String COUNT_ROWS =
-            " Select count(*) as Number" + 
-            " From NormalUser";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to all user after the specified user.
-     */
-    private static final String AND_AFTER_USER =
-            " And NormalUser.DisplayName > ?";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to all user after the specified user.
-     */
-    private static final String AFTER_USER =
-            " Where NormalUser.DisplayName > ?";
+    private final String UPDATE =
+            " Update NormalUser" + 
+            " Set DisplayName = ?, FirstName = ?, LastName = ?, DateOfBirth = ?, RelationshipStatus = ?, Gender = ?, Email = ?, Street = ?, HouseNr = ?, Town = ?, Zip = ?, Premium = ?, Password = ?";
     
     /**
      * This String contains the part of the SQL command reducing the selection to a specific userID.
      */
-    private static final String BY_ID =
+    private final String BY_ID =
             " Where UserID=?";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to a specific eMail.
-     */
-    private static final String BY_EMAIL =
-            " Where Email=?";
-    
-    /**
-     * This String contains the part of the SQL command putting the result into descending order according to the UserID.
-     */
-    private static final String ORDER_BY_ID_DESC =
-            " Order by UserID desc";
-    
-    /**
-     * This String contains the part of the SQL command putting the result into descending order according to the displaName.
-     */
-    private static final String ORDER_BY_DISPLAYNAME_ASC =
-            " Order by DisplayName asc";
-    
-    /**
-     * This String cointains the SQL command to update data in the database.
-     */
-    private static final String UPDATE =
-            " Update NormalUser" + 
-            " Set DisplayName = ?, FirstName = ?, LastName = ?, DateOfBirth = ?, RelationshipStatus = ?, Gender = ?, Email = ?, Street = ?, HouseNr = ?, Town = ?, Zip = ?, Premium = ?, Password = ?";
     
     private int userID;
     private String displayName;
@@ -142,405 +68,35 @@ public class NormalUserActiveRecord extends DatabaseUtility{
     private String salt;
     
     /**
-     * This function executes the query for a given prepared statement.
-     * @param stmt The prepared statement which needs to be executed.
-     * @return An ArrayList containing the results of the query.
-     */
-    private static ArrayList<NormalUserActiveRecord> executeQuery(PreparedStatement stmt)
-    {
-        return executeQuery(stmt, 0);
-    }
-    
-    /**
-     * This function executes the query for a given prepared statement.
-     * @param stmt The prepared statement which needs to be executed.
-     * @param amount The maximum amount of items in the resulting Array.
-     * @return An ArrayList containing the results of the query.
-     */
-    private static ArrayList<NormalUserActiveRecord> executeQuery(PreparedStatement stmt, int amount)
-    {
-        ArrayList<NormalUserActiveRecord> recs = new ArrayList<NormalUserActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            ResultSet rs = null;
-
-            try
-            {               
-                rs = stmt.executeQuery();
-                
-                if(amount == 0)
-                {
-                    while (rs.next())
-                    {
-                        NormalUserActiveRecord e = createNormalUser(rs);
-                        recs.add(e);
-                    }
-                }
-                else
-                {
-                    for(int i = 0; i < amount && rs.next(); i++)
-                    {
-                        NormalUserActiveRecord e = createNormalUser(rs);
-                        recs.add(e);
-                    }
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This counts all user subscibed to the network.
-     * @return The number of user.
-     */
-    public static int countUser()
-    {
-        int result = 0;
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(COUNT_ROWS);
-                
-                rs = stmt.executeQuery();
-                
-                if(rs.next())
-                {
-                    result = rs.getInt("Number");
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            result = 0;
-        }
-        return result;
-    }
-    
-    /**
-     * This function will retrieve a list of all friends of a user.
-     * @param amount Reduces the amount of results to the maximum of this amount.
-     * @param userID The ID of the viewing user.
-     * @return An ArrayList with all friends of the user.
-     */
-    public static ArrayList<NormalUserActiveRecord> findAllFriends(int userID, int amount)
-    {
-        ArrayList<NormalUserActiveRecord> recs = new ArrayList<NormalUserActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            stmt = con.prepareStatement(SELECT_ALL_USER + FROM_FRIENDS + ORDER_BY_DISPLAYNAME_ASC);
-            stmt.setInt(1, userID);
-            recs = executeQuery(stmt, amount);
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function will retrieve a list of all user.
-     * @param amount Reduces the amount of results to the maximum of this amount.
-     * @return An ArrayList with all user.
-     */
-    public static ArrayList<NormalUserActiveRecord> findAllUser(int amount)
-    {
-        ArrayList<NormalUserActiveRecord> recs = new ArrayList<NormalUserActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            stmt = con.prepareStatement(SELECT_ALL + ORDER_BY_DISPLAYNAME_ASC);
-            recs = executeQuery(stmt, amount);
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function will retrieve a list of all user.
-     * @param amount Reduces the amount of results to the maximum of this amount.
-     * @param lastUser The display name of the user where the selection will start.
-     * @return An ArrayList with all user.
-     */
-    public static ArrayList<NormalUserActiveRecord> findAllUserAfter(int amount, String lastUser)
-    {
-        ArrayList<NormalUserActiveRecord> recs = new ArrayList<NormalUserActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            stmt = con.prepareStatement(SELECT_ALL + AFTER_USER +  ORDER_BY_DISPLAYNAME_ASC);
-            stmt.setString(1, lastUser);
-            
-            recs = executeQuery(stmt, amount);
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function will count all friends of a user.
-     * @param userID The ID of the viewing user.
-     * @return The number of all friends of the user.
-     */
-    public static int countAllRequestingUser(int userID)
-    {
-        int result = 0;
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            stmt = con.prepareStatement(COUNT_ROWS + FROM_REQUESTING);
-            stmt.setInt(1, userID);
-            
-            ResultSet rs = stmt.executeQuery();
-                
-            if(rs.next())
-            {
-                result = rs.getInt("Number");
-            }
-
-            rs.close();
-            stmt.close();
-        }
-        catch (Exception e)
-        {
-            result = 0;
-        }
-        return result;
-    }
-    
-    /**
-     * This function will retrieve a list of all friends of a user.
-     * @param amount Reduces the amount of results to the maximum of this amount.
-     * @param userID The ID of the viewing user.
-     * @param afterUser The display name of the user determing the first user of the result set.
-     * @return An ArrayList with all friends of the user.
-     */
-    public static ArrayList<NormalUserActiveRecord> findAllFriendsAfterUser(int userID, int amount, String afterUser)
-    {
-        ArrayList<NormalUserActiveRecord> recs = new ArrayList<NormalUserActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            stmt = con.prepareStatement(SELECT_ALL_USER + FROM_FRIENDS + AND_AFTER_USER + ORDER_BY_DISPLAYNAME_ASC);
-            stmt.setInt(1, userID);
-            stmt.setString(2, afterUser);
-            recs = executeQuery(stmt, amount);
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function will retrieve a list of all users requesting a friendship with the user.
-     * @param userID The ID of the viewing user.
-     * @return An ArrayList with all friends of the user.
-     */
-    public static ArrayList<NormalUserActiveRecord> findAllRequestingFriends(int userID)
-    {
-        ArrayList<NormalUserActiveRecord> recs = new ArrayList<NormalUserActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            stmt = con.prepareStatement(SELECT_ALL_USER + FROM_REQUESTING + ORDER_BY_DISPLAYNAME_ASC);
-            stmt.setInt(1, userID);
-            recs = executeQuery(stmt);
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function retrieves all normal users matching the provided eMail from the database.
-     * @param eMail The Email of the searched normal user.
-     * @return An array list with all normal users matching the eMail.
-     */
-    public static ArrayList<NormalUserActiveRecord> findUserByEmail(String eMail)
-    {
-        ArrayList<NormalUserActiveRecord> recs = new ArrayList<NormalUserActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            
-            stmt = con.prepareStatement(SELECT_ALL + BY_EMAIL);
-            stmt.setString(1, eMail);
-            
-            recs = executeQuery(stmt);
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function retrieves all users matching the provided UserID from the database.
-     * @param userID The userID of the searched user.
-     * @return An array list with all users matching the userID (Should only contain one element since UserID is primary key).
-     */
-    public static ArrayList<NormalUserActiveRecord> findUserByID(int userID)
-    {
-        ArrayList<NormalUserActiveRecord> recs = new ArrayList<NormalUserActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            
-            stmt = con.prepareStatement(SELECT_ALL + BY_ID);
-            stmt.setInt(1, userID);
-                
-            recs = executeQuery(stmt);
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-
-    /**
-     * This function creates a new normal user using the data from the current position of the result set.
-     * @param rs The data source for the new user.
-     * @return The new created user.
-     */
-    protected static NormalUserActiveRecord createNormalUser(ResultSet rs)
-    {
-        NormalUserActiveRecord d = new NormalUserActiveRecord();
-        try
-        {
-            d.setUserID(rs.getInt("UserID"));
-            d.setDisplayName(rs.getString("DisplayName"));
-            d.setFirstName(rs.getString("FirstName"));
-            d.setLastName(rs.getString("LastName"));
-            d.setDateOfBirth(rs.getDate("DateOfBirth"));
-            d.setRelationshipStatus(rs.getString("RelationshipStatus"));
-            d.setGender(rs.getString("Gender"));
-            d.setEmail(rs.getString("Email"));
-            d.setStreet(rs.getString("Street"));
-            d.setHouseNr(rs.getInt("HouseNr"));
-            d.setTown(rs.getString("Town"));
-            d.setZip(rs.getString("Zip"));
-            d.setPremium(rs.getBoolean("Premium"));
-            d.setPassword(rs.getString("Password"));
-            d.setSalt(rs.getString("Salt"));
-        }
-        catch (SQLException sqle)
-        {
-            d = null;
-        }
-        finally
-        {
-            return d;
-        }
-    }
-     
-    /**
      * This function inserts the object into the database.
      * @return True if insert was successfull, false otherwise.
      */
     public boolean insert()
     {
-        boolean success = false;
+        boolean success;
         try
         {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-            try
-            {
-                stmt = con.prepareStatement(INSERT_INTO,  Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement stmt = getDatabaseConnection().prepareStatement(INSERT_INTO,  Statement.RETURN_GENERATED_KEYS);
                 
-                stmt.setString(1, displayName);
-                stmt.setString(2, firstName);
-                stmt.setString(3, lastName);
-                stmt.setDate(4, dateOfBirth);
-                stmt.setString(5, relationshipStatus);
-                stmt.setString(6, gender);
-                stmt.setString(7, eMail);
-                stmt.setString(8, street);
-                stmt.setInt(9, houseNr);
-                stmt.setString(10, town);
-                stmt.setString(11, zip);
-                stmt.setBoolean(12, premium);
-                stmt.setString(13, password);
-                stmt.setString(14, salt);
+            stmt.setString(1, displayName);
+            stmt.setString(2, firstName);
+            stmt.setString(3, lastName);
+            stmt.setDate(4, dateOfBirth);
+            stmt.setString(5, relationshipStatus);
+            stmt.setString(6, gender);
+            stmt.setString(7, eMail);
+            stmt.setString(8, street);
+            stmt.setInt(9, houseNr);
+            stmt.setString(10, town);
+            stmt.setString(11, zip);
+            stmt.setBoolean(12, premium);
+            stmt.setString(13, password);
+            stmt.setString(14, salt);
                 
-                if(stmt.executeUpdate()>0)
-                {
-                    success = true;
-                }
-                
-                rs = stmt.getGeneratedKeys();
-                rs.next();
-                userID = rs.getInt(1);
-                
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-                success = false;
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
+            success = executeUpdate(stmt);
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             success = false;
         }
         return success;
@@ -555,39 +111,59 @@ public class NormalUserActiveRecord extends DatabaseUtility{
         boolean success = false;
         try
         {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-            try
-            {
-                stmt = con.prepareStatement(UPDATE + BY_ID);
+            PreparedStatement stmt = getDatabaseConnection().prepareStatement(UPDATE + BY_ID);
                 
-                stmt.setString(1, displayName);
-                stmt.setString(2, firstName);
-                stmt.setString(3, lastName);
-                stmt.setDate(4, dateOfBirth);
-                stmt.setString(5, relationshipStatus);
-                stmt.setString(6, gender);
-                stmt.setString(7, eMail);
-                stmt.setString(8, street);
-                stmt.setInt(9, houseNr);
-                stmt.setString(10, town);
-                stmt.setString(11, zip);
-                stmt.setBoolean(12, premium);
-                stmt.setString(13, password);
+            stmt.setString(1, displayName);
+            stmt.setString(2, firstName);
+            stmt.setString(3, lastName);
+            stmt.setDate(4, dateOfBirth);
+            stmt.setString(5, relationshipStatus);
+            stmt.setString(6, gender);
+            stmt.setString(7, eMail);
+            stmt.setString(8, street);
+            stmt.setInt(9, houseNr);
+            stmt.setString(10, town);
+            stmt.setString(11, zip);
+            stmt.setBoolean(12, premium);
+            stmt.setString(13, password);
                
-                stmt.setInt(14, userID);
-                
+            success = executeUpdate(stmt);
+        }
+        catch (Exception e)
+        {
+            success = false;
+        }
+        return success;
+    }
+    
+    /**
+     * This function executes the query for a given prepared statement.
+     * @param stmt The prepared statement which needs to be executed.
+     * @return True if successful, false otherwise.
+     */
+    private boolean executeUpdate(PreparedStatement stmt)
+    {
+        boolean success = false;
+        try
+        {
+            Connection con = stmt.getConnection();
+            try
+            {               
                 if(stmt.executeUpdate()>0)
                 {
                     success = true;
+                }
+                
+                ResultSet rs = stmt.getGeneratedKeys();
+                if(rs != null && rs.next())
+                {
+                    userID = rs.getInt(1);
                 }
                 
                 stmt.close();
             }
             catch (SQLException sqle)
             {
-                sqle.printStackTrace();
                 success = false;
             }
             finally
@@ -597,7 +173,6 @@ public class NormalUserActiveRecord extends DatabaseUtility{
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             success = false;
         }
         return success;
@@ -851,7 +426,7 @@ public class NormalUserActiveRecord extends DatabaseUtility{
      */
     public boolean sendOpenFriendshipRequest(int userID)
     {
-        ArrayList<UisFriendWithUActiveRecord> friendRequest = UisFriendWithUActiveRecord.findFriendByBothUserStrict(userID, this.userID);
+        ArrayList<UisFriendWithUActiveRecord> friendRequest = UisFriendWithUActiveRecordFactory.findFriendByBothUserStrict(userID, this.userID);
         if(friendRequest.isEmpty())
         {
             return false;
@@ -869,7 +444,7 @@ public class NormalUserActiveRecord extends DatabaseUtility{
      */
     public boolean receivedOpenFriendshipRequest(int userID)
     {
-        ArrayList<UisFriendWithUActiveRecord> friendRequest = UisFriendWithUActiveRecord.findFriendByBothUserStrict(this.userID, userID);
+        ArrayList<UisFriendWithUActiveRecord> friendRequest = UisFriendWithUActiveRecordFactory.findFriendByBothUserStrict(this.userID, userID);
         if(friendRequest.isEmpty())
         {
             return false;
@@ -887,7 +462,7 @@ public class NormalUserActiveRecord extends DatabaseUtility{
      */
     public boolean rejectedFriendshipRequest(int userID)
     {
-        ArrayList<UisFriendWithUActiveRecord> friendRequest = UisFriendWithUActiveRecord.findFriendByBothUser(this.userID, userID);
+        ArrayList<UisFriendWithUActiveRecord> friendRequest = UisFriendWithUActiveRecordFactory.findFriendByBothUser(this.userID, userID);
         if(friendRequest.isEmpty())
         {
             return false;

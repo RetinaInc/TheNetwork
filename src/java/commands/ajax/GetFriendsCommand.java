@@ -18,6 +18,7 @@
 package commands.ajax;
 
 import activeRecord.NormalUserActiveRecord;
+import activeRecord.NormalUserActiveRecordFactory;
 import activeRecord.PostActiveRecord;
 import commands.Command;
 import java.io.IOException;
@@ -72,7 +73,7 @@ public class GetFriendsCommand implements Command{
             if(user.startsWith("u"))
             {
                 String lastFriend = (String)request.getSession().getAttribute("lastFriend");
-                friendArray = NormalUserActiveRecord.findAllFriendsAfterUser(userID, Integer.valueOf(request.getParameter("amount")), lastFriend);
+                friendArray = NormalUserActiveRecordFactory.findAllFriendsAfter(userID, Integer.valueOf(request.getParameter("amount")), lastFriend);
                 if(friendArray != null && !friendArray.isEmpty())
                 {
                     request.getSession().setAttribute("lastFriend", friendArray.get(friendArray.size()-1).getDisplayName());
@@ -85,7 +86,7 @@ public class GetFriendsCommand implements Command{
             else if(user.startsWith("a"))
             {
                 String lastUser = (String)request.getSession().getAttribute("lastUser");
-                friendArray = NormalUserActiveRecord.findAllUserAfter(Integer.valueOf(request.getParameter("amount")), lastUser);
+                friendArray = NormalUserActiveRecordFactory.findAllUserAfter(Integer.valueOf(request.getParameter("amount")), lastUser);
                 if(friendArray != null && !friendArray.isEmpty())
                 {
                     request.getSession().setAttribute("lastUser", friendArray.get(friendArray.size()-1).getDisplayName());

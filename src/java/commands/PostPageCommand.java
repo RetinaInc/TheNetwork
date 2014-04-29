@@ -20,8 +20,12 @@ package commands;
 import activeRecord.AllFriendsActiveRecord;
 import activeRecord.CommentActiveRecord;
 import activeRecord.FfollowsPActiveRecord;
+import activeRecord.CommentActiveRecordFactory;
+import activeRecord.FfollowsPActiveRecordFactory;
 import activeRecord.PostActiveRecord;
+import activeRecord.PostActiveRecordFactory;
 import activeRecord.UfollowsPActiveRecord;
+import activeRecord.UfollowsPActiveRecordFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
@@ -78,7 +82,7 @@ public class PostPageCommand implements Command{
                     edit = true;
                 }
                 int postID = Integer.valueOf(uri.substring(6));
-                ArrayList<PostActiveRecord> posts = PostActiveRecord.findPostByID(postID, user);
+                ArrayList<PostActiveRecord> posts = PostActiveRecordFactory.findPostByID(postID, user);
                 PostActiveRecord post;
                 if(posts.size() != 1)
                 {
@@ -126,11 +130,11 @@ public class PostPageCommand implements Command{
                 {
                     if(user.startsWith("u"))
                     {
-                        UfollowsPActiveRecord.setRead(postID, userID);
+                        UfollowsPActiveRecordFactory.setRead(postID, userID);
                     }
                     else if(user.startsWith("f"))
                     {
-                        FfollowsPActiveRecord.setRead(postID, userID);
+                        FfollowsPActiveRecordFactory.setRead(postID, userID);
                     }
                     viewPage="/postPage.jsp";
                 }
@@ -141,7 +145,7 @@ public class PostPageCommand implements Command{
                 }
                 if(viewPage.equals("/postPage.jsp"))
                 {
-                    request.setAttribute("commentArray", CommentActiveRecord.findCommentByPostID(postID, user));
+                    request.setAttribute("commentArray", CommentActiveRecordFactory.findCommentByPostID(postID, user));
                 }
                 request.setAttribute("postArray", posts);
             }

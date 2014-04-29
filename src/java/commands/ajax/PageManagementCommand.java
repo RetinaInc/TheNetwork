@@ -19,8 +19,10 @@ package commands.ajax;
 
 import activeRecord.AllFriendsActiveRecord;
 import activeRecord.FanpageActiveRecord;
+import activeRecord.FanpageActiveRecordFactory;
 import activeRecord.NormalUserActiveRecord;
 import activeRecord.UfollowsFActiveRecord;
+import activeRecord.UfollowsFActiveRecordFactory;
 import activeRecord.UisFriendWithUActiveRecord;
 import commands.Command;
 import java.io.IOException;
@@ -68,12 +70,12 @@ public class PageManagementCommand implements Command {
             String user = (String)request.getSession().getAttribute("userID");
             int userID = Integer.valueOf(user.substring(1));
             int pageID = Integer.valueOf(request.getParameter("page"));
-            request.setAttribute("page", FanpageActiveRecord.findPageByID(pageID).get(0));
+            request.setAttribute("page", FanpageActiveRecordFactory.findPageByID(pageID).get(0));
             if(user.startsWith("u"))
             {
                 if(request.getRequestURI().endsWith("/follow"))
                 {
-                    if(!UfollowsFActiveRecord.isFollowing(userID, pageID))
+                    if(!UfollowsFActiveRecordFactory.isFollowing(userID, pageID))
                     {
                         UfollowsFActiveRecord following = new UfollowsFActiveRecord();
                         following.setFollowedPage(pageID);
@@ -105,9 +107,9 @@ public class PageManagementCommand implements Command {
                 }
                 else if(request.getRequestURI().endsWith("/unfollow"))
                 {
-                    if(UfollowsFActiveRecord.isFollowing(userID, pageID))
+                    if(UfollowsFActiveRecordFactory.isFollowing(userID, pageID))
                     {
-                        ArrayList<UfollowsFActiveRecord> unfollow = UfollowsFActiveRecord.findFollowingByUserIDAndPageID(userID, pageID);
+                        ArrayList<UfollowsFActiveRecord> unfollow = UfollowsFActiveRecordFactory.findFollowingByUserIDAndPageID(userID, pageID);
                         if(unfollow.size() == 1)
                         {
                             if(unfollow.get(0).remove())

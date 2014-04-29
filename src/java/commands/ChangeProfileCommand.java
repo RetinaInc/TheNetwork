@@ -18,7 +18,9 @@
 package commands;
 
 import activeRecord.FanpageActiveRecord;
+import activeRecord.FanpageActiveRecordFactory;
 import activeRecord.SysAdminActiveRecord;
+import activeRecord.SysAdminActiveRecordFactory;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -74,11 +76,11 @@ public class ChangeProfileCommand implements Command {
                     {
                         if(otherUser.startsWith("f"))
                         {
-                            success = currentUserID == FanpageActiveRecord.findAdministratingUser(otherUserID);
+                            success = currentUserID == FanpageActiveRecordFactory.findAdministratingUser(otherUserID);
                         }
                         else if(otherUser.startsWith("a"))
                         {
-                            success = currentUserID == SysAdminActiveRecord.findAdministratingUser(otherUserID);
+                            success = currentUserID == SysAdminActiveRecordFactory.findAdministratingUser(otherUserID);
                         }
                         else if(otherUser.startsWith("u"))
                         {
@@ -93,30 +95,30 @@ public class ChangeProfileCommand implements Command {
                     {
                         if(otherUser.startsWith("u"))
                         {
-                            success = otherUserID == FanpageActiveRecord.findAdministratingUser(currentUserID);
+                            success = otherUserID == FanpageActiveRecordFactory.findAdministratingUser(currentUserID);
                         }
                         else if(otherUser.startsWith("f"))
                         {
-                            success = FanpageActiveRecord.findAdministratingUser(otherUserID) == FanpageActiveRecord.findAdministratingUser(currentUserID);
+                            success = FanpageActiveRecordFactory.findAdministratingUser(otherUserID) == FanpageActiveRecordFactory.findAdministratingUser(currentUserID);
                         }
                         else if(otherUser.startsWith("a"))
                         {
-                            success = SysAdminActiveRecord.findAdministratingUser(otherUserID) == FanpageActiveRecord.findAdministratingUser(currentUserID);
+                            success = SysAdminActiveRecordFactory.findAdministratingUser(otherUserID) == FanpageActiveRecordFactory.findAdministratingUser(currentUserID);
                         }
                     }
                     else if(currentUser.startsWith("a"))
                     {
                         if(otherUser.startsWith("u"))
                         {
-                            success = otherUserID == SysAdminActiveRecord.findAdministratingUser(currentUserID);
+                            success = otherUserID == SysAdminActiveRecordFactory.findAdministratingUser(currentUserID);
                         }
                         else if(otherUser.startsWith("f"))
                         {
-                            success = FanpageActiveRecord.findAdministratingUser(otherUserID) == SysAdminActiveRecord.findAdministratingUser(currentUserID);
+                            success = FanpageActiveRecordFactory.findAdministratingUser(otherUserID) == SysAdminActiveRecordFactory.findAdministratingUser(currentUserID);
                         }
                         else if(otherUser.startsWith("a"))
                         {
-                            success = SysAdminActiveRecord.findAdministratingUser(otherUserID) == SysAdminActiveRecord.findAdministratingUser(currentUserID);
+                            success = SysAdminActiveRecordFactory.findAdministratingUser(otherUserID) == SysAdminActiveRecordFactory.findAdministratingUser(currentUserID);
                         }
                     }
                     

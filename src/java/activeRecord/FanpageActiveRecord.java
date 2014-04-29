@@ -17,119 +17,37 @@
 
 package activeRecord;
 
-import static activeRecord.DatabaseUtility.getDatabaseConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 
 /**
- * This class represents a row of the FanpageAdmin table providing functions to find, insert, update and delete these rows.
+ * This class represents a row of the Fanpage table providing functions to insert and update these rows.
  * @author Frank Steiler <frank@steiler.eu>
  */
 public class FanpageActiveRecord extends DatabaseUtility{
-    
+        
     /**
      * This String contains the SQL command to insert data into the database.
      */
-    private static final String INSERT_INTO =
+    private final String INSERT_INTO =
             "Insert into Fanpage(DisplayName, PageName, Subject, Email, Premium, Password, Salt, AdministratingUser)" +
             "Values (?, ?, ?, ?, ?, ?, ?, ?) ";
     
     /**
-     * This String contains the part of the SQL command selecting the PageID from the table.
-     */
-    private static final String SELECT_ID =
-            "Select PageID " +
-            "from Fanpage";
-    
-    /**
-     * This String contains the part of the SQL command selecting the complete row from the table.
-     */
-    private static final String SELECT_ALL =
-            "Select * " +
-            "from Fanpage";
-    
-    /**
-     * This String contains the part of the SQL command selecting the UserID of the administrating user from the table.
-     */
-    private static final String SELECT_ADMINISTRATINGUSER =
-            "Select AdministratingUser " +
-            "from Fanpage";
-    
-    /**
-     * This String contains the part of the SQL command selecting the columns provided by the fanpage table from the table.
-     */
-    private static final String SELECT_ALL_PAGE =
-            " Select Fanpage.*" +
-            " from Fanpage";
-    
-    /**
-     * This String contains the part of the SQL command counting the number of rows.
-     */
-    private static final String COUNT_ROWS =
-            " Select count(*) as Number" + 
-            " From Fanpage";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to followed pages.
-     */
-    private static final String FROM_FOLLOWEDPAGES =
-            " Inner Join UfollowsF" +
-            " On UfollowsF.FollowedFanpage = Fanpage.PageID" + 
-            " Where UfollowsF.FollowingUser = ?";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to all user after the specified fanpage.
-     */
-    private static final String AND_AFTER_PAGE =
-            " And Fanpage.DisplayName > ?";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to all user after the specified fanpage.
-     */
-    private static final String AFTER_PAGE =
-            " Where Fanpage.DisplayName > ?";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to a specific userID.
-     */
-    private static final String BY_ID =
-            " Where PageID=?";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to a specific userID.
-     */
-    private static final String BY_ADMINISTRATINGUSER =
-            " Where AdministratingUser=?";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to a specific eMail.
-     */
-    private static final String BY_EMAIL =
-            " Where Email=?";
-    
-    /**
-     * This String contains the part of the SQL command putting the result into descending order according to the UserID.
-     */
-    private static final String ORDER_BY_ID_DESC =
-            " Order by PageID desc";
-    
-    /**
-     * This String contains the part of the SQL command putting the result into descending order according to the displaName.
-     */
-    private static final String ORDER_BY_DISPLAYNAME_ASC =
-            " Order by DisplayName asc";
-    
-    /**
      * This String cointains the SQL command to update data in the database.
      */
-    private static final String UPDATE =
+    private final String UPDATE =
             " Update Fanpage" + 
             " Set DisplayName = ?, PageName = ?, Subject = ?, Email = ?, Premium = ?, Password = ?, AdministratingUser = ?";
     
+    /**
+     * This String contains the part of the SQL command reducing the selection to a specific pageID.
+     */
+    private final String BY_ID =
+            " Where PageID=?";
     
     private int pageID;
     private String pageName;
@@ -140,443 +58,106 @@ public class FanpageActiveRecord extends DatabaseUtility{
     private String salt;
     private boolean premium;
     private int administratingUser=0;
-
-    /**
-     * This function executes the query for a given prepared statement.
-     * @param stmt The prepared statement which needs to be executed.
-     * @return An ArrayList containing the results of the query.
-     */
-    private static ArrayList<FanpageActiveRecord> executeQuery(PreparedStatement stmt)
-    {
-        return executeQuery(stmt, 0);
-    }
     
     /**
-     * This function executes the query for a given prepared statement.
-     * @param stmt The prepared statement which needs to be executed.
-     * @param amount The maximum amount of items in the resulting Array.
-     * @return An ArrayList containing the results of the query.
-     */
-    private static ArrayList<FanpageActiveRecord> executeQuery(PreparedStatement stmt, int amount)
-    {
-        ArrayList<FanpageActiveRecord> recs = new ArrayList<FanpageActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            ResultSet rs = null;
-
-            try
-            {               
-                rs = stmt.executeQuery();
-                
-                if(amount == 0)
-                {
-                    while (rs.next())
-                    {
-                        FanpageActiveRecord e = createFanpage(rs);
-                        recs.add(e);
-                    }
-                }
-                else
-                {
-                    for(int i = 0; i < amount && rs.next(); i++)
-                    {
-                        FanpageActiveRecord e = createFanpage(rs);
-                        recs.add(e);
-                    }
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This counts all fanpages subscibed to the network.
-     * @return The number of fanpages.
-     */
-    public static int countFanpages()
-    {
-        int result = 0;
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(COUNT_ROWS);
-                
-                rs = stmt.executeQuery();
-                
-                if(rs.next())
-                {
-                    result = rs.getInt("Number");
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            result = 0;
-        }
-        return result;
-    }
-    
-    /**
-     * Finds the administrting user for a page.
-     * @param pageID The pageID of the page whose administrating user is searched.
-     * @return The userID of the administrating user. '0' if there is no administrating user.
-     */
-    public static int findAdministratingUser(int pageID)
-    {
-        int result = 0;
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            stmt = con.prepareStatement(SELECT_ADMINISTRATINGUSER + BY_ID);
-            stmt.setInt(1, pageID);
-            ResultSet rs = stmt.executeQuery();
-            if(rs.next())
-            {
-                result = rs.getInt("AdministratingUser");
-            }
-        }
-        catch (Exception e)
-        {
-            result = 0;
-        }
-        return result;
-    }
-    
-    /**
-     * This function will return an array with all pageID's administrated by a specific user
-     * @param userID The userID of the administrating user.
-     * @return An ArrayList with all Fanpages administrated by the user.
-     */
-    public static ArrayList<FanpageActiveRecord> findPagesByAdministratingUser(int userID)
-    {
-        ArrayList<FanpageActiveRecord> recs = new ArrayList<FanpageActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            stmt = con.prepareStatement(SELECT_ALL + BY_ADMINISTRATINGUSER);
-            stmt.setInt(1, userID);
-            recs = executeQuery(stmt, 0);
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function will retrieve a list of all fanpages.
-     * @param amount Reduces the amount of results to the maximum of this amount.
-     * @return An ArrayList with all fanpages.
-     */
-    public static ArrayList<FanpageActiveRecord> findAllPages(int amount)
-    {
-        ArrayList<FanpageActiveRecord> recs = new ArrayList<FanpageActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            stmt = con.prepareStatement(SELECT_ALL + ORDER_BY_DISPLAYNAME_ASC);
-            recs = executeQuery(stmt, amount);
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function will retrieve a list of all fanpages starting at a specific page.
-     * @param amount Reduces the amount of results to the maximum of this amount.
-     * @param afterPage The display name of the page determing the first page of the result set.
-     * @return An ArrayList with all fanpages.
-     */
-    public static ArrayList<FanpageActiveRecord> findAllPagesAfterPage(int amount, String afterPage)
-    {
-        ArrayList<FanpageActiveRecord> recs = new ArrayList<FanpageActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            stmt = con.prepareStatement(SELECT_ALL + AFTER_PAGE + ORDER_BY_DISPLAYNAME_ASC);
-            stmt.setString(1, afterPage);
-            recs = executeQuery(stmt, amount);
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function will retrieve a list of all followed fanpages of a user.
-     * @param amount Reduces the amount of results to the maximum of this amount.
-     * @param userID The ID of the viewing user.
-     * @return An ArrayList with all friends of the user.
-     */
-    public static ArrayList<FanpageActiveRecord> findAllFollowingPages(int userID, int amount)
-    {
-        ArrayList<FanpageActiveRecord> recs = new ArrayList<FanpageActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            stmt = con.prepareStatement(SELECT_ALL_PAGE + FROM_FOLLOWEDPAGES + ORDER_BY_DISPLAYNAME_ASC);
-            stmt.setInt(1, userID);
-            recs = executeQuery(stmt, amount);
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function will retrieve a list of all following pages starting at a specific page.
-     * @param amount Reduces the amount of results to the maximum of this amount.
-     * @param userID The ID of the viewing user.
-     * @param afterPage The display name of the page determing the first page of the result set.
-     * @return An ArrayList with all followed pages of the user.
-     */
-    public static ArrayList<FanpageActiveRecord> findAllFollowingPagesAfterPage(int userID, int amount, String afterPage)
-    {
-        ArrayList<FanpageActiveRecord> recs = new ArrayList<FanpageActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            stmt = con.prepareStatement(SELECT_ALL_PAGE + FROM_FOLLOWEDPAGES + AND_AFTER_PAGE + ORDER_BY_DISPLAYNAME_ASC);
-            stmt.setInt(1, userID);
-            stmt.setString(2, afterPage);
-            recs = executeQuery(stmt, amount);
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function retrieves all fanpages matching the provided eMail from the database.
-     * @param eMail The Email of the searched fanpage.
-     * @return An array list with all fanpages matching the eMail.
-     */
-    public static ArrayList<FanpageActiveRecord> findPageByEmail(String eMail)
-    {
-        ArrayList<FanpageActiveRecord> recs = new ArrayList<FanpageActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            
-            stmt = con.prepareStatement(SELECT_ALL + BY_EMAIL);
-            stmt.setString(1, eMail);
-            
-            recs = executeQuery(stmt);
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function retrieves all pages matching the provided PageID from the database.
-     * @param pageID The pageID of the searched page.
-     * @return An array list with all pages matching the pageID (Should only contain one element since PageID is primary key).
-     */
-    public static ArrayList<FanpageActiveRecord> findPageByID(int pageID)
-    {
-        ArrayList<FanpageActiveRecord> recs = new ArrayList<FanpageActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            
-            stmt = con.prepareStatement(SELECT_ALL + BY_ID);
-                stmt.setInt(1, pageID);
-            
-            recs = executeQuery(stmt);
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-
-    /**
-     * This function creates a new fanpage using the data from the current position of the result set.
-     * @param rs The data source for the new fanpage.
-     * @return The new created fanpage.
-     */
-    protected static FanpageActiveRecord createFanpage(ResultSet rs)
-    {
-        FanpageActiveRecord d = new FanpageActiveRecord();
-        try
-        {
-            d.setPageID(rs.getInt("PageID"));
-            d.setDisplayName(rs.getString("DisplayName"));
-            d.setPageName(rs.getString("PageName"));
-            d.setSubject(rs.getString("Subject"));
-            d.setEmail(rs.getString("Email"));
-            d.setPremium(rs.getBoolean("Premium"));
-            d.setPassword(rs.getString("Password"));
-            d.setSalt(rs.getString("Salt"));
-            d.setAdministratingUser(rs.getInt("AdministratingUser"));
-        }
-        catch (SQLException sqle)
-        {
-            d = null;
-        }
-        finally
-        {
-            return d;
-        }
-    }    
-    
-    /**
-     * This function inserts the object into the database.
+     * This function inserts the current object into the database.
      * @return True if insert was successfull, false otherwise.
      */
     public boolean insert()
     {
-        boolean success = false;
+        boolean success;
         try
         {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-            try
+            PreparedStatement stmt = getDatabaseConnection().prepareStatement(INSERT_INTO, Statement.RETURN_GENERATED_KEYS);
+
+            stmt.setString(1, displayName);
+            stmt.setString(2, pageName);
+            stmt.setString(3, subject);
+            stmt.setString(4, eMail);
+            stmt.setBoolean(5, premium);
+            stmt.setString(6, password);
+            stmt.setString(7, salt);
+            if(administratingUser == 0)
             {
-                stmt = con.prepareStatement(INSERT_INTO, Statement.RETURN_GENERATED_KEYS);
-                
-                stmt.setString(1, displayName);
-                stmt.setString(2, pageName);
-                stmt.setString(3, subject);
-                stmt.setString(4, eMail);
-                stmt.setBoolean(5, premium);
-                stmt.setString(6, password);
-                stmt.setString(7, salt);
-                if(administratingUser == 0)
-                {
-                    stmt.setNull(8, java.sql.Types.INTEGER);
-                }
-                else
-                {
-                    stmt.setInt(8, administratingUser);
-                }
-                
-                if(stmt.executeUpdate()>0)
-                {
-                    success = true;
-                }
-                
-                rs = stmt.getGeneratedKeys();
-                rs.next();
-                pageID = rs.getInt(1);
-                
-                stmt.close();
+                stmt.setNull(8, java.sql.Types.INTEGER);
             }
-            catch (SQLException sqle)
+            else
             {
-                sqle.printStackTrace();
-                success = false;
+                stmt.setInt(8, administratingUser);
             }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
+
+            success = executeUpdate(stmt);
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             success = false;
         }
         return success;
     }
     
     /**
-     * Updates the row with the pageID of the object with the data within this object.
+     * Updates the row with the pageID of the object with the data within the current object.
      * @return True if update was successful, false otherwise.
      */
     public boolean update()
     {
+        boolean success;
+        try
+        {
+            PreparedStatement stmt = getDatabaseConnection().prepareStatement(UPDATE + BY_ID);
+            stmt.setString(1, displayName);
+            stmt.setString(2, pageName);
+            stmt.setString(3, subject);
+            stmt.setString(4, eMail);
+            stmt.setBoolean(5, premium);
+            stmt.setString(6, password);
+            if(administratingUser == 0)
+            {
+                stmt.setNull(7, java.sql.Types.INTEGER);
+            }
+            else
+            {
+                stmt.setInt(7, administratingUser);
+            }
+
+            stmt.setInt(8, pageID);
+             
+            success = executeUpdate(stmt);
+        }
+        catch (Exception e)
+        {
+            success = false;
+        }
+        return success;
+    }
+    
+    /**
+     * This function executes the query for a given prepared statement.
+     * @param stmt The prepared statement which needs to be executed.
+     * @return True if successful, false otherwise.
+     */
+    private boolean executeUpdate(PreparedStatement stmt)
+    {
         boolean success = false;
         try
         {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
+            Connection con = stmt.getConnection();
             try
-            {
-                stmt = con.prepareStatement(UPDATE + BY_ID);
-                stmt.setString(1, displayName);
-                stmt.setString(2, pageName);
-                stmt.setString(3, subject);
-                stmt.setString(4, eMail);
-                stmt.setBoolean(5, premium);
-                stmt.setString(6, password);
-                if(administratingUser == 0)
-                {
-                    stmt.setNull(7, java.sql.Types.INTEGER);
-                }
-                else
-                {
-                    stmt.setInt(7, administratingUser);
-                }
-               
-                stmt.setInt(8, pageID);
-                
+            {               
                 if(stmt.executeUpdate()>0)
                 {
                     success = true;
+                }
+                ResultSet rs = stmt.getGeneratedKeys();
+                if(rs != null && rs.next())
+                {
+                    pageID = rs.getInt(1);
                 }
                 
                 stmt.close();
             }
             catch (SQLException sqle)
             {
-                sqle.printStackTrace();
                 success = false;
             }
             finally
@@ -586,7 +167,6 @@ public class FanpageActiveRecord extends DatabaseUtility{
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             success = false;
         }
         return success;
@@ -642,7 +222,7 @@ public class FanpageActiveRecord extends DatabaseUtility{
     }
 
     /**
-     * @param Subject The Subject to set.
+     * @param subject The Subject to set.
      */
     public void setSubject(String subject) {
         this.subject = subject;
@@ -729,7 +309,7 @@ public class FanpageActiveRecord extends DatabaseUtility{
     
     /**
      * 
-     * @param pageID The pageID as a String
+     * @param pageID The pageID as string
      */
     public void setPageIDString(String pageID)
     {
@@ -746,7 +326,6 @@ public class FanpageActiveRecord extends DatabaseUtility{
      */
     public boolean isFollowedBy(int userID)
     {
-        return UfollowsFActiveRecord.isFollowing(userID, this.pageID);
+        return UfollowsFActiveRecordFactory.isFollowing(userID, this.pageID);
     }
-    
 }

@@ -17,13 +17,13 @@
 
 package assets;
 
-import activeRecord.FanpageActiveRecord;
+import activeRecord.FanpageActiveRecordFactory;
 import activeRecord.NormalUserActiveRecord;
-import activeRecord.PostActiveRecord;
+import activeRecord.NormalUserActiveRecordFactory;
+import activeRecord.PostActiveRecordFactory;
 import activeRecord.SysAdminActiveRecord;
-import activeRecord.UfollowsFActiveRecord;
-import activeRecord.UfollowsPActiveRecord;
-import activeRecord.UisFriendWithUActiveRecord;
+import activeRecord.SysAdminActiveRecordFactory;
+import activeRecord.UfollowsFActiveRecordFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -50,35 +50,35 @@ public class updateNavbar {
             int administratingUser = 0;
             if(user.startsWith("u"))
             {
-                int newNotification = PostActiveRecord.countAllUnreadPostsByUserID(userID);
-                int newFriendRequest = NormalUserActiveRecord.countAllRequestingUser(userID);
+                int newNotification = PostActiveRecordFactory.countAllUnreadPostsByUserID(userID);
+                int newFriendRequest = NormalUserActiveRecordFactory.countAllRequestingUser(userID);
                 request.setAttribute("notificationCount", newNotification);
                 request.setAttribute("requestCount", newFriendRequest);
                 administratingUser = userID;
-                NormalUserActiveRecord userRec = NormalUserActiveRecord.findUserByID(userID).get(0);
+                NormalUserActiveRecord userRec = NormalUserActiveRecordFactory.findUserByID(userID).get(0);
                 request.setAttribute("currentUser", userRec.getFirstName() + " " + userRec.getLastName() + " (" + userRec.getDisplayName() + ")");
             }
             else if(user.startsWith("f"))
             {
-                int newNotification = PostActiveRecord.countAllUnreadPostsByPageID(userID);
-                int follower = UfollowsFActiveRecord.countFollowingByPageID(userID);
+                int newNotification = PostActiveRecordFactory.countAllUnreadPostsByPageID(userID);
+                int follower = UfollowsFActiveRecordFactory.countFollowingByPageID(userID);
                 request.setAttribute("notificationCount", newNotification);
                 request.setAttribute("followerCount", follower);
-                administratingUser = FanpageActiveRecord.findAdministratingUser(userID);
-                request.setAttribute("currentUser", FanpageActiveRecord.findPageByID(userID).get(0).getDisplayName());
+                administratingUser = FanpageActiveRecordFactory.findAdministratingUser(userID);
+                request.setAttribute("currentUser", FanpageActiveRecordFactory.findPageByID(userID).get(0).getDisplayName());
             }
             else if(user.startsWith("a"))
             {
-                administratingUser = SysAdminActiveRecord.findAdministratingUser(userID);
-                SysAdminActiveRecord admin = SysAdminActiveRecord.findAdminByID(userID).get(0);
+                administratingUser = SysAdminActiveRecordFactory.findAdministratingUser(userID);
+                SysAdminActiveRecord admin = SysAdminActiveRecordFactory.findAdminByID(userID).get(0);
                 request.setAttribute("currentUser", admin.getAdminIDString()+ " - " + admin.getEmail());
             }
             
             if(administratingUser != 0)
             {
-                request.setAttribute("userSet", NormalUserActiveRecord.findUserByID(administratingUser));
-                request.setAttribute("fanpageSet", FanpageActiveRecord.findPagesByAdministratingUser(administratingUser));
-                request.setAttribute("adminSet", SysAdminActiveRecord.findAdminsByAdministratingUser(administratingUser));
+                request.setAttribute("userSet", NormalUserActiveRecordFactory.findUserByID(administratingUser));
+                request.setAttribute("fanpageSet", FanpageActiveRecordFactory.findPagesByAdministratingUser(administratingUser));
+                request.setAttribute("adminSet", SysAdminActiveRecordFactory.findAdminsByAdministratingUser(administratingUser));
             }
         }
         return success;

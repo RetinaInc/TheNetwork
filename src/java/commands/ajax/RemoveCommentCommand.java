@@ -18,6 +18,7 @@
 package commands.ajax;
 
 import activeRecord.CommentActiveRecord;
+import activeRecord.CommentActiveRecordFactory;
 import activeRecord.PostActiveRecord;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,7 +68,7 @@ public class RemoveCommentCommand implements Command{
         {
             int commentID = Integer.valueOf(request.getParameter("comment"));
             String user = (String)request.getSession().getAttribute("userID");
-            comments = CommentActiveRecord.findCommentByCommentID(commentID, user);
+            comments = CommentActiveRecordFactory.findCommentByCommentID(commentID, user);
             if(comments.size() == 1)
             {
                 if(comments.get(0).getPublishingUser() == Integer.valueOf(user.substring(1)) || comments.get(0).getPublishingPage() == Integer.valueOf(user.substring(1)))

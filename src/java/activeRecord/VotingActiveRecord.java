@@ -19,74 +19,53 @@ package activeRecord;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 /**
- * This class represents a row of the Votings table providing functions to find, insert, update and delete these rows.
+ * This class represents a row of the Votings table providing functions to insert and delete these rows.
  * @author Frank Steiler <frank@steiler.eu>
  */
-public class VotingActiveRecord extends DatabaseUtility{
+public class VotingActiveRecord extends DatabaseUtility {
     
     /**
      * This String contains the SQL command to insert data into the database.
      */
-    private static final String INSERT_INTO =
+    private final String INSERT_INTO =
             " Insert into Voting(VotingUser, VotingFanpage, VotedPost, VotedComment, Upvote)" +
             " Values (?, ?, ?, ?, ?)";
     
     /**
-     * This String contains the part of the SQL command selecting the complete row from the table.
-     */
-    private static final String SELECT_ALL =
-            " Select *" +
-            " from Voting";
-    
-    /**
      * This String contains the part of the SQL command deleting the row.
      */
-    private static final String DELETE =
+    private final String DELETE =
             " Delete" +
             " from Voting";
     
     /**
      * Reduces the selection to the pageID and commentID.
      */
-    private static final String BY_PAGEID_AND_COMMENTID =
+    private final String BY_PAGEID_AND_COMMENTID =
             " Where VotingFanpage = ?"
             + " And VotedComment = ?";
     
     /**
-     * Reduces the selection to the postID.
-     */
-    private static final String BY_POSTID =
-            " Where VotedPost = ?";
-    
-    /**
-     * Reduces the selection to the commentID.
-     */
-    private static final String BY_COMMENTID =
-            " Where VotedComment = ?";
-    
-    /**
      * Reduces the selection to the pageID and postID.
      */
-    private static final String BY_PAGEID_AND_POSTID =
+    private final String BY_PAGEID_AND_POSTID =
             " Where VotingFanpage = ?"
             + " And VotedPost = ?";
     
     /**
      * Reduces the selection to the userID and commentID.
      */
-    private static final String BY_USERID_AND_COMMENTID =
+    private final String BY_USERID_AND_COMMENTID =
             " Where VotingUser = ?"
             + " And VotedComment = ?";
     
     /**
      * Reduces the selection to the userID and postID.
      */
-    private static final String BY_USERID_AND_POSTID =
+    private final String BY_USERID_AND_POSTID =
             " Where VotingUser = ?"
             + " And VotedPost = ?";
     
@@ -96,390 +75,58 @@ public class VotingActiveRecord extends DatabaseUtility{
     private int votedComment = 0;
     private boolean upvote;
 
-    
-     /**
-     * This function checks if the user has allready voted for the post.
-     * @param userID The userID of the (current) user.
-     * @param postID The postID of the post.
-     * @return An arrayList containing one object if the user has voted for the post, otherwise the arraylist is empty.
-     */
-    public static ArrayList<VotingActiveRecord> findVoteByUserAndPost(int userID, int postID)
-    {
-        ArrayList<VotingActiveRecord> recs = new ArrayList<VotingActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(SELECT_ALL + BY_USERID_AND_POSTID);
-                stmt.setInt(1, userID);
-                stmt.setInt(2, postID);
-                
-                rs = stmt.executeQuery();
-                
-                while (rs.next())
-                {
-                    VotingActiveRecord e = createVoting(rs);
-                    recs.add(e);
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function gets all previous votes on the post.
-     * @param postID The postID of the post.
-     * @return An arrayList containing one object if the user has voted for the post, otherwise the arraylist is empty.
-     */
-    public static ArrayList<VotingActiveRecord> findVoteByPost(int postID)
-    {
-        ArrayList<VotingActiveRecord> recs = new ArrayList<VotingActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(SELECT_ALL + BY_POSTID);
-                stmt.setInt(1, postID);
-                
-                rs = stmt.executeQuery();
-                
-                while (rs.next())
-                {
-                    VotingActiveRecord e = createVoting(rs);
-                    recs.add(e);
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function retrieves all votes for a comment.
-     * @param commentID The CommentID of the comment.
-     * @return An arrayList containing one object if the user has voted for the post, otherwise the arraylist is empty.
-     */
-    public static ArrayList<VotingActiveRecord> findVoteByComment(int commentID)
-    {
-        ArrayList<VotingActiveRecord> recs = new ArrayList<VotingActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(SELECT_ALL + BY_COMMENTID);
-                stmt.setInt(1, commentID);
-                
-                rs = stmt.executeQuery();
-                
-                while (rs.next())
-                {
-                    VotingActiveRecord e = createVoting(rs);
-                    recs.add(e);
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function checks if the user has allready voted for the comment.
-     * @param userID The userID of the (current) user.
-     * @param commentID The commentID of the comment.
-     * @return An arrayList containing one object if the user has voted for the comment, otherwise the arraylist is empty.
-     */
-    public static ArrayList<VotingActiveRecord> findVoteByUserAndComment(int userID, int commentID)
-    {
-        ArrayList<VotingActiveRecord> recs = new ArrayList<VotingActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(SELECT_ALL + BY_USERID_AND_COMMENTID);
-                stmt.setInt(1, userID);
-                stmt.setInt(2, commentID);
-                
-                rs = stmt.executeQuery();
-                
-                while (rs.next())
-                {
-                    VotingActiveRecord e = createVoting(rs);
-                    recs.add(e);
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function checks if the page has allready voted for the post.
-     * @param pageID The pageID of the (current) page.
-     * @param postID The postID of the post
-     * @return An arrayList containing one object if the page has voted for the post, otherwise the arraylist is empty.
-     */
-    public static ArrayList<VotingActiveRecord> findVoteByPageAndPost(int pageID, int postID)
-    {
-        ArrayList<VotingActiveRecord> recs = new ArrayList<VotingActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(SELECT_ALL + BY_PAGEID_AND_POSTID);
-                stmt.setInt(1, pageID);
-                stmt.setInt(2, postID);
-                
-                rs = stmt.executeQuery();
-                
-                while (rs.next())
-                {
-                    VotingActiveRecord e = createVoting(rs);
-                    recs.add(e);
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function checks if the page has allready voted for the comment.
-     * @param pageID The pageID of the (current) page.
-     * @param commentID The commentID of the post.
-     * @return An arrayList containing one object if the page has voted for the comment, otherwise the arraylist is empty.
-     */
-    public static ArrayList<VotingActiveRecord> findVoteByPageAndComment(int pageID, int commentID)
-    {
-        ArrayList<VotingActiveRecord> recs = new ArrayList<VotingActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(SELECT_ALL + BY_PAGEID_AND_COMMENTID);
-                stmt.setInt(1, pageID);
-                stmt.setInt(2, commentID);
-                
-                rs = stmt.executeQuery();
-                
-                while (rs.next())
-                {
-                    VotingActiveRecord e = createVoting(rs);
-                    recs.add(e);
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function creates a new voting record using the data from the current position of the result set.
-     * @param rs The data source for the new fanpage.
-     * @return The new created post.
-     */
-    protected static VotingActiveRecord createVoting(ResultSet rs)
-    {
-        VotingActiveRecord d = new VotingActiveRecord();
-        try
-        {
-            d.setUpvote(rs.getBoolean("Upvote"));
-            d.setVotedComment(rs.getInt("VotedComment"));
-            d.setVotedPost(rs.getInt("VotedPost"));
-            d.setVotingPage(rs.getInt("VotingFanpage"));
-            d.setVotingUser(rs.getInt("VotingUser"));
-        }
-        catch (SQLException sqle)
-        {
-            d = null;
-        }
-        finally
-        {
-            return d;
-        }
-    }    
-    
     /**
      * This function inserts the object into the database.
      * @return True if insert was successful, false otherwise.
      */
     public boolean insert()
     {
-        boolean success = false;
+        boolean success;
         try
         {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-            try
+            PreparedStatement stmt = getDatabaseConnection().prepareStatement(INSERT_INTO);
+                
+            if(votingUser == 0)
             {
-                stmt = con.prepareStatement(INSERT_INTO);
-                
-                if(votingUser == 0)
-                {
-                    stmt.setNull(1, java.sql.Types.INTEGER);
-                }
-                else
-                {
-                    stmt.setInt(1, votingUser);
-                }
-                
-                if(votingPage == 0)
-                {
-                    stmt.setNull(2, java.sql.Types.INTEGER);
-                }
-                else
-                {
-                    stmt.setInt(2, votingPage);
-                }
-                if(votedPost == 0)
-                {
-                    stmt.setNull(3, java.sql.Types.INTEGER);
-                }
-                else
-                {
-                    stmt.setInt(3, votedPost);
-                }
-                
-                if(votedComment == 0)
-                {
-                    stmt.setNull(4, java.sql.Types.INTEGER);
-                }
-                else
-                {
-                    stmt.setInt(4, votedComment);
-                }
-                
-                stmt.setBoolean(5, upvote);
-                
-                if(stmt.executeUpdate()>0)
-                {
-                    success = true;
-                }
-                
-                stmt.close();
+                stmt.setNull(1, java.sql.Types.INTEGER);
             }
-            catch (SQLException sqle)
+            else
             {
-                sqle.printStackTrace();
-                success = false;
+                stmt.setInt(1, votingUser);
             }
-            finally
+
+            if(votingPage == 0)
             {
-                closeDatabaseConnection(con);
+                stmt.setNull(2, java.sql.Types.INTEGER);
             }
+            else
+            {
+                stmt.setInt(2, votingPage);
+            }
+            if(votedPost == 0)
+            {
+                stmt.setNull(3, java.sql.Types.INTEGER);
+            }
+            else
+            {
+                stmt.setInt(3, votedPost);
+            }
+
+            if(votedComment == 0)
+            {
+                stmt.setNull(4, java.sql.Types.INTEGER);
+            }
+            else
+            {
+                stmt.setInt(4, votedComment);
+            }
+
+            stmt.setBoolean(5, upvote);
+                
+            success = executeUpdate(stmt);
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             success = false;
         }
         return success;
@@ -494,51 +141,70 @@ public class VotingActiveRecord extends DatabaseUtility{
         boolean success = false;
         try
         {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-            try
+            PreparedStatement stmt;
+            if(votingPage != 0)
             {
-                if(votingPage != 0)
+                if(votedComment != 0)
                 {
-                    if(votedComment != 0)
-                    {
-                        stmt = con.prepareStatement(DELETE + BY_PAGEID_AND_COMMENTID);
-                        stmt.setInt(2, votedComment);
-                    }
-                    else if(votedPost != 0)
-                    {
-                        stmt = con.prepareStatement(DELETE + BY_PAGEID_AND_POSTID);
-                        stmt.setInt(2, votedPost);
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                    stmt.setInt(1, votingPage);
+                    stmt = getDatabaseConnection().prepareStatement(DELETE + BY_PAGEID_AND_COMMENTID);
+                    stmt.setInt(2, votedComment);
                 }
-                else if (votingUser != 0)
+                else if(votedPost != 0)
                 {
-                    if(votedComment != 0)
-                    {
-                        stmt = con.prepareStatement(DELETE + BY_USERID_AND_COMMENTID);
-                        stmt.setInt(2, votedComment);
-                    }
-                    else if(votedPost != 0)
-                    {
-                        stmt = con.prepareStatement(DELETE + BY_USERID_AND_POSTID);
-                        stmt.setInt(2, votedPost);
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                    stmt.setInt(1, votingUser);
+                    stmt = getDatabaseConnection().prepareStatement(DELETE + BY_PAGEID_AND_POSTID);
+                    stmt.setInt(2, votedPost);
                 }
                 else
                 {
                     return false;
                 }
+                stmt.setInt(1, votingPage);
+            }
+            else if (votingUser != 0)
+            {
+                if(votedComment != 0)
+                {
+                    stmt = getDatabaseConnection().prepareStatement(DELETE + BY_USERID_AND_COMMENTID);
+                    stmt.setInt(2, votedComment);
+                }
+                else if(votedPost != 0)
+                {
+                    stmt = getDatabaseConnection().prepareStatement(DELETE + BY_USERID_AND_POSTID);
+                    stmt.setInt(2, votedPost);
+                }
+                else
+                {
+                    return false;
+                }
+                stmt.setInt(1, votingUser);
+            }
+            else
+            {
+                return false;
+            }
+            
+            success = executeUpdate(stmt);
+        }
+        catch (Exception e)
+        {
+            success = false;
+        }
+        return success;
+    }
+    
+    /**
+     * This function executes the query for a given prepared statement.
+     * @param stmt The prepared statement which needs to be executed.
+     * @return True if successful, false otherwise.
+     */
+    private boolean executeUpdate(PreparedStatement stmt)
+    {
+        boolean success = false;
+        try
+        {
+            Connection con = stmt.getConnection();
+            try
+            {               
                 if(stmt.executeUpdate()>0)
                 {
                     success = true;
@@ -548,7 +214,6 @@ public class VotingActiveRecord extends DatabaseUtility{
             }
             catch (SQLException sqle)
             {
-                sqle.printStackTrace();
                 success = false;
             }
             finally
@@ -558,7 +223,6 @@ public class VotingActiveRecord extends DatabaseUtility{
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             success = false;
         }
         return success;
@@ -633,5 +297,4 @@ public class VotingActiveRecord extends DatabaseUtility{
     public void setUpvote(boolean upvote) {
         this.upvote = upvote;
     }
-    
 }

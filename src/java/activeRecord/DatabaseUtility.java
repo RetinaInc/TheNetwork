@@ -30,7 +30,7 @@ public abstract class DatabaseUtility
     /**
      * The URL to the database.
      */
-    static String DBASE_URL = "jdbc:derby://localhost:1527/TheNetwork";
+    protected static String DBASE_URL = "jdbc:derby://localhost:1527/TheNetwork";
 
     /**
      * The username for the database.

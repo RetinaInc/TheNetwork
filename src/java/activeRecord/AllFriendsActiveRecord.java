@@ -17,11 +17,6 @@
 
 package activeRecord;
 
-import static activeRecord.DatabaseUtility.getDatabaseConnection;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -30,119 +25,11 @@ import java.util.ArrayList;
  */
 public class AllFriendsActiveRecord extends DatabaseUtility {
     
-    /**
-     * This String contains the part of the SQL command selecting the complete row from the view.
-     */
-    private static String SELECT_ALL =
-            " Select * " +
-            " From AllFriends ";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to a specific pair of users.
-     */
-    private static String BY_USERID_FRIENDID =
-            " Where CurrentUser = ?" + 
-            " And Friend = ?";
-    
     private int currentUser;
     private int friend;
     private boolean accepted;
     private boolean rejected;
     
-    /**
-     * This function executes the query for a given prepared statement.
-     * @param stmt The prepared statement which needs to be executed.
-     * @return An ArrayList containing the results of the query.
-     */
-    private static ArrayList<AllFriendsActiveRecord> executeQuery(PreparedStatement stmt)
-    {
-        ArrayList<AllFriendsActiveRecord> recs = new ArrayList<AllFriendsActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            ResultSet rs = null;
-
-            try
-            {               
-                rs = stmt.executeQuery();
-                
-                while (rs.next())
-                {
-                    AllFriendsActiveRecord e = createFriendsRecord(rs);
-                    recs.add(e);
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function retrieves the row representing the friendship between two user.
-     * @param currentUserID The userID of one of the users.
-     * @param friend The userID of one of the users.
-     * @return An array list with connections between the two users.
-     */
-    public static ArrayList<AllFriendsActiveRecord> findAllFriendsByIDOfFriendAndUser(int currentUserID, int friend)
-    {
-        ArrayList<AllFriendsActiveRecord> recs = new ArrayList<AllFriendsActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            
-            stmt = con.prepareStatement(SELECT_ALL + BY_USERID_FRIENDID);
-            stmt.setInt(1, currentUserID);
-            stmt.setInt(2, friend);
-            
-            recs = executeQuery(stmt);
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**^
-     * This function creates a new active record representing a row of the view set using the data from the current position of the result set.
-     * @param rs The data source for the active record.
-     * @return The new created active record.
-     */
-    protected static AllFriendsActiveRecord createFriendsRecord(ResultSet rs)
-    {
-        AllFriendsActiveRecord d = new AllFriendsActiveRecord();
-        try
-        {
-            d.setAccepted(rs.getBoolean("Accepted"));
-            d.setFriend(rs.getInt("Friend"));
-            d.setCurrentUser(rs.getInt("CurrentUser"));
-            d.setRejected(rs.getBoolean("Rejected"));
-        }
-        catch (SQLException sqle)
-        {
-            d = null;
-        }
-        finally
-        {
-            return d;
-        }
-    }  
-
     /**
      * @return The currentUser.
      */
@@ -207,7 +94,7 @@ public class AllFriendsActiveRecord extends DatabaseUtility {
      */
     public static boolean isFriendWith(int user, int friend)
     {
-        ArrayList<AllFriendsActiveRecord> list = findAllFriendsByIDOfFriendAndUser(user, friend);
+        ArrayList<AllFriendsActiveRecord> list = AllFriendsActiveRecordFactory.findAllFriendsByIDOfFriendAndUser(user, friend);
         if(list.size() == 1)
         {
             return list.get(0).accepted;
@@ -226,7 +113,7 @@ public class AllFriendsActiveRecord extends DatabaseUtility {
      */
     public static boolean hasRejectedRequest(int user, int friend)
     {
-        ArrayList<AllFriendsActiveRecord> list = findAllFriendsByIDOfFriendAndUser(user, friend);
+        ArrayList<AllFriendsActiveRecord> list = AllFriendsActiveRecordFactory.findAllFriendsByIDOfFriendAndUser(user, friend);
         if(list.size() == 1)
         {
             return list.get(0).rejected;
@@ -245,7 +132,7 @@ public class AllFriendsActiveRecord extends DatabaseUtility {
      */
     public static boolean openFriendshipRequest(int user, int friend)
     {
-        ArrayList<AllFriendsActiveRecord> list = findAllFriendsByIDOfFriendAndUser(user, friend);
+        ArrayList<AllFriendsActiveRecord> list = AllFriendsActiveRecordFactory.findAllFriendsByIDOfFriendAndUser(user, friend);
         if(list.size() == 1)
         {
             return ((list.get(0).accepted ==false)&&(list.get(0).rejected == false));

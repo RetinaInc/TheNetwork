@@ -17,191 +17,45 @@
 
 package activeRecord;
 
-import static activeRecord.DatabaseUtility.getDatabaseConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Date;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
 /**
- * This class represents a row of the Post table providing functions to find, insert, update and delete these rows.
+ * This class represents a row of the Post table providing functions to insert, update and delete these rows.
  * @author Frank Steiler <frank@steiler.eu>
  */
-public class PostActiveRecord extends DatabaseUtility{
+public class PostActiveRecord extends DatabaseUtility {
     /**
      * This String contains the SQL command to insert data into the database.
      */
-    private static final String INSERT_INTO =
+    private final String INSERT_INTO =
             "Insert into Post(PostTimestamp, PostPublic, Content, PublishingUser, PublishingPage)" +
             " Values (CURRENT_TIMESTAMP, ?, ?, ?, ?)";
     
     /**
      * This String cointains the SQL command to update data in the database.
      */
-    private static final String UPDATE =
+    private final String UPDATE =
             " Update Post" + 
             " Set PostTimestamp = ?, PostPublic = ?, Content = ?, PublishingUser = ?, PublishingPage = ?";
     
     /**
-     * This String contains the part of the SQL command selecting the PostID from the table.
-     */
-    private static final String SELECT_ID =
-            " Select PostID" +
-            " from Post";
-    
-    /**
-     * This String contains the one part of the SQL command to specify a set of unioned SELECT satements.
-     */
-    private static final String SELECT =
-            " Select *" +
-            " From (";
-    
-    /**
      * This String contains the part of the SQL command deleting the row.
      */
-    private static final String DELETE =
+    private final String DELETE =
             " Delete" +
             " from Post";
-    
-    /**
-     * This String contains the other part of the SQL command to specify a set of unioned SELECT satements.
-     */
-    private static final String AS =
-            " ) As tmp";
-    
-    /**
-     * This String contains the part of the SQL command selecting the complete row from the table.
-     */
-    private static final String SELECT_ALL =
-            " Select *" +
-            " from Post";
-    
-    /**
-     * This String contains the part of the SQL command selecting the columns provided by the post table from the table.
-     */
-    private static final String SELECT_ALL_POST =
-            " Select Post.*" +
-            " from Post";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to all posts provided by friends.
-     */
-    private static final String FROM_FRIENDS =
-            " Inner Join AllFriends" +
-            " On Post.PublishingUser = AllFriends.Friend" + 
-            " Where AllFriends.CurrentUser = ? AND AllFriends.Accepted = True";
-    
-    /**
-     * This String contains the part of the SQL command expanding the selection to the current user's posts.
-     */
-    private static final String AND_CURRENTUSER =
-            " Union" +
-            " Select * from Post" +
-            " Where PublishingUser = ?";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to all posts provided by followed fanpages.
-     */
-    private static final String FROM_PAGES =
-            " Inner Join UfollowsF" +
-            " On Post.PublishingPage = UfollowsF.FollowedFanpage" + 
-            " Where UfollowsF.FollowingUser = ?";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to all followed posts of a user which are unread.
-     */
-    private static final String FROM_UNREAD_USER =
-            " Inner Join UfollowsP" +
-            " On Post.PostID = UfollowsP.FollowedPost" + 
-            " Where UfollowsP.FollowingUser = ? And PostRead = false";
-    
-    /**
-     * This String contains the part of the SQL command counting the number of rows.
-     */
-    private static final String COUNT_ROWS =
-            " Select count(*) as Number" + 
-            " From Post";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to all followed posts of a user which are unread.
-     */
-    private static final String FROM_UNREAD_PAGE =
-            " Inner Join FfollowsP" +
-            " On Post.PostID = FfollowsP.FollowedPost" + 
-            " Where FfollowsP.FollowingFanpage = ? And PostRead = false";
-    
-    /**
-     * This String provides the part of the SQL command performaing an union.
-     */
-    private static final String UNION =
-            " Union All";
-            
+       
     /**
      * This String contains the part of the SQL command reducing the selection to a specific postID.
      */
-    private static final String BY_ID =
+    private final String BY_ID =
             " Where PostID=?";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to a specific timeframe older than the given time.
-     */
-    private static final String BY_TIME_OLDER =
-            " Where PostTimestamp<?";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to a specific timeframe newer than the given time.
-     */
-    private static final String BY_TIME_NEWER =
-            " Where PostTimestamp>?";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to a specific pageID.
-     */
-    private static final String BY_PAGEID =
-            " Where PublishingPage=?";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to a specific userID.
-     */
-    private static final String BY_USERID =
-            " Where PublishingUser=?";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to a specific pageID.
-     */
-    private static final String BY_PAGEID_TIME_OLDER =
-            " Where PublishingPage=?" +
-            " And PostTimestamp<?";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to a specific pageID.
-     */
-    private static final String BY_USERID_TIME_OLDER =
-            " Where PublishingUser=?" +
-            " And PostTimestamp<?";
-    
-    /**
-     * This String contains the part of the SQL command reducing the selection to all public posts.
-     */
-    private static final String AND_PUBLIC =
-            " And PostPublic = true";
-    
-    /**
-     * This String contains the part of the SQL command putting the result into descending order according to the PostID.
-     */
-    private static final String ORDER_BY_ID_DESC =
-            " Order by PostID desc";
-    
-    /**
-     * This String contains the part of the SQL command putting the result into descending order according to the Timestamp.
-     */
-    private static final String ORDER_BY_TIME_DESC =
-            " Order by PostTimestamp desc";
-    
     
     private int postID;
     private Timestamp postTimestamp;
@@ -211,790 +65,11 @@ public class PostActiveRecord extends DatabaseUtility{
     private int publishingPage = 0;
     private String publisherName;
     private int commentCount;
-    /**
-     * Upvote shows if the current user has upvoted (true), downvoted (false).
-     */
     private VotingActiveRecord voteRecord;
     
     public PostActiveRecord()
     {
         commentCount = 0;
-    }
-    
-    /**
-     * This counts all posts published on the network.
-     * @return The number of following user.
-     */
-    public static int countPosts()
-    {
-        int result = 0;
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(COUNT_ROWS);
-                
-                rs = stmt.executeQuery();
-                
-                if(rs.next())
-                {
-                    result = rs.getInt("Number");
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            result = 0;
-        }
-        return result;
-    }
-    
-    /**
-     * This function retrieves a post using its ID.
-     * @param postID The postID of the Post.
-     * @param userID The userID of the viewing user.
-     * @return An array list with all posts matching the ID (should only one element in there since PostID is primary key).
-     */
-    public static ArrayList<PostActiveRecord> findPostByID(int postID, String userID)
-    {
-        ArrayList<PostActiveRecord> recs = new ArrayList<PostActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(SELECT_ALL + BY_ID);
-                stmt.setInt(1, postID);
-                
-                rs = stmt.executeQuery();
-                while (rs.next())
-                {
-                    PostActiveRecord e;
-                    if(userID != null)
-                    {
-                        e = createPost(rs, userID);
-                    }
-                    else
-                    {
-                        e = createPost(rs);
-                    }
-                    recs.add(e);
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function retrieves all followed and unread posts of a user.
-     * @param userID The userID of the user.
-     * @return An array list with all unread and followed posts.
-     */
-    public static ArrayList<PostActiveRecord> findAllUnreadPostsByUserID(int userID)
-    {
-        String viewingUser = "u" + userID;
-        ArrayList<PostActiveRecord> recs = new ArrayList<PostActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-            
-            try
-            {
-                stmt = con.prepareStatement(SELECT_ALL + FROM_UNREAD_USER);
-                stmt.setInt(1, userID);
-                
-                rs = stmt.executeQuery();
-                while(rs.next())
-                {
-                    PostActiveRecord e = createPost(rs, viewingUser);
-                    recs.add(e);
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function retrieves all followed and unread posts of a page.
-     * @param pageID The pageID of the user.
-     * @return An array list with all unread and followed posts.
-     */
-    public static ArrayList<PostActiveRecord> findAllUnreadPostsByPageID(int pageID)
-    {
-        String viewingUser = "f" + pageID;
-        ArrayList<PostActiveRecord> recs = new ArrayList<PostActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-            
-            try
-            {
-                stmt = con.prepareStatement(SELECT_ALL + FROM_UNREAD_PAGE);
-                stmt.setInt(1, pageID);
-                
-                rs = stmt.executeQuery();
-                while(rs.next())
-                {
-                    PostActiveRecord e = createPost(rs, viewingUser);
-                    recs.add(e);
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function counts all followed and unread posts of a user.
-     * @param userID The userID of the user.
-     * @return An array list with all unread and followed posts.
-     */
-    public static int countAllUnreadPostsByUserID(int userID)
-    {
-        String viewingUser = "u" + userID;
-        int result = 0;
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-            
-            try
-            {
-                stmt = con.prepareStatement(COUNT_ROWS + FROM_UNREAD_USER);
-                stmt.setInt(1, userID);
-                
-                rs = stmt.executeQuery();
-                
-                if(rs.next())
-                {
-                    result = rs.getInt("Number");
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            result = 0;
-        }
-        return result;
-    }
-    
-    /**
-     * This function retrieves all followed and unread posts of a page.
-     * @param pageID The pageID of the user.
-     * @return An array list with all unread and followed posts.
-     */
-    public static int countAllUnreadPostsByPageID(int pageID)
-    {
-        String viewingUser = "f" + pageID;
-        int result = 0;
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-            
-            try
-            {
-                stmt = con.prepareStatement(COUNT_ROWS + FROM_UNREAD_PAGE);
-                stmt.setInt(1, pageID);
-                
-                rs = stmt.executeQuery();
-                
-                if(rs.next())
-                {
-                    result = rs.getInt("Number");
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            result = 0;
-        }
-        return result;
-    }
-    
-    /**
-     * This function retrieves all posts posted by a specific user. Checking if the current user is allowed to view the posts and filter according to the restrictions.
-     * @param userID The userID of the user.
-     * @param amountOfPost Reduces the set to the given amount.
-     * @param viewingUser The user who is viewing the posts.
-     * @return An array list with all posts published by the fanpage, sorted by their timestamp.
-     */
-    public static ArrayList<PostActiveRecord> findAllPostByUserIDAndAmount(int userID, int amountOfPost, String viewingUser)
-    {
-        ArrayList<PostActiveRecord> recs = new ArrayList<PostActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                if(viewingUser.startsWith("u"))
-                {
-                    if(AllFriendsActiveRecord.isFriendWith(userID, Integer.valueOf(viewingUser.substring(1))))
-                    {
-                        stmt = con.prepareStatement(SELECT_ALL + BY_USERID + ORDER_BY_TIME_DESC);
-                    }
-                    else
-                    {   
-                        stmt = con.prepareStatement(SELECT_ALL + BY_USERID + AND_PUBLIC + ORDER_BY_TIME_DESC);
-                    }
-                    stmt.setInt(1, userID);
-
-                    rs = stmt.executeQuery();
-                    int i = 0;
-                    while (rs.next() && i<amountOfPost)
-                    {
-                        PostActiveRecord e = createPost(rs, viewingUser);
-                        recs.add(e);
-                        i++;
-                    }
-
-                    rs.close();
-                    stmt.close();
-                }
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function retrieves all posts posted by a specific user older than a specific time.
-     * @param userID The userID of the fanpage.
-     * @param time The time which is going to compared ot all items.
-     * @param amountOfPost Reduces the set to the given amount.
-     * @param viewingUser The user viewing the posts.
-     * @return An array list with all posts published by the fanpage, sorted by their timestamp.
-     */
-    public static ArrayList<PostActiveRecord> findOlderPostByUserIDAndAmountAndTime(int userID, Timestamp time, int amountOfPost, String viewingUser)
-    {
-        ArrayList<PostActiveRecord> recs = new ArrayList<PostActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                if(viewingUser.startsWith("u"))
-                {
-                    if(AllFriendsActiveRecord.isFriendWith(userID, Integer.valueOf(viewingUser.substring(1))))
-                    {
-                        stmt = con.prepareStatement(SELECT_ALL + BY_USERID_TIME_OLDER + ORDER_BY_TIME_DESC);
-                    }
-                    else
-                    {
-                        stmt = con.prepareStatement(SELECT_ALL + BY_USERID_TIME_OLDER + AND_PUBLIC + ORDER_BY_TIME_DESC);
-                    }
-                    stmt.setInt(1, userID);
-                    stmt.setTimestamp(2, time);
-
-                    rs = stmt.executeQuery();
-                    int i = 0;
-                    while (rs.next() && i<amountOfPost)
-                    {
-                        PostActiveRecord e = createPost(rs, viewingUser);
-                        recs.add(e);
-                        i++;
-                    }
-
-                    rs.close();
-                    stmt.close();
-                }
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function retrieves all posts posted by a specific fanpage.
-     * @param pageID The pageID of the fanpage.
-     * @param amountOfPost Reduces the set to the given amount.
-     * @param viewingUser The user viewing the post.
-     * @return An array list with all posts published by the fanpage, sorted by their timestamp.
-     */
-    public static ArrayList<PostActiveRecord> findAllPostByPageIDAndAmount(int pageID, int amountOfPost, String viewingUser)
-    {
-        ArrayList<PostActiveRecord> recs = new ArrayList<PostActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(SELECT_ALL + BY_PAGEID + ORDER_BY_TIME_DESC);
-                stmt.setInt(1, pageID);
-                
-                rs = stmt.executeQuery();
-                int i = 0;
-                while (rs.next() && i<amountOfPost)
-                {
-                    PostActiveRecord e = createPost(rs, viewingUser);
-                    recs.add(e);
-                    i++;
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function retrieves all posts posted by a specific fanpage older than a specific time.
-     * @param pageID The pageID of the fanpage.
-     * @param time The time which is going to compared ot all items.
-     * @param amountOfPost Reduces the set to the given amount.
-     * @param viewingUser The user viewing the post.
-     * @return An array list with all posts published by the fanpage, sorted by their timestamp.
-     */
-    public static ArrayList<PostActiveRecord> findOlderPostByPageIDAndAmountAndTime(int pageID, Timestamp time, int amountOfPost, String viewingUser)
-    {
-        ArrayList<PostActiveRecord> recs = new ArrayList<PostActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(SELECT_ALL + BY_PAGEID_TIME_OLDER + ORDER_BY_TIME_DESC);
-                stmt.setInt(1, pageID);
-                stmt.setTimestamp(2, time);
-                
-                rs = stmt.executeQuery();
-                int i = 0;
-                while (rs.next() && i<amountOfPost)
-                {
-                    PostActiveRecord e = createPost(rs, viewingUser);
-                    recs.add(e);
-                    i++;
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function retrieves all posts posted by friends and followed pages.
-     * @param userID The userID of the current user.
-     * @param amountOfPost Reduces the set to the given amount.
-     * @return An array list with all posts published by friends and followed fanpages, sorted by their timestamp.
-     */
-    public static ArrayList<PostActiveRecord> findAllPostOfFriendsAndPagesByAmount(int userID, int amountOfPost)
-    {
-        ArrayList<PostActiveRecord> recs = new ArrayList<PostActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement("(" + SELECT_ALL_POST + FROM_FRIENDS + AND_CURRENTUSER + UNION + SELECT_ALL_POST + FROM_PAGES + ")" + ORDER_BY_TIME_DESC);
-                stmt.setInt(1, userID);
-                stmt.setInt(2, userID);
-                stmt.setInt(3, userID);
-                
-                rs = stmt.executeQuery();
-                int i = 0;
-                while (rs.next() && i<amountOfPost)
-                {
-                    PostActiveRecord e;
-                    if(userID != 0)
-                    {
-                        e = createPost(rs, "u" + userID);
-                    }
-                    else
-                    {
-                        e = createPost(rs);
-                    }
-                    recs.add(e);
-                    i++;
-                }
-
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function retrives a specific amount of posts older than a specific date from all friends and followed pages of a specific user.
-     * @param userID The userID of the viewing user.
-     * @param time The time which is going to compared ot all items.
-     * @param amountOfPost The amount of posts the result is reduced to.
-     * @return The number of posts defined by a number older than the defined time from all friends and followed pages of a defined user.
-     */
-    public static ArrayList<PostActiveRecord> findOlderPostOfFriendsAndPagesByTimeAndAmount(int userID, Timestamp time, int amountOfPost)
-    {
-        ArrayList<PostActiveRecord> recs = new ArrayList<PostActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(SELECT + SELECT_ALL_POST + FROM_FRIENDS + AND_CURRENTUSER + UNION + SELECT_ALL_POST + FROM_PAGES + AS + BY_TIME_OLDER + ORDER_BY_TIME_DESC);
-
-                stmt.setInt(1, userID);
-                stmt.setInt(2, userID);
-                stmt.setInt(3, userID);
-                stmt.setTimestamp(4, time);
-                rs = stmt.executeQuery();
-                int i = 0;
-                while (rs.next() && i<amountOfPost)
-                {
-                    PostActiveRecord e;
-                    if(userID != 0)
-                    {
-                        e = createPost(rs, "u" + userID);
-                    }
-                    else
-                    {
-                        e = createPost(rs);
-                    }
-                    recs.add(e);
-                    i++;
-                }
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function retrives a specific amount of posts newer than a specific date from all friends and followed pages of a specific user.
-     * @param userID The userID of the viewing user.
-     * @param time The time which is going to compared ot all items.
-     * @return The number of posts defined by a number older than the defined time from all friends and followed pages of a defined user.
-     */
-    public static ArrayList<PostActiveRecord> findNewerPostOfFriendsAndPagesByTime(int userID, Timestamp time)
-    {
-        ArrayList<PostActiveRecord> recs = new ArrayList<PostActiveRecord>();
-        try
-        {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-
-            try
-            {
-                stmt = con.prepareStatement(SELECT + SELECT_ALL_POST + FROM_FRIENDS + UNION + SELECT_ALL_POST + FROM_PAGES + AS + BY_TIME_NEWER + ORDER_BY_TIME_DESC);
-
-                stmt.setInt(1, userID);
-                stmt.setInt(2, userID);
-                stmt.setTimestamp(3, time);
-                rs = stmt.executeQuery();
-                while (rs.next())
-                {
-                    PostActiveRecord e;
-                    if(userID != 0)
-                    {
-                        e = createPost(rs, "f" + userID);
-                    }
-                    else
-                    {
-                        e = createPost(rs);
-                    }
-                    recs.add(e);
-                }
-                rs.close();
-                stmt.close();
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            finally
-            {
-                closeDatabaseConnection(con);
-            }
-        }
-        catch (Exception e)
-        {
-            recs = null;
-        }
-        return recs;
-    }
-    
-    /**
-     * This function creates a new post using the data from the current position of the result set.
-     * @param rs The data source for the new fanpage.
-     * @return The new created post.
-     */
-    protected static PostActiveRecord createPost(ResultSet rs)
-    {
-        PostActiveRecord d = new PostActiveRecord();
-        try
-        {   
-            d.setPostID(rs.getInt("PostID"));
-            d.setPostTimestamp(rs.getTimestamp("PostTimestamp"));
-            d.setPostPublic(rs.getBoolean("PostPublic"));
-            d.setContent(rs.getString("Content"));
-            d.setPublishingUser(rs.getInt("PublishingUser"));
-            d.setPublishingPage(rs.getInt("PublishingPage"));
-            if(d.getPublishingPage()!=0)
-            {
-                d.setPublisherName(FanpageActiveRecord.findPageByID(d.getPublishingPage()).get(0).getDisplayName());
-            }
-            else if(d.getPublishingUser()!=0)
-            {
-                d.setPublisherName(NormalUserActiveRecord.findUserByID(d.getPublishingUser()).get(0).getDisplayName());
-            }
-            d.setCommentCount(CommentActiveRecord.countCommentsByPostID(d.getPostID()));
-            d.setVoteRecord(null);
-        }
-        catch (SQLException sqle)
-        {
-            d = null;
-        }
-        finally
-        {
-            return d;
-        }
-    }  
-    
-     /**
-     * This function creates a new post using the data from the current position of the result set and the viewing user.
-     * @param rs The data source for the new fanpage.
-     * @param userID The viewing user.
-     * @return The new created post.
-     */
-    protected static PostActiveRecord createPost(ResultSet rs, String userID)
-    {
-        PostActiveRecord d = new PostActiveRecord();
-        try
-        {   
-            d.setPostID(rs.getInt("PostID"));
-            d.setPostTimestamp(rs.getTimestamp("PostTimestamp"));
-            d.setPostPublic(rs.getBoolean("PostPublic"));
-            d.setContent(rs.getString("Content"));
-            d.setPublishingUser(rs.getInt("PublishingUser"));
-            d.setPublishingPage(rs.getInt("PublishingPage"));
-            if(d.getPublishingPage()!=0)
-            {
-                d.setPublisherName(FanpageActiveRecord.findPageByID(d.getPublishingPage()).get(0).getDisplayName());
-            }
-            else if(d.getPublishingUser()!=0)
-            {
-                d.setPublisherName(NormalUserActiveRecord.findUserByID(d.getPublishingUser()).get(0).getDisplayName());
-            }
-            d.setCommentCount(CommentActiveRecord.findCommentByPostID(d.getPostID()).size());
-            ArrayList<VotingActiveRecord> temp;
-            if(userID.startsWith("u"))
-            {
-                temp = VotingActiveRecord.findVoteByUserAndPost(Integer.valueOf(userID.substring(1)), d.getPostID());
-                if(!temp.isEmpty())
-                {
-                    d.setVoteRecord(temp.get(0));
-                }
-                else
-                {
-                    d.setVoteRecord(null);
-                }
-            }
-            else if (userID.startsWith("f"))
-            {
-                temp = VotingActiveRecord.findVoteByPageAndPost(Integer.valueOf(userID.substring(1)), d.getPostID());
-                if(!temp.isEmpty())
-                {
-                    d.setVoteRecord(temp.get(0));
-                }
-                else
-                {
-                    d.setVoteRecord(null);
-                }
-            }
-            else
-            {
-                d.setVoteRecord(null);
-            }
-        }
-        catch (SQLException sqle)
-        {
-            d = null;
-        }
-        finally
-        {
-            return d;
-        }
     }
     
     /**
@@ -1104,76 +179,52 @@ public class PostActiveRecord extends DatabaseUtility{
      */
     public boolean insert()
     {
-        boolean success = false;
+        boolean success;
         try
         {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-            try
+            PreparedStatement stmt  = getDatabaseConnection().prepareStatement(INSERT_INTO, Statement.RETURN_GENERATED_KEYS);
+                
+            stmt.setBoolean(1, postPublic);
+            stmt.setString(2, content);
+            if(publishingUser == 0)
             {
-                stmt = con.prepareStatement(INSERT_INTO, Statement.RETURN_GENERATED_KEYS);
-                
-                stmt.setBoolean(1, postPublic);
-                stmt.setString(2, content);
-                if(publishingUser == 0)
-                {
-                    stmt.setNull(3, java.sql.Types.INTEGER);
-                }
-                else
-                {
-                    stmt.setInt(3, publishingUser);
-                }
-                
-                if(publishingPage == 0)
-                {
-                    stmt.setNull(4, java.sql.Types.INTEGER);
-                }
-                else
-                {
-                    stmt.setInt(4, publishingPage);
-                }
-                
-                if(stmt.executeUpdate()>0)
-                {
-                    success = true;
-                }
-                
-                rs = stmt.getGeneratedKeys();
-                rs.next();
-                postID = rs.getInt(1);
-                stmt.close();
-                
-                if(publishingUser != 0)
-                {
-                    UfollowsPActiveRecord followPost = new UfollowsPActiveRecord();
-                    followPost.setFollowedPost(postID);
-                    followPost.setPostRead(true);
-                    followPost.setFollowingUser(publishingUser);
-                    success = followPost.insert();
-                } 
-                else if(publishingPage != 0)
-                {
-                    FfollowsPActiveRecord followPost = new FfollowsPActiveRecord();
-                    followPost.setFollowedPost(postID);
-                    followPost.setPostRead(true);
-                    followPost.setFollowingFanpage(publishingPage);
-                    success = followPost.insert();
-                }
+                stmt.setNull(3, java.sql.Types.INTEGER);
             }
-            catch (SQLException sqle)
+            else
             {
-                sqle.printStackTrace();
-                success = false;
+                stmt.setInt(3, publishingUser);
             }
-            finally
+
+            if(publishingPage == 0)
             {
-                closeDatabaseConnection(con);
+                stmt.setNull(4, java.sql.Types.INTEGER);
+            }
+            else
+            {
+                stmt.setInt(4, publishingPage);
+            }
+
+            success = executeUpdate(stmt);
+                
+            if(publishingUser != 0)
+            {
+                UfollowsPActiveRecord followPost = new UfollowsPActiveRecord();
+                followPost.setFollowedPost(postID);
+                followPost.setPostRead(true);
+                followPost.setFollowingUser(publishingUser);
+                success = followPost.insert();
+            } 
+            else if(publishingPage != 0)
+            {
+                FfollowsPActiveRecord followPost = new FfollowsPActiveRecord();
+                followPost.setFollowedPost(postID);
+                followPost.setPostRead(true);
+                followPost.setFollowingFanpage(publishingPage);
+                success = followPost.insert();
             }
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             success = false;
         }
         return success;
@@ -1186,64 +237,43 @@ public class PostActiveRecord extends DatabaseUtility{
      */
     public boolean update(boolean notify)
     {
-        boolean success = false;
+        boolean success;
         try
         {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
-            try
+            PreparedStatement stmt = getDatabaseConnection().prepareStatement(UPDATE + BY_ID);
+                
+            stmt.setTimestamp(1, postTimestamp);
+            stmt.setBoolean(2, postPublic);
+            stmt.setString(3, content);
+            if(publishingUser == 0)
             {
-                stmt = con.prepareStatement(UPDATE + BY_ID);
-                
-                stmt.setTimestamp(1, postTimestamp);
-                stmt.setBoolean(2, postPublic);
-                stmt.setString(3, content);
-                if(publishingUser == 0)
-                {
-                    stmt.setNull(4, java.sql.Types.INTEGER);
-                }
-                else
-                {
-                    stmt.setInt(4, publishingUser);
-                }
-                
-                if(publishingPage == 0)
-                {
-                    stmt.setNull(5, java.sql.Types.INTEGER);
-                }
-                else
-                {
-                    stmt.setInt(5, publishingPage);
-                }
-                stmt.setInt(6, postID);
-                
-                if(stmt.executeUpdate()>0)
-                {
-                    success = true;
-                }
-                
-                stmt.close();
-                
-                if(notify)
-                {
-                    FfollowsPActiveRecord.notify(postID);
-                    UfollowsPActiveRecord.notify(postID);
-                }
+                stmt.setNull(4, java.sql.Types.INTEGER);
             }
-            catch (SQLException sqle)
+            else
             {
-                sqle.printStackTrace();
-                success = false;
+                stmt.setInt(4, publishingUser);
             }
-            finally
+
+            if(publishingPage == 0)
             {
-                closeDatabaseConnection(con);
+                stmt.setNull(5, java.sql.Types.INTEGER);
+            }
+            else
+            {
+                stmt.setInt(5, publishingPage);
+            }
+            stmt.setInt(6, postID);
+                
+            success = executeUpdate(stmt);
+                
+            if(notify)
+            {
+                FfollowsPActiveRecordFactory.notify(postID);
+                UfollowsPActiveRecordFactory.notify(postID);
             }
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             success = false;
         }
         return success;
@@ -1255,53 +285,73 @@ public class PostActiveRecord extends DatabaseUtility{
      */
     public boolean remove()
     {
+        boolean success = true;
+        try
+        {   
+            ArrayList<CommentActiveRecord> comments = CommentActiveRecordFactory.findCommentByPostID(postID);
+            for(int i = 0; i<comments.size() && success; i++)
+            {
+                success = comments.get(i).remove();
+            }
+            ArrayList<VotingActiveRecord> votings = VotingActiveRecordFactory.findVoteByPost(postID);
+            for(int i = 0; i<votings.size() && success; i++)
+            {
+                success = votings.get(i).remove();
+            }  
+            ArrayList<UfollowsPActiveRecord> uFollowsP = UfollowsPActiveRecordFactory.findUfollowsPByPostID(postID);
+            for(int i = 0; i<uFollowsP.size() && success; i++)
+            {
+                success = uFollowsP.get(i).remove();
+            }
+            ArrayList<FfollowsPActiveRecord> fFollowsP = FfollowsPActiveRecordFactory.findFfollowsPByPostID(postID);
+            for(int i = 0; i<fFollowsP.size() && success; i++)
+            {
+                success = fFollowsP.get(i).remove();
+            }
+                
+            if(success)
+            {
+                PreparedStatement stmt = getDatabaseConnection().prepareStatement(DELETE + BY_ID);
+                stmt.setInt(1, postID);
+
+                success = executeUpdate(stmt);
+            }
+        }
+        catch (Exception e)
+        {
+            success = false;
+        }
+        return success;
+    }
+    
+    /**
+     * This function executes the query for a given prepared statement.
+     * @param stmt The prepared statement which needs to be executed.
+     * @return True if successful, false otherwise.
+     */
+    private boolean executeUpdate(PreparedStatement stmt)
+    {
         boolean success = false;
         try
         {
-            Connection con = getDatabaseConnection();
-            PreparedStatement stmt = null;
-            ResultSet rs = null;
+            Connection con = stmt.getConnection();
             try
-            {
-                success = true;
-                ArrayList<CommentActiveRecord> comments = CommentActiveRecord.findCommentByPostID(postID);
-                for(int i = 0; i<comments.size() && success; i++)
+            {               
+                if(stmt.executeUpdate()>0)
                 {
-                    success = comments.get(i).remove();
-                }
-                ArrayList<VotingActiveRecord> votings = VotingActiveRecord.findVoteByPost(postID);
-                for(int i = 0; i<votings.size() && success; i++)
-                {
-                    success = votings.get(i).remove();
-                }  
-                ArrayList<UfollowsPActiveRecord> uFollowsP = UfollowsPActiveRecord.findUfollowsPByPostID(postID);
-                for(int i = 0; i<uFollowsP.size() && success; i++)
-                {
-                    success = uFollowsP.get(i).remove();
-                }
-                ArrayList<FfollowsPActiveRecord> fFollowsP = FfollowsPActiveRecord.findFfollowsPByPostID(postID);
-                for(int i = 0; i<fFollowsP.size() && success; i++)
-                {
-                    success = fFollowsP.get(i).remove();
+                    success = true;
                 }
                 
-                if(success)
+                ResultSet rs = stmt.getGeneratedKeys();
+                if(rs != null && rs.next())
                 {
-                    stmt = con.prepareStatement(DELETE + BY_ID);
-
-                    stmt.setInt(1, postID);
-
-                    if(stmt.executeUpdate()==0)
-                    {
-                        success = false;
-                    }
-
-                    stmt.close();
+                    postID = rs.getInt(1);
                 }
+                
+                stmt.close();
             }
             catch (SQLException sqle)
             {
-                sqle.printStackTrace();
                 success = false;
             }
             finally
@@ -1311,7 +361,6 @@ public class PostActiveRecord extends DatabaseUtility{
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             success = false;
         }
         return success;
@@ -1364,7 +413,7 @@ public class PostActiveRecord extends DatabaseUtility{
      */
     public int getKarma() {
         int karma = 0;
-        ArrayList<VotingActiveRecord> votings = VotingActiveRecord.findVoteByPost(postID);
+        ArrayList<VotingActiveRecord> votings = VotingActiveRecordFactory.findVoteByPost(postID);
         for(int i = 0; i< votings.size(); i++)
         {
             if(votings.get(i).isUpvote())

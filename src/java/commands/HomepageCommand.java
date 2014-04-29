@@ -19,12 +19,16 @@ package commands;
 
 import activeRecord.CommentActiveRecord;
 import activeRecord.FanpageActiveRecord;
+import activeRecord.CommentActiveRecordFactory;
+import activeRecord.FanpageActiveRecordFactory;
 import activeRecord.NormalUserActiveRecord;
+import activeRecord.NormalUserActiveRecordFactory;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import activeRecord.PostActiveRecord;
+import activeRecord.PostActiveRecordFactory;
 import java.util.ArrayList;
 
 /**
@@ -62,7 +66,7 @@ public class HomepageCommand implements Command{
         if(user.startsWith("u"))
         {
             //Collect data for a normal user
-            ArrayList<PostActiveRecord> postArray = PostActiveRecord.findAllPostOfFriendsAndPagesByAmount(userID, 15);
+            ArrayList<PostActiveRecord> postArray = PostActiveRecordFactory.findAllPostOfFriendsAndPagesByAmount(userID, 15);
             request.setAttribute("postArray", postArray);
             if(!postArray.isEmpty())
             {
@@ -77,7 +81,7 @@ public class HomepageCommand implements Command{
         else if (user.startsWith("f"))
         {
             //Collect data for a fanpage admin
-            ArrayList<PostActiveRecord> postArray = PostActiveRecord.findAllPostByPageIDAndAmount(userID, 15, user);
+            ArrayList<PostActiveRecord> postArray = PostActiveRecordFactory.findAllPostByPageIDAndAmount(userID, 15, user);
             request.setAttribute("postArray", postArray);
             if(!postArray.isEmpty())
             {
@@ -91,10 +95,10 @@ public class HomepageCommand implements Command{
         else if (user.startsWith("a"))
         {
             //Collect data for a system administrator.
-            int numberOfFanpages = FanpageActiveRecord.countFanpages();
-            int numberOfPosts = PostActiveRecord.countPosts();
-            int numberOfComments = CommentActiveRecord.countComments();
-            int numberOfUser = NormalUserActiveRecord.countUser();
+            int numberOfFanpages = FanpageActiveRecordFactory.countFanpages();
+            int numberOfPosts = PostActiveRecordFactory.countPosts();
+            int numberOfComments = CommentActiveRecordFactory.countComments();
+            int numberOfUser = NormalUserActiveRecordFactory.countUser();
             request.setAttribute("NoF", numberOfFanpages);
             request.setAttribute("NoP", numberOfPosts);
             request.setAttribute("NoC", numberOfComments);

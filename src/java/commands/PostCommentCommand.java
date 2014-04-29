@@ -19,9 +19,11 @@ package commands;
 
 import activeRecord.CommentActiveRecord;
 import activeRecord.FfollowsPActiveRecord;
+import activeRecord.FfollowsPActiveRecordFactory;
 import java.io.IOException;
 import activeRecord.PostActiveRecord;
 import activeRecord.UfollowsPActiveRecord;
+import activeRecord.UfollowsPActiveRecordFactory;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -88,7 +90,7 @@ public class PostCommentCommand implements Command{
                             if(commentRec.insert())
                             {
                                 //Check if the user followed tha post. Otherwise let him start following the post.
-                                ArrayList<FfollowsPActiveRecord> following = FfollowsPActiveRecord.findFfollowsPByPostIDPageID(postID, userID);
+                                ArrayList<FfollowsPActiveRecord> following = FfollowsPActiveRecordFactory.findFfollowsPByPostIDPageID(postID, userID);
                                 if(following.isEmpty())
                                 {
                                     FfollowsPActiveRecord follows = new FfollowsPActiveRecord();
@@ -114,7 +116,7 @@ public class PostCommentCommand implements Command{
                             commentRec.setRelatedPost(postID);
                             if(commentRec.insert())
                             {
-                                ArrayList<UfollowsPActiveRecord> following = UfollowsPActiveRecord.findUfollowsPByPostIDUserID(postID, userID);
+                                ArrayList<UfollowsPActiveRecord> following = UfollowsPActiveRecordFactory.findUfollowsPByPostIDUserID(postID, userID);
                                 if(following.isEmpty())
                                 {
                                     UfollowsPActiveRecord follows = new UfollowsPActiveRecord();
@@ -137,8 +139,8 @@ public class PostCommentCommand implements Command{
                             request.setAttribute("message", "Comment successfully added.");
                             request.setAttribute("messageSuccess", true);
                             viewPage = "/post/" + postID;
-                            FfollowsPActiveRecord.notify(postID);
-                            UfollowsPActiveRecord.notify(postID);
+                            FfollowsPActiveRecordFactory.notify(postID);
+                            UfollowsPActiveRecordFactory.notify(postID);
                         }
                         else
                         {

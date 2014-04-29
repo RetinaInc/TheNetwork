@@ -20,6 +20,9 @@ package commands;
 import activeRecord.PostActiveRecord;
 import activeRecord.UfollowsPActiveRecord;
 import activeRecord.FfollowsPActiveRecord;
+import activeRecord.FfollowsPActiveRecordFactory;
+import activeRecord.PostActiveRecordFactory;
+import activeRecord.UfollowsPActiveRecordFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
@@ -74,7 +77,7 @@ public class NotificationsCommand implements Command{
                {
                    String dismiss = request.getParameter("dismissPost");
                    int postID = Integer.valueOf(dismiss);
-                   if(UfollowsPActiveRecord.setRead(postID, userID))
+                   if(UfollowsPActiveRecordFactory.setRead(postID, userID))
                    {
                        viewPage = "/assets/include_message.jsp";
                        request.setAttribute("message", "Notification successfully dismissed.");
@@ -89,7 +92,7 @@ public class NotificationsCommand implements Command{
                }
                else
                {
-                    posts = PostActiveRecord.findAllUnreadPostsByUserID(userID);
+                    posts = PostActiveRecordFactory.findAllUnreadPostsByUserID(userID);
                }
            }
            else if(user.startsWith("f"))
@@ -98,7 +101,7 @@ public class NotificationsCommand implements Command{
                {
                    String dismiss = request.getParameter("dismissPost");
                    int postID = Integer.valueOf(dismiss);
-                   if(FfollowsPActiveRecord.setRead(postID, userID))
+                   if(FfollowsPActiveRecordFactory.setRead(postID, userID))
                    {
                        viewPage = "/assets/include_message.jsp";
                        request.setAttribute("message", "Notification successfully dismissed.");
@@ -113,7 +116,7 @@ public class NotificationsCommand implements Command{
                }
                else
                {
-                    posts = PostActiveRecord.findAllUnreadPostsByPageID(userID);
+                    posts = PostActiveRecordFactory.findAllUnreadPostsByPageID(userID);
                }
            }
            else

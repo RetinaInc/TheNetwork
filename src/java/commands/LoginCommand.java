@@ -24,7 +24,10 @@ import javax.servlet.http.HttpServletResponse;
 import assets.PasswordEncryptionService;
 import activeRecord.NormalUserActiveRecord;
 import activeRecord.FanpageActiveRecord;
+import activeRecord.FanpageActiveRecordFactory;
+import activeRecord.NormalUserActiveRecordFactory;
 import activeRecord.SysAdminActiveRecord;
+import activeRecord.SysAdminActiveRecordFactory;
 import java.util.ArrayList;
 
 /**
@@ -89,7 +92,7 @@ public class LoginCommand implements Command{
                 //User provided an ID as identifier, that means only one account is possible.
                 if(user.startsWith("u"))
                 {
-                    ArrayList<NormalUserActiveRecord> normalUser = NormalUserActiveRecord.findUserByID(userID);
+                    ArrayList<NormalUserActiveRecord> normalUser = NormalUserActiveRecordFactory.findUserByID(userID);
                     if(normalUser.size() != 1)
                     {
                         throw new ServletException();
@@ -108,7 +111,7 @@ public class LoginCommand implements Command{
                 }
                 else if(user.startsWith("f"))
                 {
-                    ArrayList<FanpageActiveRecord> fanpage = FanpageActiveRecord.findPageByID(userID);
+                    ArrayList<FanpageActiveRecord> fanpage = FanpageActiveRecordFactory.findPageByID(userID);
                     if(fanpage.size() != 1)
                     {
                         throw new ServletException();
@@ -127,7 +130,7 @@ public class LoginCommand implements Command{
                 }
                 else if(user.startsWith("a"))
                 {
-                    ArrayList<SysAdminActiveRecord> admin = SysAdminActiveRecord.findAdminByID(userID);
+                    ArrayList<SysAdminActiveRecord> admin = SysAdminActiveRecordFactory.findAdminByID(userID);
                     if(admin.size() > 1)
                     {
                         throw new ServletException();
@@ -148,9 +151,9 @@ public class LoginCommand implements Command{
             else
             {
                 //User provided an eMail as identifier, that means nore than one account is possible.
-                ArrayList<NormalUserActiveRecord> normalUser = NormalUserActiveRecord.findUserByEmail(user);
-                ArrayList<SysAdminActiveRecord> sysAdmin = SysAdminActiveRecord.findAdminByEmail(user);
-                ArrayList<FanpageActiveRecord> page = FanpageActiveRecord.findPageByEmail(user);
+                ArrayList<NormalUserActiveRecord> normalUser = NormalUserActiveRecordFactory.findUserByEmail(user);
+                ArrayList<SysAdminActiveRecord> sysAdmin = SysAdminActiveRecordFactory.findAdminByEmail(user);
+                ArrayList<FanpageActiveRecord> page = FanpageActiveRecordFactory.findPageByEmail(user);
                 //Checks if the email is used multiple times
                 //Checks if there is only 1 array containing data (a XOR b XOR c) or any of the containing more than one entry.
                 if ((((!normalUser.isEmpty() ^ !sysAdmin.isEmpty() ^ !page.isEmpty())) && !(!normalUser.isEmpty() && !page.isEmpty() && !sysAdmin.isEmpty())) && normalUser.size() <= 1 && sysAdmin.size() <= 1 && page.size() <= 1)

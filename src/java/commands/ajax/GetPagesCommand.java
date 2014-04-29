@@ -18,6 +18,7 @@
 package commands.ajax;
 
 import activeRecord.FanpageActiveRecord;
+import activeRecord.FanpageActiveRecordFactory;
 import activeRecord.NormalUserActiveRecord;
 import activeRecord.PostActiveRecord;
 import commands.Command;
@@ -72,11 +73,11 @@ public class GetPagesCommand implements Command{
             ArrayList<FanpageActiveRecord> pageArray = null;
             if(user.startsWith("u"))
             {
-                pageArray = FanpageActiveRecord.findAllFollowingPagesAfterPage(userID, Integer.valueOf(request.getParameter("amount")), lastPage);
+                pageArray = FanpageActiveRecordFactory.findAllFollowingPagesAfterPage(userID, Integer.valueOf(request.getParameter("amount")), lastPage);
             }
             else if(user.startsWith("a"))
             {
-                pageArray = FanpageActiveRecord.findAllPagesAfterPage(Integer.valueOf(request.getParameter("amount")), lastPage);
+                pageArray = FanpageActiveRecordFactory.findAllPagesAfterPage(Integer.valueOf(request.getParameter("amount")), lastPage);
             }
             else
             {

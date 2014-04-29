@@ -18,6 +18,7 @@
 package commands.ajax;
 
 import activeRecord.PostActiveRecord;
+import activeRecord.PostActiveRecordFactory;
 import commands.Command;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -89,11 +90,11 @@ public class GetPostsCommand implements Command{
                     {
                         if(path.startsWith("/user"))
                         {
-                            postArray = PostActiveRecord.findOlderPostByUserIDAndAmountAndTime(pathID, (Timestamp)request.getSession().getAttribute("lastItemTimestamp"), Integer.valueOf(request.getParameter("amount")), user);
+                            postArray = PostActiveRecordFactory.findOlderPostByUserIDAndAmountAndTime(pathID, (Timestamp)request.getSession().getAttribute("lastItemTimestamp"), Integer.valueOf(request.getParameter("amount")), user);
                         }
                         else if(path.startsWith("/page"))
                         {
-                            postArray = PostActiveRecord.findOlderPostByPageIDAndAmountAndTime(pathID, (Timestamp)request.getSession().getAttribute("lastItemTimestamp"), Integer.valueOf(request.getParameter("amount")), user);
+                            postArray = PostActiveRecordFactory.findOlderPostByPageIDAndAmountAndTime(pathID, (Timestamp)request.getSession().getAttribute("lastItemTimestamp"), Integer.valueOf(request.getParameter("amount")), user);
                         }
                         else
                         {
@@ -102,12 +103,12 @@ public class GetPostsCommand implements Command{
                     }
                     else
                     {
-                        postArray = PostActiveRecord.findOlderPostOfFriendsAndPagesByTimeAndAmount(userID, (Timestamp)request.getSession().getAttribute("lastItemTimestamp"), Integer.valueOf(request.getParameter("amount")));
+                        postArray = PostActiveRecordFactory.findOlderPostOfFriendsAndPagesByTimeAndAmount(userID, (Timestamp)request.getSession().getAttribute("lastItemTimestamp"), Integer.valueOf(request.getParameter("amount")));
                     }
                 }
                 else if(user.startsWith("f"))
                 {
-                    postArray = PostActiveRecord.findOlderPostByPageIDAndAmountAndTime(userID, (Timestamp)request.getSession().getAttribute("lastItemTimestamp"), Integer.valueOf(request.getParameter("amount")), user);
+                    postArray = PostActiveRecordFactory.findOlderPostByPageIDAndAmountAndTime(userID, (Timestamp)request.getSession().getAttribute("lastItemTimestamp"), Integer.valueOf(request.getParameter("amount")), user);
                 }
                 request.setAttribute("postArray", postArray);
                 if(postArray!=null && !postArray.isEmpty())
@@ -125,7 +126,7 @@ public class GetPostsCommand implements Command{
              {
                 if(user.startsWith("u"))
                 {
-                    ArrayList<PostActiveRecord> postArray = PostActiveRecord.findNewerPostOfFriendsAndPagesByTime(userID, (Timestamp)request.getSession().getAttribute("firstItemTimestamp"));
+                    ArrayList<PostActiveRecord> postArray = PostActiveRecordFactory.findNewerPostOfFriendsAndPagesByTime(userID, (Timestamp)request.getSession().getAttribute("firstItemTimestamp"));
                     request.setAttribute("postArray", postArray);
                     if(!postArray.isEmpty())
                     {

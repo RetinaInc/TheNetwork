@@ -18,8 +18,11 @@
 package commands;
 
 import activeRecord.FanpageActiveRecord;
+import activeRecord.FanpageActiveRecordFactory;
 import activeRecord.NormalUserActiveRecord;
+import activeRecord.NormalUserActiveRecordFactory;
 import activeRecord.PostActiveRecord;
+import activeRecord.PostActiveRecordFactory;
 import assets.PasswordEncryptionService;
 import java.io.IOException;
 import java.text.ParseException;
@@ -77,7 +80,7 @@ public class PageCommand implements Command{
                 if(uri.isEmpty() && viewingUser.startsWith("u"))
                 {
                     //Show fanpage list
-                    ArrayList<FanpageActiveRecord> fanpage = FanpageActiveRecord.findAllFollowingPages(viewingUserID, 10);
+                    ArrayList<FanpageActiveRecord> fanpage = FanpageActiveRecordFactory.findAllFollowingPages(viewingUserID, 10);
                     request.setAttribute("pageArray", fanpage);
                     if(!fanpage.isEmpty())
                     {
@@ -92,7 +95,7 @@ public class PageCommand implements Command{
                 else if(uri.isEmpty() && viewingUser.startsWith("a"))
                 {
                     //Show fanpage list
-                    ArrayList<FanpageActiveRecord> fanpage = FanpageActiveRecord.findAllPages(10);
+                    ArrayList<FanpageActiveRecord> fanpage = FanpageActiveRecordFactory.findAllPages(10);
                     request.setAttribute("pageArray", fanpage);
                     if(!fanpage.isEmpty())
                     {
@@ -106,7 +109,7 @@ public class PageCommand implements Command{
                 }
                 else if(uri.startsWith("/edit") && viewingUser.startsWith("f"))
                 {
-                    ArrayList<FanpageActiveRecord> pageArray = FanpageActiveRecord.findPageByID(viewingUserID);
+                    ArrayList<FanpageActiveRecord> pageArray = FanpageActiveRecordFactory.findPageByID(viewingUserID);
                     if(pageArray.size() != 1)
                     {
                         viewPage = "/error.jsp";
@@ -116,7 +119,7 @@ public class PageCommand implements Command{
                     {
                         viewPage = "/pageEditProfile.jsp";
                         request.setAttribute("page", pageArray.get(0));
-                        ArrayList<PostActiveRecord> postArray = PostActiveRecord.findAllPostByPageIDAndAmount(viewingUserID, 10, viewingUser);
+                        ArrayList<PostActiveRecord> postArray = PostActiveRecordFactory.findAllPostByPageIDAndAmount(viewingUserID, 10, viewingUser);
                         request.setAttribute("postArray", postArray);
                         if(!postArray.isEmpty())
                         {
@@ -135,7 +138,7 @@ public class PageCommand implements Command{
                 {
                     if(validate(viewingUserID))
                     {
-                        ArrayList<FanpageActiveRecord> pages = FanpageActiveRecord.findPageByID(viewingUserID);
+                        ArrayList<FanpageActiveRecord> pages = FanpageActiveRecordFactory.findPageByID(viewingUserID);
                         if(pages.size() == 1)
                         {
                             try 
@@ -208,10 +211,10 @@ public class PageCommand implements Command{
                             try
                             {
                                 int administratingUserID = Integer.valueOf(administratingUser.substring(1));
-                                ArrayList<NormalUserActiveRecord> user = NormalUserActiveRecord.findUserByID(administratingUserID);
+                                ArrayList<NormalUserActiveRecord> user = NormalUserActiveRecordFactory.findUserByID(administratingUserID);
                                 if(user != null & user.size() == 1)
                                 {
-                                    ArrayList<FanpageActiveRecord> pages = FanpageActiveRecord.findPageByID(viewingUserID);
+                                    ArrayList<FanpageActiveRecord> pages = FanpageActiveRecordFactory.findPageByID(viewingUserID);
                                     if(pages.size() == 1)
                                     {
                                         pages.get(0).setAdministratingUser(administratingUserID);
@@ -266,7 +269,7 @@ public class PageCommand implements Command{
                     try
                     {
                         int pageID = Integer.valueOf(uri.substring(1));
-                        ArrayList<FanpageActiveRecord> pageArray = FanpageActiveRecord.findPageByID(pageID);
+                        ArrayList<FanpageActiveRecord> pageArray = FanpageActiveRecordFactory.findPageByID(pageID);
                         if(pageArray.size() != 1)
                         {
                             viewPage = "/error.jsp";
@@ -276,7 +279,7 @@ public class PageCommand implements Command{
                         {
                             viewPage = "/pageProfile.jsp";
                             request.setAttribute("page", pageArray.get(0));
-                            ArrayList<PostActiveRecord> postArray = PostActiveRecord.findAllPostByPageIDAndAmount(pageID, 10, viewingUser);
+                            ArrayList<PostActiveRecord> postArray = PostActiveRecordFactory.findAllPostByPageIDAndAmount(pageID, 10, viewingUser);
                             request.setAttribute("postArray", postArray);
                             if(!postArray.isEmpty())
                             {
@@ -393,7 +396,7 @@ public class PageCommand implements Command{
                 }
                 else
                 {
-                    ArrayList<FanpageActiveRecord> page = FanpageActiveRecord.findPageByID(pageID);
+                    ArrayList<FanpageActiveRecord> page = FanpageActiveRecordFactory.findPageByID(pageID);
                     if(page.size() == 1)
                     {  
                         if(!passwd.authenticate(request.getParameter("oldPassword"), page.get(0).getPassword(), page.get(0).getSalt()))

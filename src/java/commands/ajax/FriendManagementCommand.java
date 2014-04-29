@@ -19,7 +19,9 @@ package commands.ajax;
 
 import activeRecord.AllFriendsActiveRecord;
 import activeRecord.NormalUserActiveRecord;
+import activeRecord.NormalUserActiveRecordFactory;
 import activeRecord.UisFriendWithUActiveRecord;
+import activeRecord.UisFriendWithUActiveRecordFactory;
 import commands.Command;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,7 +68,7 @@ public class FriendManagementCommand implements Command {
             String user = (String)request.getSession().getAttribute("userID");
             int userID = Integer.valueOf(user.substring(1));
             int friendID = Integer.valueOf(request.getParameter("friend"));
-            request.setAttribute("user", NormalUserActiveRecord.findUserByID(friendID).get(0));
+            request.setAttribute("user", NormalUserActiveRecordFactory.findUserByID(friendID).get(0));
             if(user.startsWith("u"))
             {
                 if(request.getRequestURI().endsWith("/add"))
@@ -108,7 +110,7 @@ public class FriendManagementCommand implements Command {
                 {
                     if(AllFriendsActiveRecord.isFriendWith(userID, friendID))
                     {
-                        ArrayList<UisFriendWithUActiveRecord> removeFriend = UisFriendWithUActiveRecord.findFriendByBothUser(userID, friendID);
+                        ArrayList<UisFriendWithUActiveRecord> removeFriend = UisFriendWithUActiveRecordFactory.findFriendByBothUser(userID, friendID);
                         if(removeFriend.size() == 1)
                         {
                             if(removeFriend.get(0).remove())
@@ -146,7 +148,7 @@ public class FriendManagementCommand implements Command {
                 {
                     if(AllFriendsActiveRecord.openFriendshipRequest(userID, friendID))
                     {
-                        ArrayList<UisFriendWithUActiveRecord> rejectedRequest = UisFriendWithUActiveRecord.findFriendByBothUser(userID, friendID);
+                        ArrayList<UisFriendWithUActiveRecord> rejectedRequest = UisFriendWithUActiveRecordFactory.findFriendByBothUser(userID, friendID);
                         if(rejectedRequest.size() == 1)
                         {
                             rejectedRequest.get(0).setRejected(true);
@@ -186,7 +188,7 @@ public class FriendManagementCommand implements Command {
                 {
                     if(AllFriendsActiveRecord.openFriendshipRequest(userID, friendID))
                     {
-                        ArrayList<UisFriendWithUActiveRecord> acceptedRequest = UisFriendWithUActiveRecord.findFriendByBothUser(userID, friendID);
+                        ArrayList<UisFriendWithUActiveRecord> acceptedRequest = UisFriendWithUActiveRecordFactory.findFriendByBothUser(userID, friendID);
                         if(acceptedRequest.size() == 1)
                         {
                             acceptedRequest.get(0).setAccepted(true);

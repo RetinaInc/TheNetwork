@@ -18,12 +18,14 @@
 package commands.ajax;
 
 import activeRecord.CommentActiveRecord;
+import activeRecord.CommentActiveRecordFactory;
 import commands.Command;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import activeRecord.PostActiveRecord;
+import activeRecord.PostActiveRecordFactory;
 import java.util.ArrayList;
 
 /**
@@ -70,7 +72,7 @@ public class VotingCommand implements Command{
         {
             int postID = Integer.valueOf(request.getParameter("post"));
             String user = (String)request.getSession().getAttribute("userID");
-            posts = PostActiveRecord.findPostByID(postID, user);
+            posts = PostActiveRecordFactory.findPostByID(postID, user);
             if(uri.startsWith("/up"))
             {
                 success = posts.get(0).upvote(user);
@@ -96,7 +98,7 @@ public class VotingCommand implements Command{
         {
             int commentID = Integer.valueOf(request.getParameter("comment"));
             String user = (String)request.getSession().getAttribute("userID");
-            comments = CommentActiveRecord.findCommentByCommentID(commentID, user);
+            comments = CommentActiveRecordFactory.findCommentByCommentID(commentID, user);
             if(uri.startsWith("/up"))
             {
                 success = comments.get(0).upvote(user);

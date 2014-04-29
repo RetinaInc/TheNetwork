@@ -18,6 +18,7 @@
 package commands.ajax;
 
 import activeRecord.PostActiveRecord;
+import activeRecord.PostActiveRecordFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import commands.Command;
@@ -65,7 +66,7 @@ public class RemovePostCommand implements Command{
         {
             int postID = Integer.valueOf(request.getParameter("post"));
             String user = (String)request.getSession().getAttribute("userID");
-            posts = PostActiveRecord.findPostByID(postID, user);
+            posts = PostActiveRecordFactory.findPostByID(postID, user);
             if(posts.size() == 1)
             {
                 if(posts.get(0).getPublishingUser() == Integer.valueOf(user.substring(1)) || posts.get(0).getPublishingPage() == Integer.valueOf(user.substring(1)))
