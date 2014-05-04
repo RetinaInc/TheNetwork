@@ -19,7 +19,6 @@ package commands.ajax;
 
 import activeRecord.CommentActiveRecord;
 import activeRecord.CommentActiveRecordFactory;
-import activeRecord.PostActiveRecord;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import commands.Command;
@@ -53,7 +52,7 @@ public class RemoveCommentCommand implements Command{
     }
     
     /**
-     * This function executes the process of removing a post.
+     * This function executes the process of removing a comment.
      * @return Returns the appropriate viewpage.
      * @throws ServletException If a servlet-specific error occurs.
      * @throws IOException If an I/O error occurs.
@@ -61,9 +60,9 @@ public class RemoveCommentCommand implements Command{
     @Override
     public String execute() throws ServletException, IOException {
         
-        String viewPage = "/ajax_view/error.jsp";
-        boolean success = false;
-        ArrayList<CommentActiveRecord> comments = null;
+        String viewPage;
+        ArrayList<CommentActiveRecord> comments;
+        
         if(request.getParameter("comment") != null)
         {
             int commentID = Integer.valueOf(request.getParameter("comment"));
@@ -73,30 +72,34 @@ public class RemoveCommentCommand implements Command{
             {
                 if(comments.get(0).getPublishingUser() == Integer.valueOf(user.substring(1)) || comments.get(0).getPublishingPage() == Integer.valueOf(user.substring(1)))
                 {
-                    success = comments.get(0).remove();
+                    if(comments.get(0).remove())
+                    {
+                        viewPage = "/assets/include_message.jsp";
+                        request.setAttribute("messageSuccess", true);
+                        request.setAttribute("message", "Comment deleted successfully!");
+                    }
+                    else
+                    {
+                        viewPage = "/ajax_view/error.jsp";
+                        request.setAttribute("errorCode", "Unable to delete the comment, please try again.");
+                    }
                 }
                 else
                 {
+                    viewPage = "/ajax_view/error.jsp";
                     request.setAttribute("errorCode", "You don't have the rights to delete this comment.");
                 }
             }
             else
             {
+                viewPage = "/ajax_view/error.jsp";
                 request.setAttribute("errorCode", "Unable to delete the comment, please try again.");
             }
         }
-        if(success)
-        {
-            viewPage = "/assets/include_message.jsp";
-            request.setAttribute("messageSuccess", true);
-            request.setAttribute("message", "Comment deleted successfully!");
-        }
         else
         {
-            if(request.getAttribute("errorCode") == null)
-            {
-                request.setAttribute("errorCode", "Unable to delete the comment, please try again.");
-            } 
+            viewPage = "/ajax_view/error.jsp";
+            request.setAttribute("errorCode", "Error while processing your request, please try again.");
         }
         return viewPage;
     }

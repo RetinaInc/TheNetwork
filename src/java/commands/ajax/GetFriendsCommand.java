@@ -19,12 +19,9 @@ package commands.ajax;
 
 import activeRecord.NormalUserActiveRecord;
 import activeRecord.NormalUserActiveRecordFactory;
-import activeRecord.PostActiveRecord;
 import commands.Command;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.sql.Date;
-import java.sql.Timestamp;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -63,12 +60,12 @@ public class GetFriendsCommand implements Command{
      */
     @Override
     public String execute() throws ServletException, IOException {
-        String viewPage ="/ajax_view/getUserListItem.jsp";
+        
+        String viewPage = "/ajax_view/getUserListItem.jsp";
         String user = (String)request.getSession().getAttribute("userID");
         int userID = Integer.valueOf(user.substring(1));
         if(request.getSession().getAttribute("lastFriend") != null || request.getSession().getAttribute("lastUser") != null)
         {
-            
             ArrayList<NormalUserActiveRecord> friendArray = null;
             if(user.startsWith("u"))
             {
@@ -102,7 +99,11 @@ public class GetFriendsCommand implements Command{
                 request.setAttribute("errorCode", "You have insufficient rights to execute this command");
             }
             request.setAttribute("listArray", friendArray);
-            
+        }
+        else
+        {
+            viewPage = "/ajax_view/error.jsp";
+            request.setAttribute("errorCode", "Error while processing your request");
         }
         return viewPage;
     }

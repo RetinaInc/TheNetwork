@@ -23,6 +23,7 @@ import activeRecord.NormalUserActiveRecord;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import assets.PasswordEncryptionService;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -82,7 +83,7 @@ public class UserSignUpCommand implements Command{
                 String salt = passwd.generateSalt();
                 if (salt == null)
                 {
-                    throw new IOException();
+                    throw new ServletException();
                 }
                 else
                 {
@@ -115,7 +116,7 @@ public class UserSignUpCommand implements Command{
                     viewpage = "/error.jsp";
                 }
             }
-            catch(Exception e)
+            catch(ServletException | NumberFormatException | NoSuchAlgorithmException | ParseException e)
             {
                 request.setAttribute("errorCode", "There has been a problem with the creation of a new user.");
                 viewpage = "/error.jsp";
@@ -153,6 +154,7 @@ public class UserSignUpCommand implements Command{
             request.setAttribute("emailError", true);
             valid = false;
         }
+        
         if(request.getParameter("firstName") != null)
         {
             if(request.getParameter("firstName").isEmpty())
@@ -166,6 +168,7 @@ public class UserSignUpCommand implements Command{
             request.setAttribute("firstNameError", true);
             valid = false;
         }
+        
         if(request.getParameter("lastName") != null)
         {
             if(request.getParameter("lastName").isEmpty())
@@ -179,6 +182,7 @@ public class UserSignUpCommand implements Command{
             request.setAttribute("lastNameError", true);
             valid = false;
         }
+        
         if(request.getParameter("displayName") != null)
         {
             if(request.getParameter("displayName").length() > 8 || request.getParameter("displayName").isEmpty())
@@ -192,6 +196,7 @@ public class UserSignUpCommand implements Command{
             request.setAttribute("displayNameError", true);
             valid = false;
         }
+        
         if(request.getParameter("street") != null)
         {
             if(request.getParameter("street").isEmpty())
@@ -205,6 +210,7 @@ public class UserSignUpCommand implements Command{
             request.setAttribute("streetError", true);
             valid = false;
         }
+        
         if(request.getParameter("streetNr") != null)
         {
             try
@@ -222,6 +228,7 @@ public class UserSignUpCommand implements Command{
             request.setAttribute("streetError", true);
             valid = false;
         }
+        
         if(request.getParameter("zip") != null)
         {
             if(request.getParameter("zip").isEmpty())
@@ -235,6 +242,7 @@ public class UserSignUpCommand implements Command{
             request.setAttribute("zipError", true);
             valid = false;
         }
+        
         if(request.getParameter("town") != null)
         {
             if(request.getParameter("town").isEmpty())
@@ -248,6 +256,7 @@ public class UserSignUpCommand implements Command{
             request.setAttribute("townError", true);
             valid = false;
         }
+        
         if(request.getParameter("DoB") != null)
         {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -266,6 +275,7 @@ public class UserSignUpCommand implements Command{
             request.setAttribute("DoBError", true);
             valid = false;
         }
+        
         if(request.getParameter("inputPassword") != null || request.getParameter("inputPasswordRe") != null)
         {
             if(request.getParameter("inputPassword").isEmpty() || request.getParameter("inputPasswordRe").isEmpty())
@@ -284,6 +294,7 @@ public class UserSignUpCommand implements Command{
             request.setAttribute("inputPasswordError", true);
             valid = false;
         }
+        
         if(request.getParameter("gbt") != null)
         {
             if(request.getParameter("gbt").equals("false"))
@@ -297,8 +308,6 @@ public class UserSignUpCommand implements Command{
             request.setAttribute("gbtError", true);
             valid = false;
         }
-        
         return valid;
     }
-    
 }

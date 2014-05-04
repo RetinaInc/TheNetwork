@@ -17,8 +17,7 @@
 
 package commands.ajax;
 
-import activeRecord.AllFriendsActiveRecord;
-import activeRecord.NormalUserActiveRecord;
+import activeRecord.AllFriendsActiveRecordFactory;
 import activeRecord.NormalUserActiveRecordFactory;
 import activeRecord.UisFriendWithUActiveRecord;
 import activeRecord.UisFriendWithUActiveRecordFactory;
@@ -62,7 +61,7 @@ public class FriendManagementCommand implements Command {
      */
     @Override
     public String execute() throws ServletException, IOException {
-        String viewPage = "/ajax_view/error.jsp";
+        String viewPage;
         if(request.getSession().getAttribute("userID") != null && request.getParameter("friend") != null)
         {
             String user = (String)request.getSession().getAttribute("userID");
@@ -73,7 +72,7 @@ public class FriendManagementCommand implements Command {
             {
                 if(request.getRequestURI().endsWith("/add"))
                 {
-                    if(!AllFriendsActiveRecord.hasRejectedRequest(userID, friendID) && !AllFriendsActiveRecord.openFriendshipRequest(userID, friendID) && !AllFriendsActiveRecord.isFriendWith(userID, friendID))
+                    if(!AllFriendsActiveRecordFactory.hasRejectedRequest(userID, friendID) && !AllFriendsActiveRecordFactory.openFriendshipRequest(userID, friendID) && !AllFriendsActiveRecordFactory.isFriendWith(userID, friendID))
                     {
                         UisFriendWithUActiveRecord friendRequest = new UisFriendWithUActiveRecord();
                         friendRequest.setAccepted(false);
@@ -108,7 +107,7 @@ public class FriendManagementCommand implements Command {
                 }
                 else if(request.getRequestURI().endsWith("/remove"))
                 {
-                    if(AllFriendsActiveRecord.isFriendWith(userID, friendID))
+                    if(AllFriendsActiveRecordFactory.isFriendWith(userID, friendID))
                     {
                         ArrayList<UisFriendWithUActiveRecord> removeFriend = UisFriendWithUActiveRecordFactory.findFriendByBothUser(userID, friendID);
                         if(removeFriend.size() == 1)
@@ -146,7 +145,7 @@ public class FriendManagementCommand implements Command {
                 }
                 else if (request.getRequestURI().endsWith("/reject"))
                 {
-                    if(AllFriendsActiveRecord.openFriendshipRequest(userID, friendID))
+                    if(AllFriendsActiveRecordFactory.openFriendshipRequest(userID, friendID))
                     {
                         ArrayList<UisFriendWithUActiveRecord> rejectedRequest = UisFriendWithUActiveRecordFactory.findFriendByBothUser(userID, friendID);
                         if(rejectedRequest.size() == 1)
@@ -186,7 +185,7 @@ public class FriendManagementCommand implements Command {
                 }
                 else if (request.getRequestURI().endsWith("/accept"))
                 {
-                    if(AllFriendsActiveRecord.openFriendshipRequest(userID, friendID))
+                    if(AllFriendsActiveRecordFactory.openFriendshipRequest(userID, friendID))
                     {
                         ArrayList<UisFriendWithUActiveRecord> acceptedRequest = UisFriendWithUActiveRecordFactory.findFriendByBothUser(userID, friendID);
                         if(acceptedRequest.size() == 1)

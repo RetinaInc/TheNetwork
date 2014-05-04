@@ -17,19 +17,16 @@
 
 package commands.ajax;
 
-import activeRecord.AllFriendsActiveRecord;
-import activeRecord.FanpageActiveRecord;
 import activeRecord.FanpageActiveRecordFactory;
-import activeRecord.NormalUserActiveRecord;
 import activeRecord.UfollowsFActiveRecord;
 import activeRecord.UfollowsFActiveRecordFactory;
-import activeRecord.UisFriendWithUActiveRecord;
 import commands.Command;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 /**
  * This command gathers the data for the page managing.
  * @author Frank Steiler <frank@steiler.eu>
@@ -57,14 +54,14 @@ public class PageManagementCommand implements Command {
     }
     
     /**
-     * This function executes the process of adding, accepting or rejecting a friend request.
+     * This function executes the process of managing a page.
      * @return Returns the appropriate viewpage.
      * @throws ServletException If a servlet-specific error occurs.
      * @throws IOException If an I/O error occurs.
      */
     @Override
     public String execute() throws ServletException, IOException {
-        String viewPage = "/ajax_view/error.jsp";
+        String viewPage;
         if(request.getSession().getAttribute("userID") != null && request.getParameter("page") != null)
         {
             String user = (String)request.getSession().getAttribute("userID");
@@ -162,5 +159,4 @@ public class PageManagementCommand implements Command {
         }
         return viewPage;
     }
-    
 }

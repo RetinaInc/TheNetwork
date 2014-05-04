@@ -26,6 +26,12 @@ import javax.servlet.ServletException;
  */
 public interface Command
 {
+    /**
+     * This function is executed by the controller after the correct command was selected.
+     * @return Returns the appropriate viewpage.
+     * @throws ServletException If a servlet-specific error occurs.
+     * @throws IOException If an I/O error occurs.
+     */
     String execute() throws ServletException, IOException;
 }
 

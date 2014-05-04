@@ -31,13 +31,13 @@ import javax.servlet.http.HttpServletResponse;
  * This function updates the counter in the navbar and presents the right connected profiles.
  * @author Frank Steiler <frank@steiler.eu>
  */
-public class updateNavbar {
+public class UpdateNavbar {
     
     /**
-     * Executes the process of updating all counters of the Navigation bar.
+     * Executes the process of updating all counters of the navigation bar.
      * @param request The servlet request.
      * @param response The servlet response.
-     * @return 
+     * @return True if successful, false otherwise.
      */
     public static boolean update(HttpServletRequest request, HttpServletResponse response)
     {

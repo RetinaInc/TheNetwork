@@ -36,10 +36,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * This class processes the request view a user's profile, list of all friends and edit your own profile. This class processes all "/user" requests.
+ * This class processes the request to view a user's profile, list of all friends and edit your own profile. This class processes all "/user" requests.
  * @author Frank Steiler <frank@steiler.eu>
  */
-public class UserCommand implements Command{
+public class UserCommand implements Command {
 
     /**
      * The servlet request.
@@ -70,7 +70,7 @@ public class UserCommand implements Command{
     @Override
     public String execute() throws ServletException, IOException 
     {
-        String viewPage = "/error.jsp";
+        String viewPage;
         if(request.getSession().getAttribute("userID") != null)
         {
             String viewingUser = (String)request.getSession().getAttribute("userID");
@@ -80,7 +80,7 @@ public class UserCommand implements Command{
             {                
                 if(uri.isEmpty())
                 {
-                    //Show friends list
+                    //Show friends list (user accesses '/user/')
                     ArrayList<NormalUserActiveRecord> friendArray = NormalUserActiveRecordFactory.findAllFriends(viewingUserID, 10);
                     request.setAttribute("friendArray", friendArray);
                     if(!friendArray.isEmpty())
@@ -97,32 +97,34 @@ public class UserCommand implements Command{
                 }
                 else if(uri.startsWith("/edit"))
                 {
+                    //Showing user editing page (User accesses '/user/edit')
                     ArrayList<NormalUserActiveRecord> userArray = NormalUserActiveRecordFactory.findUserByID(viewingUserID);
-                    if(userArray.size() != 1)
-                    {
-                        viewPage = "/error.jsp";
-                        request.setAttribute("errorCode", "Problem loading your profile information.");
-                    }
-                    else
+                    if(userArray.size() == 1)
                     {
                         viewPage = "/userEditProfile.jsp";
-                        request.setAttribute("user", userArray.get(0));
                         ArrayList<PostActiveRecord> postArray = PostActiveRecordFactory.findAllPostByUserIDAndAmount(viewingUserID, 10, viewingUser);
+                        request.setAttribute("user", userArray.get(0));
                         request.setAttribute("postArray", postArray);
                         if(!postArray.isEmpty())
                         {
                             request.getSession().setAttribute("lastItemTimestamp", postArray.get(postArray.size()-1).getPostTimestamp());
                             request.getSession().setAttribute("firstItemTimestamp", postArray.get(0).getPostTimestamp());
+                            request.setAttribute("older", true);
                         }
                         else
                         {
                             request.getSession().removeAttribute("lastItemTimestamp");
                         }
-                        request.setAttribute("older", true);
+                    }
+                    else
+                    {
+                        viewPage = "/error.jsp";
+                        request.setAttribute("errorCode", "Problem loading your profile information.");
                     }
                 }
                 else if(uri.startsWith("/submit"))
                 {
+                    //User submits changes to his profile (User accesses '/user/submit')
                     if(validate(viewingUserID))
                     {
                         ArrayList<NormalUserActiveRecord> users = NormalUserActiveRecordFactory.findUserByID(viewingUserID);
@@ -143,7 +145,6 @@ public class UserCommand implements Command{
                                 if(!request.getParameter("oldPassword").isEmpty())
                                 {
                                     PasswordEncryptionService passwd = new PasswordEncryptionService();
-                                    String salt = userRec.getSalt();
                                     String encryptedPassword = passwd.getEncryptedPassword(request.getParameter("newPassword"), userRec.getSalt());
                                     if(encryptedPassword == null)
                                     {
@@ -173,7 +174,7 @@ public class UserCommand implements Command{
                                 }
                                 viewPage = "/user/edit";
                             } 
-                            catch (Exception e) 
+                            catch (IOException | NumberFormatException | ParseException e) 
                             {
                                 viewPage = "/error.jsp";
                                 request.setAttribute("errorCode", "Problem loading your profile information.");

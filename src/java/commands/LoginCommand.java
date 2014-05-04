@@ -17,17 +17,17 @@
 
 package commands;
 
-import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import assets.PasswordEncryptionService;
 import activeRecord.NormalUserActiveRecord;
 import activeRecord.FanpageActiveRecord;
 import activeRecord.FanpageActiveRecordFactory;
 import activeRecord.NormalUserActiveRecordFactory;
 import activeRecord.SysAdminActiveRecord;
 import activeRecord.SysAdminActiveRecordFactory;
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import assets.PasswordEncryptionService;
 import java.util.ArrayList;
 
 /**
@@ -36,7 +36,13 @@ import java.util.ArrayList;
  */
 public class LoginCommand implements Command{
     
+    /**
+     * The servlet request.
+     */
     private HttpServletRequest request;
+    /**
+     * The servlet response.
+     */
     private HttpServletResponse response;
     
     /**
@@ -60,6 +66,7 @@ public class LoginCommand implements Command{
     public String execute() throws ServletException, IOException {
         
         String user;
+        
         if(request.getAttribute("userLogin") != null)
         {
             user = (String)request.getAttribute("userLogin");
@@ -67,88 +74,91 @@ public class LoginCommand implements Command{
         else if (request.getParameter("userLogin") != null)
         {
             user = request.getParameter("userLogin");
-        } else
+        } 
+        else
         {
             throw new ServletException();
         }
+        
         String attemptedPassword = request.getParameter("passwordLogin");
         String viewPage = "/error.jsp";
         PasswordEncryptionService passwordService = new PasswordEncryptionService();
+        
         if(!user.isEmpty())
         {
-            boolean check = true;
             int userID = 0;
             try 
             {
                 userID = Integer.valueOf(user.substring(1));
+                
+                if((user.startsWith("u") || user.startsWith("f") || user.startsWith("a")))
+                {
+                    //User provided an ID as identifier, that means only one account is possible.
+                    if(user.startsWith("u"))
+                    {
+                        ArrayList<NormalUserActiveRecord> normalUser = NormalUserActiveRecordFactory.findUserByID(userID);
+                        if(normalUser.size() != 1)
+                        {
+                            throw new ServletException();
+                        }
+                        if(passwordService.authenticate(attemptedPassword, normalUser.get(0).getPassword(), normalUser.get(0).getSalt()))
+                        {
+                            request.getSession().setAttribute("userID", "u" + normalUser.get(0).getUserID());
+                            viewPage = "/index";
+                        }
+                        else
+                        {
+                            request.setAttribute("failure", true);
+                            request.setAttribute("user", normalUser);
+                            viewPage = "/loginSecondStep.jsp";
+                        }
+                    }
+                    else if(user.startsWith("f"))
+                    {
+                        ArrayList<FanpageActiveRecord> fanpage = FanpageActiveRecordFactory.findPageByID(userID);
+                        if(fanpage.size() != 1)
+                        {
+                            throw new ServletException();
+                        }
+                        if(passwordService.authenticate(attemptedPassword, fanpage.get(0).getPassword(), fanpage.get(0).getSalt()))
+                        {
+                            request.getSession().setAttribute("userID", "f" + fanpage.get(0).getPageID());
+                            viewPage = "/index";
+                        }
+                        else
+                        {
+                            request.setAttribute("failure", true);
+                            request.setAttribute("page", fanpage);
+                            viewPage = "/loginSecondStep.jsp";
+                        }
+                    }
+                    else if(user.startsWith("a"))
+                    {
+                        ArrayList<SysAdminActiveRecord> admin = SysAdminActiveRecordFactory.findAdminByID(userID);
+                        if(admin.size() > 1)
+                        {
+                            throw new ServletException();
+                        }
+                        if(passwordService.authenticate(attemptedPassword, admin.get(0).getPassword(), admin.get(0).getSalt()))
+                        {
+                            request.getSession().setAttribute("userID", "a" + admin.get(0).getAdminID());
+                            viewPage = "/index";
+                        }
+                        else
+                        {
+                            request.setAttribute("failure", true);
+                            request.setAttribute("admin", admin);
+                            viewPage = "/loginSecondStep.jsp";
+                        }
+                    }
+                }
+                else
+                {
+                    request.setAttribute("failure", false);
+                    viewPage = "/loginSecondStep.jsp";
+                }
             } 
             catch (NumberFormatException e) 
-            {
-                check = false;
-            }
-
-            if(check && ((user.startsWith("u") || user.startsWith("f") || user.startsWith("a"))))
-            {
-                //User provided an ID as identifier, that means only one account is possible.
-                if(user.startsWith("u"))
-                {
-                    ArrayList<NormalUserActiveRecord> normalUser = NormalUserActiveRecordFactory.findUserByID(userID);
-                    if(normalUser.size() != 1)
-                    {
-                        throw new ServletException();
-                    }
-                    if(passwordService.authenticate(attemptedPassword, normalUser.get(0).getPassword(), normalUser.get(0).getSalt()))
-                    {
-                        request.getSession().setAttribute("userID", "u" + normalUser.get(0).getUserID());
-                        viewPage = "/index";
-                    }
-                    else
-                    {
-                        request.setAttribute("failure", true);
-                        request.setAttribute("user", normalUser);
-                        viewPage = "/loginSecondStep.jsp";
-                    }
-                }
-                else if(user.startsWith("f"))
-                {
-                    ArrayList<FanpageActiveRecord> fanpage = FanpageActiveRecordFactory.findPageByID(userID);
-                    if(fanpage.size() != 1)
-                    {
-                        throw new ServletException();
-                    }
-                    if(passwordService.authenticate(attemptedPassword, fanpage.get(0).getPassword(), fanpage.get(0).getSalt()))
-                    {
-                        request.getSession().setAttribute("userID", "f" + fanpage.get(0).getPageID());
-                        viewPage = "/index";
-                    }
-                    else
-                    {
-                        request.setAttribute("failure", true);
-                        request.setAttribute("page", fanpage);
-                        viewPage = "/loginSecondStep.jsp";
-                    }
-                }
-                else if(user.startsWith("a"))
-                {
-                    ArrayList<SysAdminActiveRecord> admin = SysAdminActiveRecordFactory.findAdminByID(userID);
-                    if(admin.size() > 1)
-                    {
-                        throw new ServletException();
-                    }
-                    if(passwordService.authenticate(attemptedPassword, admin.get(0).getPassword(), admin.get(0).getSalt()))
-                    {
-                        request.getSession().setAttribute("userID", "a" + admin.get(0).getAdminID());
-                        viewPage = "/index";
-                    }
-                    else
-                    {
-                        request.setAttribute("failure", true);
-                        request.setAttribute("admin", admin);
-                        viewPage = "/loginSecondStep.jsp";
-                    }
-                }
-            }
-            else
             {
                 //User provided an eMail as identifier, that means nore than one account is possible.
                 ArrayList<NormalUserActiveRecord> normalUser = NormalUserActiveRecordFactory.findUserByEmail(user);
@@ -207,5 +217,4 @@ public class LoginCommand implements Command{
         }
         return viewPage;
     }
-    
 }

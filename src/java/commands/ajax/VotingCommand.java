@@ -29,7 +29,7 @@ import activeRecord.PostActiveRecordFactory;
 import java.util.ArrayList;
 
 /**
- * This command processes the AJAX request voting for a comment of post.
+ * This command provides the execution of the voting a specific post.
  * @author Frank Steiler <frank@steiler.eu>
  */
 public class VotingCommand implements Command{
@@ -64,10 +64,11 @@ public class VotingCommand implements Command{
     public String execute() throws ServletException, IOException 
     {
         String viewPage = "/ajax_view/doVote.jsp";
-        boolean success = false;
-        ArrayList<PostActiveRecord> posts = null;
-        ArrayList<CommentActiveRecord> comments = null;
+        boolean success;
+        ArrayList<PostActiveRecord> posts;
+        ArrayList<CommentActiveRecord> comments;
         String uri = request.getRequestURI().substring(10);
+        
         if(request.getParameter("post") != null)
         {
             int postID = Integer.valueOf(request.getParameter("post"));
@@ -120,7 +121,6 @@ public class VotingCommand implements Command{
                 request.setAttribute("updatedComment", comments.get(0));
             }
         }
-        
         return viewPage;
     }
 }

@@ -59,9 +59,8 @@ public class RemovePostCommand implements Command{
      */
     @Override
     public String execute() throws ServletException, IOException {
-        String viewPage = "/ajax_view/error.jsp";
-        boolean success = false;
-        ArrayList<PostActiveRecord> posts = null;
+        String viewPage;
+        ArrayList<PostActiveRecord> posts;
         if(request.getParameter("post") != null)
         {
             int postID = Integer.valueOf(request.getParameter("post"));
@@ -71,27 +70,34 @@ public class RemovePostCommand implements Command{
             {
                 if(posts.get(0).getPublishingUser() == Integer.valueOf(user.substring(1)) || posts.get(0).getPublishingPage() == Integer.valueOf(user.substring(1)))
                 {
-                    success = posts.get(0).remove();
+                    if(posts.get(0).remove())
+                    {
+                        viewPage = "/assets/include_message.jsp";
+                        request.setAttribute("messageSuccess", true);
+                        request.setAttribute("message", "Post deleted successfully!");
+                    }
+                    else
+                    {
+                        viewPage = "/ajax_view/error.jsp";
+                        request.setAttribute("errorCode", "Unable to delete the post, please try again.");
+                    }
                 }
                 else
                 {
+                    viewPage = "/ajax_view/error.jsp";
                     request.setAttribute("errorCode", "You don't have the rights to delete this post.");
                 }
             }
             else
             {
+                viewPage = "/ajax_view/error.jsp";
                 request.setAttribute("errorCode", "Unable to delete the post, please try again.");
             }
         }
-        if(success)
-        {
-            viewPage = "/assets/include_message.jsp";
-            request.setAttribute("messageSuccess", true);
-            request.setAttribute("message", "Post deleted successfully!");
-        }
         else
         {
-            request.setAttribute("errorCode", "Unable to delete the post, please try again.");
+            viewPage = "/ajax_view/error.jsp";
+            request.setAttribute("errorCode", "Error while processing your request, please try again.");
         }
         return viewPage;
     }

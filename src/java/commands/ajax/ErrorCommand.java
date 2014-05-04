@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * This command processes an error happening during an AJAX call.
+ * This command is called if an error is happening during an AJAX call.
  * @author Frank Steiler <frank@steiler.eu>
  */
 public class ErrorCommand implements Command{
@@ -50,7 +50,7 @@ public class ErrorCommand implements Command{
     }
     
     /**
-     * This function executes the process of creating a new user. It validates the input and creates a new user if the input is valid.
+     * This function executes the process of an error feedback.
      * @return The appropriate viewpage.
      * @throws ServletException If a servlet-specific error occurs.
      * @throws IOException If an I/O error occurs.
@@ -63,5 +63,4 @@ public class ErrorCommand implements Command{
         }
         return "/ajax_view/error.jsp";
     }
-    
 }

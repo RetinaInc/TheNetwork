@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import commands.Command;
 import commands.CommandFactory;
-import assets.updateNavbar;
+import assets.UpdateNavbar;
 
 /**
  * This class is the controller of the system. It will create a command object and include the appropriate view.
@@ -37,7 +37,6 @@ public class Controller extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     *
      * @param request The servlet request.
      * @param response The servlet response.
      * @throws ServletException If a servlet-specific error occurs.
@@ -46,7 +45,7 @@ public class Controller extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String viewPage;
-        RequestDispatcher rd = null;
+        RequestDispatcher rd;
         Command command = CommandFactory.createCommand(request, response);
         try 
         {
@@ -54,12 +53,11 @@ public class Controller extends HttpServlet {
             String userAgent = request.getHeader("user-agent").trim();
             if(!userAgent.startsWith("xml-app_TheNetwork"))
             {
-                updateNavbar.update(request, response);
+                UpdateNavbar.update(request, response);
             }
         } 
-        catch (Exception e) 
+        catch (IOException | ServletException e) 
         {
-            e.printStackTrace();
             request.setAttribute("errorCode", "An unexpected error occured while processing your request.");
             viewPage = "/error.jsp";
         }
@@ -69,14 +67,13 @@ public class Controller extends HttpServlet {
             rd = request.getRequestDispatcher(viewPage);
             rd.forward(request, response);
         } 
-        catch (Exception e) 
+        catch (IOException | ServletException e) 
         {
             request.setAttribute("errorCode", "Your page could not be found.");
             rd = request.getRequestDispatcher("/error.jsp");
             rd.forward(request, response);
         }        
     }
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

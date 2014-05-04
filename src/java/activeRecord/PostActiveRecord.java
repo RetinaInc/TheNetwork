@@ -67,6 +67,9 @@ public class PostActiveRecord extends DatabaseUtility {
     private int commentCount;
     private VotingActiveRecord voteRecord;
     
+    /**
+     * Create a new post active record. A new record does not have any comments.
+     */
     public PostActiveRecord()
     {
         commentCount = 0;

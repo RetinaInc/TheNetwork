@@ -30,7 +30,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 class XMLAppCommand implements Command {
     
+    /**
+     * The servlet request.
+     */
     private HttpServletRequest request;
+    /**
+     * The servlet response.
+     */
     private HttpServletResponse response;
     
     /**
@@ -45,7 +51,7 @@ class XMLAppCommand implements Command {
     }
 
     /**
-     * This function executes the process of logging a user into the system.
+     * This function executes the process of accessing the service via the desktop application.
      * @return The appropriate viewpage.
      * @throws ServletException If a servlet-specific error occurs.
      * @throws IOException If an I/O error occurs.
@@ -99,5 +105,4 @@ class XMLAppCommand implements Command {
         }
         return "/xmlView.jsp";
     }
-    
 }

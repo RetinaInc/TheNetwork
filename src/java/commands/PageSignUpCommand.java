@@ -23,6 +23,7 @@ import activeRecord.FanpageActiveRecord;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import assets.PasswordEncryptionService;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * This class processes the request to create a new fanpage.
@@ -51,7 +52,7 @@ public class PageSignUpCommand implements Command{
     }
     
     /**
-     * This function executes the process of creating a new fanpage. It validates the input and creates a new fanpage if the input is valid.
+     * This function executes the process of creating a new fanpage. It validates the input and creates a new fanpage if the input is valid, otherwise it returns an error.
      * @return Returns the appropriate viewpage.
      * @throws ServletException If a servlet-specific error occurs.
      * @throws IOException If an I/O error occurs.
@@ -73,7 +74,7 @@ public class PageSignUpCommand implements Command{
                 String salt = passwd.generateSalt();
                 if (salt == null)
                 {
-                    throw new IOException();
+                    throw new ServletException();
                 }
                 else
                 {
@@ -82,7 +83,7 @@ public class PageSignUpCommand implements Command{
                 String encryptedPassword = passwd.getEncryptedPassword(request.getParameter("inputPasswordPage"), page.getSalt());
                 if(encryptedPassword == null)
                 {
-                    throw new IOException();
+                    throw new ServletException();
                 }
                 else
                 {
@@ -103,7 +104,7 @@ public class PageSignUpCommand implements Command{
                     viewpage = "/error.jsp";
                 }
             }
-            catch(Exception e)
+            catch(NoSuchAlgorithmException | ServletException e)
             {
                 request.setAttribute("errorCode", "There has been a problem with the creation of a new user.");
                 viewpage = "/error.jsp";
@@ -112,7 +113,7 @@ public class PageSignUpCommand implements Command{
         else
         {
             request.setAttribute("messageError", true);
-            request.setAttribute("message", "<strong>The provided information has been wrong</strong>, please revise your input.");
+            request.setAttribute("message", "<strong>The provided information have been invalid</strong>, please revise your input.");
             viewpage = "/login.jsp";
         }
         return viewpage;

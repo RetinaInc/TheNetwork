@@ -20,17 +20,16 @@ package commands;
 import activeRecord.CommentActiveRecord;
 import activeRecord.FfollowsPActiveRecord;
 import activeRecord.FfollowsPActiveRecordFactory;
-import java.io.IOException;
-import activeRecord.PostActiveRecord;
 import activeRecord.UfollowsPActiveRecord;
 import activeRecord.UfollowsPActiveRecordFactory;
-import java.util.ArrayList;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import javax.servlet.ServletException;
+import java.util.ArrayList;
 
 /**
- * This class processes the request to create a new comment.
+ * This class processes the request to publish a new comment.
  * @author Frank Steiler <frank@steiler.eu>
  */
 public class PostCommentCommand implements Command{
@@ -55,24 +54,23 @@ public class PostCommentCommand implements Command{
         this.response = response;
     }
 
-    /*
+    /**
      * This function executes the process of creating a new comment. It validates the input and creates a new post if the input is valid.
      * @return The appropriate viewpage.
      * @throws ServletException If a servlet-specific error occurs.
      * @throws IOException If an I/O error occurs.
      */
     @Override
-    public String execute() throws ServletException, IOException {
+    public String execute() throws ServletException, IOException 
+    {
         String viewPage = "/error.jsp";
-        String user;
-        int userID;
-        int postID;
         boolean success = false;
+        
         if((String)request.getSession().getAttribute("userID") != null)
         {
-            user = (String)request.getSession().getAttribute("userID");
-            userID = Integer.valueOf(user.substring(1));
-            postID = Integer.valueOf(request.getRequestURI().substring(13));
+            String user = (String)request.getSession().getAttribute("userID");
+            int userID = Integer.valueOf(user.substring(1));
+            int postID = Integer.valueOf(request.getRequestURI().substring(13));
             if(request.getParameter("newComment") != null)
             {
                 String comment = request.getParameter("newComment");
@@ -134,6 +132,7 @@ public class PostCommentCommand implements Command{
                                 success = false;
                             }
                         }
+                        
                         if(success)
                         {
                             request.setAttribute("message", "Comment successfully added.");

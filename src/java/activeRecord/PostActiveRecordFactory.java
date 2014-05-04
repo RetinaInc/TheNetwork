@@ -189,7 +189,7 @@ public class PostActiveRecordFactory extends DatabaseUtility {
         try
         {
             Connection con = stmt.getConnection();
-            ResultSet rs = null;
+            ResultSet rs;
 
             try
             {               
@@ -422,7 +422,7 @@ public class PostActiveRecordFactory extends DatabaseUtility {
 
             if(viewingUser.startsWith("u"))
             {
-                if(AllFriendsActiveRecord.isFriendWith(userID, Integer.valueOf(viewingUser.substring(1))))
+                if(AllFriendsActiveRecordFactory.isFriendWith(userID, Integer.valueOf(viewingUser.substring(1))))
                 {
                     stmt = getDatabaseConnection().prepareStatement(SELECT_ALL + BY_USERID + ORDER_BY_TIME_DESC);
                 }
@@ -463,7 +463,7 @@ public class PostActiveRecordFactory extends DatabaseUtility {
             
             if(viewingUser.startsWith("u"))
             {
-                if(AllFriendsActiveRecord.isFriendWith(userID, Integer.valueOf(viewingUser.substring(1))))
+                if(AllFriendsActiveRecordFactory.isFriendWith(userID, Integer.valueOf(viewingUser.substring(1))))
                 {
                     stmt = getDatabaseConnection().prepareStatement(SELECT_ALL + BY_USERID_TIME_OLDER + ORDER_BY_TIME_DESC);
                 }

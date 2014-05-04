@@ -18,6 +18,7 @@
 package commands;
 
 import activeRecord.AllFriendsActiveRecord;
+import activeRecord.AllFriendsActiveRecordFactory;
 import activeRecord.CommentActiveRecord;
 import activeRecord.FfollowsPActiveRecord;
 import activeRecord.CommentActiveRecordFactory;
@@ -58,7 +59,7 @@ public class PostPageCommand implements Command{
         this.response = response;
     }
 
-    /*
+    /**
      * This function executes the process of creating a new post. It validates the input and creates a new post if the input is valid.
      * @return The appropriate viewpage.
      * @throws ServletException If a servlet-specific error occurs.
@@ -180,7 +181,7 @@ public class PostPageCommand implements Command{
             }   
             else
             {
-                allowed = AllFriendsActiveRecord.isFriendWith(userID, post.getPublishingUser());
+                allowed = AllFriendsActiveRecordFactory.isFriendWith(userID, post.getPublishingUser());
             }
         }
         return allowed;

@@ -19,13 +19,9 @@ package commands.ajax;
 
 import activeRecord.FanpageActiveRecord;
 import activeRecord.FanpageActiveRecordFactory;
-import activeRecord.NormalUserActiveRecord;
-import activeRecord.PostActiveRecord;
 import commands.Command;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.sql.Date;
-import java.sql.Timestamp;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,6 +63,7 @@ public class GetPagesCommand implements Command{
         String viewPage ="/ajax_view/getPageListItem.jsp";
         String user = (String)request.getSession().getAttribute("userID");
         int userID = Integer.valueOf(user.substring(1));
+        
         if(request.getSession().getAttribute("lastPage") != null)
         {
             String lastPage = (String)request.getSession().getAttribute("lastPage");
@@ -93,6 +90,11 @@ public class GetPagesCommand implements Command{
             {
                 request.getSession().removeAttribute("lastPage");
             }
+        }
+        else
+        {
+            viewPage = "/ajax_view/error.jsp";
+            request.setAttribute("errorCode", "Error while processing your request");
         }
         return viewPage;
     }

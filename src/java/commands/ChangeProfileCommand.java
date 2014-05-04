@@ -17,9 +17,7 @@
 
 package commands;
 
-import activeRecord.FanpageActiveRecord;
 import activeRecord.FanpageActiveRecordFactory;
-import activeRecord.SysAdminActiveRecord;
 import activeRecord.SysAdminActiveRecordFactory;
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -32,7 +30,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ChangeProfileCommand implements Command {
     
+    /**
+     * The servlet request.
+     */
     private HttpServletRequest request;
+    /**
+     * The servlet response.
+     */
     private HttpServletResponse response;
     
     /**
@@ -141,8 +145,6 @@ public class ChangeProfileCommand implements Command {
                 }
             }
         }
-        
         return viewPage;
     }
-    
 }

@@ -28,15 +28,14 @@ import javax.servlet.http.HttpServletResponse;
 public abstract class CommandFactory
 {
     /**
-     * This function selects, based on the users request, the appropriate command.
+     * This function selects the appropriate command, based on the users request.
      * @param request The servlet request.
      * @param response The servlet response
      * @return The command fitting to the request.
      */
     public static Command createCommand(HttpServletRequest request, HttpServletResponse response)
     {
-        Command command = null;
-        
+        Command command;
         if(request.getSession().getAttribute("userID") != null)
         {
             if(request.getRequestURI().startsWith("/ajax"))

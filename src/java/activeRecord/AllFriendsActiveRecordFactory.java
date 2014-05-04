@@ -44,6 +44,63 @@ public class AllFriendsActiveRecordFactory extends DatabaseUtility {
             " And Friend = ?";
     
     /**
+     * This function checks if two user are friends.
+     * @param user The current user.
+     * @param friend The user which is checked to be a friend.
+     * @return True if the two users are friends.
+     */
+    public static boolean isFriendWith(int user, int friend)
+    {
+        ArrayList<AllFriendsActiveRecord> list = findAllFriendsByIDOfFriendAndUser(user, friend);
+        if(list.size() == 1)
+        {
+            return list.get(0).isAccepted();
+        }
+        else
+        {
+            return (user == friend);
+        }
+    }
+    
+    /**
+     * This function checks if there is a rejected friend request between two user .
+     * @param user The current user.
+     * @param friend The other user.
+     * @return True if the two users have a rejected friend request.
+     */
+    public static boolean hasRejectedRequest(int user, int friend)
+    {
+        ArrayList<AllFriendsActiveRecord> list = findAllFriendsByIDOfFriendAndUser(user, friend);
+        if(list.size() == 1)
+        {
+            return list.get(0).isRejected();
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    /**
+     * This function checks if there is an open friend request between two users.
+     * @param user The current user.
+     * @param friend The user which is checked to be a friend.
+     * @return True if the two users are friends.
+     */
+    public static boolean openFriendshipRequest(int user, int friend)
+    {
+        ArrayList<AllFriendsActiveRecord> list = findAllFriendsByIDOfFriendAndUser(user, friend);
+        if(list.size() == 1)
+        {
+            return ((list.get(0).isAccepted() ==false)&&(list.get(0).isRejected() == false));
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    /**
      * This function executes the query for a given prepared statement.
      * @param stmt The prepared statement which needs to be executed.
      * @return An ArrayList containing the results of the query.

@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * This class processes the request to create a new post.
+ * This class processes the request to publish a new post.
  * @author Frank Steiler <frank@steiler.eu>
  */
 public class PostStatusCommand implements Command{
@@ -49,7 +49,7 @@ public class PostStatusCommand implements Command{
         this.response = response;
     }
 
-    /*
+    /**
      * This function executes the process of creating a new post. It validates the input and creates a new post if the input is valid.
      * @return The appropriate viewpage.
      * @throws ServletException If a servlet-specific error occurs.
@@ -58,12 +58,10 @@ public class PostStatusCommand implements Command{
     @Override
     public String execute() throws ServletException, IOException {
         String viewPage = "/error.jsp";
-        String user;
-        int userID;
         if((String)request.getSession().getAttribute("userID") != null)
         {
-            user = (String)request.getSession().getAttribute("userID");
-            userID = Integer.valueOf(user.substring(1));
+            String user = (String)request.getSession().getAttribute("userID");
+            int userID = Integer.valueOf(user.substring(1));
             if(request.getParameter("newStatus") != null)
             {
                 String status = request.getParameter("newStatus");
@@ -94,11 +92,11 @@ public class PostStatusCommand implements Command{
                         {
                             PostActiveRecord post = new PostActiveRecord();
                             post.setContent(status);
-                            if(request.getParameter("postPublic").equals("Private"))
+                            if(request.getParameter("postPublic") != null && request.getParameter("postPublic").equals("Private"))
                             {
                                 post.setPostPublic(false);
                             } 
-                            else if (request.getParameter("postPublic").equals("Public"))
+                            else if (request.getParameter("postPublic") == null || request.getParameter("postPublic").equals("Public"))
                             {
                                 post.setPostPublic(true);
                             }

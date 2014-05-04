@@ -17,11 +17,8 @@
 
 package commands;
 
-import activeRecord.CommentActiveRecord;
-import activeRecord.FanpageActiveRecord;
 import activeRecord.CommentActiveRecordFactory;
 import activeRecord.FanpageActiveRecordFactory;
-import activeRecord.NormalUserActiveRecord;
 import activeRecord.NormalUserActiveRecordFactory;
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -37,7 +34,13 @@ import java.util.ArrayList;
  */
 public class HomepageCommand implements Command{
 
+    /**
+     * The servlet request.
+     */
     private HttpServletRequest request;
+    /**
+     * The servlet response.
+     */
     private HttpServletResponse response;
     
     /**
@@ -72,6 +75,8 @@ public class HomepageCommand implements Command{
             {
                 request.getSession().setAttribute("lastItemTimestamp", postArray.get(postArray.size()-1).getPostTimestamp());
                 request.getSession().setAttribute("firstItemTimestamp", postArray.get(0).getPostTimestamp());
+                //to display the "load more post" button on the homepage
+                request.setAttribute("older", true);
             }
             else
             {
@@ -86,6 +91,8 @@ public class HomepageCommand implements Command{
             if(!postArray.isEmpty())
             {
                 request.getSession().setAttribute("lastItemTimestamp", postArray.get(postArray.size()-1).getPostTimestamp());
+                //to display the "load more post" button on the homepage
+                request.setAttribute("older", true);
             }
             else
             {
@@ -109,9 +116,6 @@ public class HomepageCommand implements Command{
         {
             throw new ServletException();
         }
-        //to display the "load more post" button on the homepage
-        request.setAttribute("older", true);
         return viewPage;
     }
-    
 }

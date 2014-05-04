@@ -21,10 +21,10 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 
 /**
- * This command returns the Login page, since it is only called if there is no user logged in.
+ * This command returns the login page, since it is only called if there is no user logged in.
  * @author Frank Steiler <frank@steiler.eu>
  */
-public class WelcomeCommand implements Command{
+public class WelcomeCommand implements Command {
 
     /**
      * This function executes the process of showing the welcome page.

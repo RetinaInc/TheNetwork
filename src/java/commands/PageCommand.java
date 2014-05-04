@@ -25,19 +25,16 @@ import activeRecord.PostActiveRecord;
 import activeRecord.PostActiveRecordFactory;
 import assets.PasswordEncryptionService;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * This class processes the request view a fanpage, edit your own fanpage and list all of a users followed fanpages. This class processes all "/page" requests.
+ * This class processes the request to view a fanpage, edit your own fanpage and list all of a users followed fanpages. This class processes all "/page" requests.
  * @author Frank Steiler <frank@steiler.eu>
  */
-public class PageCommand implements Command{
+public class PageCommand implements Command {
 
     /**
      * The servlet request.
@@ -60,7 +57,7 @@ public class PageCommand implements Command{
     }
     
     /**
-     * This function executes the process of gathering the right data providing the appropriate viewpage.
+     * This function executes the process of gathering the right data and providing the appropriate viewpage.
      * @return The appropriate viewpage.
      * @throws ServletException If a servlet-specific error occurs.
      * @throws IOException If an I/O error occurs.
@@ -68,7 +65,8 @@ public class PageCommand implements Command{
     @Override
     public String execute() throws ServletException, IOException 
     {
-        String viewPage = "/error.jsp";
+        String viewPage;
+        
         if(request.getSession().getAttribute("userID") != null)
         {
             String viewingUser = (String)request.getSession().getAttribute("userID");
@@ -79,7 +77,7 @@ public class PageCommand implements Command{
                 
                 if(uri.isEmpty() && viewingUser.startsWith("u"))
                 {
-                    //Show fanpage list
+                    //Show fanpage list of user ('/page' called by a normal user).
                     ArrayList<FanpageActiveRecord> fanpage = FanpageActiveRecordFactory.findAllFollowingPages(viewingUserID, 10);
                     request.setAttribute("pageArray", fanpage);
                     if(!fanpage.isEmpty())
@@ -94,7 +92,7 @@ public class PageCommand implements Command{
                 } 
                 else if(uri.isEmpty() && viewingUser.startsWith("a"))
                 {
-                    //Show fanpage list
+                    //Show fanpage list of an admin ('/page' called by a sysadmin).
                     ArrayList<FanpageActiveRecord> fanpage = FanpageActiveRecordFactory.findAllPages(10);
                     request.setAttribute("pageArray", fanpage);
                     if(!fanpage.isEmpty())
@@ -109,6 +107,7 @@ public class PageCommand implements Command{
                 }
                 else if(uri.startsWith("/edit") && viewingUser.startsWith("f"))
                 {
+                    //Show editing page ('/page/edit' called by a fanpage).
                     ArrayList<FanpageActiveRecord> pageArray = FanpageActiveRecordFactory.findPageByID(viewingUserID);
                     if(pageArray.size() != 1)
                     {
@@ -125,17 +124,17 @@ public class PageCommand implements Command{
                         {
                             request.getSession().setAttribute("lastItemTimestamp", postArray.get(postArray.size()-1).getPostTimestamp());
                             request.getSession().setAttribute("firstItemTimestamp", postArray.get(0).getPostTimestamp());
+                            request.setAttribute("older", true);
                         }
                         else
                         {
                             request.getSession().removeAttribute("lastItemTimestamp");
                         }
-                        request.setAttribute("older", true);
                     }
                 }
-                //User submitted updated profile information
                 else if(uri.startsWith("/submit") && viewingUser.startsWith("f"))
                 {
+                    //Fanpage submited changes to page information ('/page/submit' called by fanpage).
                     if(validate(viewingUserID))
                     {
                         ArrayList<FanpageActiveRecord> pages = FanpageActiveRecordFactory.findPageByID(viewingUserID);
@@ -203,10 +202,11 @@ public class PageCommand implements Command{
                 }
                 else if(uri.startsWith("/connect") && viewingUser.startsWith("f"))
                 {
+                    //Fanpage wants to be administrated by a user (Fanpage calls '/page/connect')
                     if(request.getParameter("AdministratingUser") != null)
                     {
                         String administratingUser = request.getParameter("AdministratingUser");
-                        if(!administratingUser.isEmpty())
+                        if(!administratingUser.isEmpty() && administratingUser.startsWith("u"))
                         {
                             try
                             {
@@ -215,7 +215,7 @@ public class PageCommand implements Command{
                                 if(user != null & user.size() == 1)
                                 {
                                     ArrayList<FanpageActiveRecord> pages = FanpageActiveRecordFactory.findPageByID(viewingUserID);
-                                    if(pages.size() == 1)
+                                    if(pages != null && pages.size() == 1)
                                     {
                                         pages.get(0).setAdministratingUser(administratingUserID);
                                         if(pages.get(0).update())
@@ -270,12 +270,7 @@ public class PageCommand implements Command{
                     {
                         int pageID = Integer.valueOf(uri.substring(1));
                         ArrayList<FanpageActiveRecord> pageArray = FanpageActiveRecordFactory.findPageByID(pageID);
-                        if(pageArray.size() != 1)
-                        {
-                            viewPage = "/error.jsp";
-                            request.setAttribute("errorCode", "Problem loading the profile.");
-                        }
-                        else
+                        if(pageArray.size() == 1)
                         {
                             viewPage = "/pageProfile.jsp";
                             request.setAttribute("page", pageArray.get(0));
@@ -291,6 +286,11 @@ public class PageCommand implements Command{
                                 request.getSession().removeAttribute("lastItemTimestamp");
                             }
                             request.setAttribute("older", true);
+                        }
+                        else
+                        {
+                            viewPage = "/error.jsp";
+                            request.setAttribute("errorCode", "Problem loading the profile.");
                         }
                     }
                     catch(NumberFormatException e)

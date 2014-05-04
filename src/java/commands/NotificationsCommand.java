@@ -18,8 +18,6 @@
 package commands;
 
 import activeRecord.PostActiveRecord;
-import activeRecord.UfollowsPActiveRecord;
-import activeRecord.FfollowsPActiveRecord;
 import activeRecord.FfollowsPActiveRecordFactory;
 import activeRecord.PostActiveRecordFactory;
 import activeRecord.UfollowsPActiveRecordFactory;
@@ -30,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- *
+ * This class processes the request of displaying all notifications for the current user.
  * @author Frank Steiler <frank@steiler.eu>
  */
 public class NotificationsCommand implements Command{
@@ -56,7 +54,7 @@ public class NotificationsCommand implements Command{
     }
     
     /**
-     * This function executes the process of creating a new fanpage. It validates the input and creates a new fanpage if the input is valid.
+     * This function executes the process of collecting the notifications.
      * @return Returns the appropriate viewpage.
      * @throws ServletException If a servlet-specific error occurs.
      * @throws IOException If an I/O error occurs.
@@ -67,10 +65,9 @@ public class NotificationsCommand implements Command{
        String viewPage = "/error.jsp";
        if(request.getSession().getAttribute("userID") != null)
        {
-           viewPage = "/notificationPage.jsp";
            String user = (String)request.getSession().getAttribute("userID");
            int userID = Integer.valueOf(user.substring(1));
-           ArrayList<PostActiveRecord> posts = null;
+           
            if(user.startsWith("u"))
            {
                if(request.getRequestURI().endsWith("/dismiss"))
@@ -92,7 +89,9 @@ public class NotificationsCommand implements Command{
                }
                else
                {
-                    posts = PostActiveRecordFactory.findAllUnreadPostsByUserID(userID);
+                    viewPage = "/notificationPage.jsp";
+                    ArrayList<PostActiveRecord> posts = PostActiveRecordFactory.findAllUnreadPostsByUserID(userID);
+                    request.setAttribute("notificationArray", posts);
                }
            }
            else if(user.startsWith("f"))
@@ -116,7 +115,9 @@ public class NotificationsCommand implements Command{
                }
                else
                {
-                    posts = PostActiveRecordFactory.findAllUnreadPostsByPageID(userID);
+                    viewPage = "/notificationPage.jsp";
+                    ArrayList<PostActiveRecord> posts = PostActiveRecordFactory.findAllUnreadPostsByPageID(userID);
+                    request.setAttribute("notificationArray", posts);
                }
            }
            else
@@ -124,7 +125,6 @@ public class NotificationsCommand implements Command{
                viewPage = "/error.jsp";
                request.setAttribute("errorCode", "Insufficient Rights to execute this command!");
            }
-           request.setAttribute("notificationArray", posts);
        }
        else
        {
@@ -132,5 +132,4 @@ public class NotificationsCommand implements Command{
        }
        return viewPage;
     }
-    
 }

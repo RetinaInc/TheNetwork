@@ -18,8 +18,6 @@
 package commands.ajax;
 
 import commands.Command;
-import java.io.IOException;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,7 +27,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 public abstract class AjaxCommandFactory {
 
+    /**
+     * The servlet request.
+     */
     private HttpServletRequest request;
+    /**
+     * The servlet response.
+     */
     private HttpServletResponse response;
     
     /**
@@ -41,7 +45,7 @@ public abstract class AjaxCommandFactory {
     public static Command createCommand(HttpServletRequest request, HttpServletResponse response)
     {
         String uri = request.getRequestURI().substring(5);
-        Command command = null;
+        Command command;
         if(request.getSession().getAttribute("userID") != null)
         {
             if(uri.startsWith("/getPosts"))
@@ -67,12 +71,18 @@ public abstract class AjaxCommandFactory {
             else if(uri.startsWith("/page"))
             {
                 command = new PageManagementCommand(request, response);
-            } else if(uri.startsWith("/getFriends"))
+            } 
+            else if(uri.startsWith("/getFriends"))
             {
                 command = new GetFriendsCommand(request, response);
-            } else if(uri.startsWith("/getPages"))
+            } 
+            else if(uri.startsWith("/getPages"))
             {
                 command = new GetPagesCommand(request, response);
+            }
+            else
+            {
+                command = new ErrorCommand(request, response);
             }
         }
         else

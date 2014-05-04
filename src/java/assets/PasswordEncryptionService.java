@@ -27,7 +27,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
 /**
- * This class encrypts the user password. On top of that the class can check if the given password is equal to the encrypted using the salt and the encrypted password.
+ * This class encrypts the user password using the PBKDF2 algorithm with SHA-2 as hashing method. On top of that the class can check if the given password is equal to the encrypted using the salt and the encrypted password.
  * @author Frank Steiler <frank@steiler.eu>
  */
 public class PasswordEncryptionService {
@@ -35,9 +35,9 @@ public class PasswordEncryptionService {
     /**
      * This function checks if the attempted password is equal to the encrypted password.
      * @param attemptedPassword The password entered by the user.
-     * @param encryptedPassword The password stored in the database.
-     * @param salt The salt used to encrypt the password.
-     * @return Returns true if password is equal.
+     * @param encryptedPassword The encrypted password stored in the database.
+     * @param salt The salt used to encrypt the stored password.
+     * @return Returns true if password is equal, false otherwise.
      */
     public boolean authenticate(String attemptedPassword, String encryptedPassword, String salt)
     {

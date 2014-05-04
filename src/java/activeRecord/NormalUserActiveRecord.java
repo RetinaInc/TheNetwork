@@ -416,7 +416,7 @@ public class NormalUserActiveRecord extends DatabaseUtility {
      */
     public boolean isFriendWith(int userID)
     {
-        return AllFriendsActiveRecord.isFriendWith(this.userID, userID);
+        return AllFriendsActiveRecordFactory.isFriendWith(this.userID, userID);
     }
     
     /**

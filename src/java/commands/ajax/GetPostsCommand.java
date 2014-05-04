@@ -22,7 +22,6 @@ import activeRecord.PostActiveRecordFactory;
 import commands.Command;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.sql.Date;
 import java.sql.Timestamp;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -62,11 +61,13 @@ public class GetPostsCommand implements Command{
      */
     @Override
     public String execute() throws ServletException, IOException {
+        
         String viewPage ="/ajax_view/getPosts.jsp";
         String user = (String)request.getSession().getAttribute("userID");
         String path = null;
         int pathID = 0;
         int userID = Integer.valueOf(user.substring(1));
+        
         if(request.getParameter("path")!= null)
         {
             path = request.getParameter("path");
@@ -79,6 +80,7 @@ public class GetPostsCommand implements Command{
                 path = null;
             }
         }
+        
         if(request.getSession().getAttribute("lastItemTimestamp") != null || request.getSession().getAttribute("firstItemTimestamp") != null)
         {
             if(request.getParameter("older") != null)
