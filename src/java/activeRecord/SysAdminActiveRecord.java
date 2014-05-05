@@ -237,7 +237,7 @@ public class SysAdminActiveRecord extends DatabaseUtility {
      * 
      * @param adminID The adminID as a String
      */
-    public void setUserIDString(String adminID)
+    public void setAdminIDString(String adminID)
     {
         if(adminID.startsWith("a"))
         {

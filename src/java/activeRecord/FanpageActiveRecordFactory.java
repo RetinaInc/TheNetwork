@@ -102,7 +102,7 @@ public class FanpageActiveRecordFactory extends DatabaseUtility {
             " Order by DisplayName asc";
     
     /**
-     * This counts all fanpages subscribed to the network.
+     * This function counts all fanpages subscribed to the network.
      * @return The number of fanpages.
      */
     public static int countFanpages()
@@ -402,7 +402,7 @@ public class FanpageActiveRecordFactory extends DatabaseUtility {
      * @param rs The data source for the new fanpage.
      * @return The new created fanpage active record.
      */
-    protected static FanpageActiveRecord createFanpage(ResultSet rs)
+    private static FanpageActiveRecord createFanpage(ResultSet rs)
     {
         FanpageActiveRecord d = new FanpageActiveRecord();
         try

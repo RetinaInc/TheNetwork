@@ -234,17 +234,7 @@ public class CommentActiveRecordFactory extends DatabaseUtility {
             recs = null;
         }
         return recs;
-    }
-    
-    /**
-     * This function creates a new comment using the data from the current position of the result set.
-     * @param rs The data source for the new fanpage.
-     * @return The new created comment.
-     */
-    protected static CommentActiveRecord createComment(ResultSet rs)
-    {
-        return createComment(rs, null);
-    }    
+    } 
     
     /**
      * This function creates a new comment using the data from the current position of the result set and the viewing user.
@@ -252,7 +242,7 @@ public class CommentActiveRecordFactory extends DatabaseUtility {
      * @param userID The viewing user.
      * @return The new created post.
      */
-    protected static CommentActiveRecord createComment(ResultSet rs, String userID)
+    private static CommentActiveRecord createComment(ResultSet rs, String userID)
     {
         CommentActiveRecord d = new CommentActiveRecord();
         try

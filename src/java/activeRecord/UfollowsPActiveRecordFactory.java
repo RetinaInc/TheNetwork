@@ -233,7 +233,7 @@ public class UfollowsPActiveRecordFactory extends DatabaseUtility {
      * @param rs The data source for the new fanpage.
      * @return The new created active record.
      */
-    protected static UfollowsPActiveRecord createUfollowsP(ResultSet rs)
+    private static UfollowsPActiveRecord createUfollowsP(ResultSet rs)
     {
         UfollowsPActiveRecord d = new UfollowsPActiveRecord();
         try

@@ -222,7 +222,7 @@ public class UfollowsFActiveRecordFactory extends DatabaseUtility {
      * @param rs The data source for the new active record.
      * @return The new created active record.
      */
-    protected static UfollowsFActiveRecord createUfollowsFActiveRecord(ResultSet rs)
+    private static UfollowsFActiveRecord createUfollowsFActiveRecord(ResultSet rs)
     {
         UfollowsFActiveRecord d = new UfollowsFActiveRecord();
         try

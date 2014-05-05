@@ -171,7 +171,7 @@ public class AllFriendsActiveRecordFactory extends DatabaseUtility {
      * @param rs The data source for the active record.
      * @return The new created active record.
      */
-    protected static AllFriendsActiveRecord createFriendsRecord(ResultSet rs)
+    private static AllFriendsActiveRecord createFriendsRecord(ResultSet rs)
     {
         AllFriendsActiveRecord d = new AllFriendsActiveRecord();
         try

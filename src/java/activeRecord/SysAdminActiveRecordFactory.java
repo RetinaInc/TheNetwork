@@ -201,7 +201,7 @@ public class SysAdminActiveRecordFactory extends DatabaseUtility {
      * @param rs The data source for the new system administrator.
      * @return The new created system administrator.
      */
-    protected static SysAdminActiveRecord createSysAdmin(ResultSet rs)
+    private static SysAdminActiveRecord createSysAdmin(ResultSet rs)
     {
         SysAdminActiveRecord d = new SysAdminActiveRecord();
         try

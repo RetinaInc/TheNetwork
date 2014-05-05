@@ -149,7 +149,7 @@ public class UisFriendWithUActiveRecordFactory extends DatabaseUtility {
      * @param rs The data source for the new active record.
      * @return The new created active record.
      */
-    protected static UisFriendWithUActiveRecord createUisFriendWithU(ResultSet rs)
+    private static UisFriendWithUActiveRecord createUisFriendWithU(ResultSet rs)
     {
         UisFriendWithUActiveRecord d = new UisFriendWithUActiveRecord();
         try

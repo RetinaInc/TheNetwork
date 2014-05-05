@@ -406,7 +406,7 @@ public class NormalUserActiveRecordFactory extends DatabaseUtility {
      * @param rs The data source for the new user.
      * @return The new created user.
      */
-    protected static NormalUserActiveRecord createNormalUser(ResultSet rs)
+    private static NormalUserActiveRecord createNormalUser(ResultSet rs)
     {
         NormalUserActiveRecord d = new NormalUserActiveRecord();
         try

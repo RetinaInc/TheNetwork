@@ -263,7 +263,7 @@ public class VotingActiveRecordFactory extends DatabaseUtility {
      * @param rs The data source for the new fanpage.
      * @return The new created post.
      */
-    protected static VotingActiveRecord createVoting(ResultSet rs)
+    private static VotingActiveRecord createVoting(ResultSet rs)
     {
         VotingActiveRecord d = new VotingActiveRecord();
         try

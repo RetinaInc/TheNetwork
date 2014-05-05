@@ -455,7 +455,7 @@ public class CommentActiveRecord extends DatabaseUtility{
     public void setVoteRecord(VotingActiveRecord voteRecord) {
         this.voteRecord = voteRecord;
     }
-    
+
     /**
      * @return The upvote flag.
      */

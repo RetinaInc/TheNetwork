@@ -634,7 +634,7 @@ public class PostActiveRecordFactory extends DatabaseUtility {
      * @param userID The viewing user.
      * @return The new created post.
      */
-    protected static PostActiveRecord createPost(ResultSet rs, String userID)
+    private static PostActiveRecord createPost(ResultSet rs, String userID)
     {
         PostActiveRecord d = new PostActiveRecord();
         try
