@@ -22,7 +22,7 @@
         else if(fanPage.isFollowedBy(viewingUserID))
         {%>
             <button type="button" onClick="unfollowPage(<%=fanPage.getPageID() %>)" class="btn btn-primary">
-                <span class="glyphicon glyphicon-remove"></span> Unfollow Page
+                <span class="glyphicon glyphicon-remove"></span> Unfollow page
             </button>
         <%}
         else

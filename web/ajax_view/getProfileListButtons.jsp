@@ -4,6 +4,7 @@
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
 
+<%@page import="activeRecord.SysAdminActiveRecordFactory"%>
 <%@page import="activeRecord.SysAdminActiveRecord"%>
 <%@page import="activeRecord.NormalUserActiveRecord"%>
 <%
@@ -32,7 +33,7 @@
                 </button>
             </p>
             <% 
-                SysAdminActiveRecord admin = SysAdminActiveRecord.findAdminByID(viewingUserID).get(0);
+                SysAdminActiveRecord admin = SysAdminActiveRecordFactory.findAdminByID(viewingUserID).get(0);
                 if(admin.getConnectedUser() == user.getUserID())
                 {%>
                     <button type="button" class="btn btn-sm btn-primary disabled">

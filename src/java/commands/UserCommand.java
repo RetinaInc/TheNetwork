@@ -169,7 +169,7 @@ public class UserCommand implements Command {
                                 }
                                 else
                                 {
-                                    request.setAttribute("message", "<b>There has been an error saving your profile informaion.</b> Please try again.");
+                                    request.setAttribute("message", "<b>There has been an error saving your profile information.</b> Please try again.");
                                     request.setAttribute("messageError", true);
                                 }
                                 viewPage = "/user/edit";

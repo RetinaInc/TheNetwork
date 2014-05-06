@@ -3,6 +3,8 @@
     Description: This page provides the possibility for the user to edit his profile.
     Author     : Frank Steiler <frank@steiler.eu>
 --%>
+<%@page import="activeRecord.SysAdminActiveRecordFactory"%>
+<%@page import="activeRecord.FanpageActiveRecordFactory"%>
 <%@page import="activeRecord.FanpageActiveRecord"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="activeRecord.SysAdminActiveRecord"%>
@@ -178,8 +180,8 @@
                       </form>
                     </div>
                     <%
-                        ArrayList<SysAdminActiveRecord> admins = SysAdminActiveRecord.findAdminsByAdministratingUser(user.getUserID());
-                        ArrayList<FanpageActiveRecord> pages = FanpageActiveRecord.findPagesByAdministratingUser(user.getUserID());
+                        ArrayList<SysAdminActiveRecord> admins = SysAdminActiveRecordFactory.findAdminsByAdministratingUser(user.getUserID());
+                        ArrayList<FanpageActiveRecord> pages = FanpageActiveRecordFactory.findPagesByAdministratingUser(user.getUserID());
                         if(!pages.isEmpty() || !admins.isEmpty())
                         {%>
                             <div class="well bs-component">

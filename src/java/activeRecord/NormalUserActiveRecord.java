@@ -126,6 +126,7 @@ public class NormalUserActiveRecord extends DatabaseUtility {
             stmt.setString(11, zip);
             stmt.setBoolean(12, premium);
             stmt.setString(13, password);
+            stmt.setInt(14, userID);
                
             success = executeUpdate(stmt);
         }
