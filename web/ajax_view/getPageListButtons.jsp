@@ -1,7 +1,7 @@
 <%-- 
     Document   : getPageListButtons
     Description: This JSP is called to adjust the buttons of a fanpage within a list, based on the connection between the viewing user and the fanpage.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 
 <%@page import="activeRecord.FanpageActiveRecord"%>

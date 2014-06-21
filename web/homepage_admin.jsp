@@ -1,7 +1,7 @@
 <%-- 
     Document   : homepage_admin
     Description: This page provides the homepage of an administrator.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>

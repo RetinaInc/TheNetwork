@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Frank Steiler <frank@steiler.eu>
+ * Copyright (C) 2014 Frank Steiler <frank.steiler@steilerdev.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ import assets.UpdateNavbar;
 
 /**
  * This class is the controller of the system. It will create a command object and include the appropriate view.
- * @author Frank Steiler <frank@steiler.eu>
+ * @author Frank Steiler <frank.steiler@steilerdev.de>
  */
 @WebServlet(name = "Controller", urlPatterns = {"/Controller"})
 public class Controller extends HttpServlet {

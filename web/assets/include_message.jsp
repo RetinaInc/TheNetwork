@@ -1,7 +1,7 @@
 <%-- 
     Document   : include_message
     Description: This page is included at the top of several JSP to communicate with the user by providing a dismissable message box.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 
         <%if(request.getAttribute("message") != null) 

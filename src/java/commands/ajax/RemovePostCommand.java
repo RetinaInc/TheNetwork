@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Frank Steiler <frank@steiler.eu>
+ * Copyright (C) 2014 Frank Steiler <frank.steiler@steilerdev.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ import javax.servlet.ServletException;
 
 /**
  * This command provides the execution of the deletion of a specific post.
- * @author Frank Steiler <frank@steiler.eu>
+ * @author Frank Steiler <frank.steiler@steilerdev.de>
  */
 public class RemovePostCommand implements Command{
     /**

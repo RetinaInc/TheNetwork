@@ -1,7 +1,7 @@
 <%-- 
     Document   : listFriends
     Description: This page will present a list of all user.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 
 <%@taglib prefix="cst" uri="/WEB-INF/tlds/TheNetwork_tl.tld" %>

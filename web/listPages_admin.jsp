@@ -1,7 +1,7 @@
 <%-- 
     Document   : listPages#
     Description: This page will present a list of all followed fanpages of an admin user.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>

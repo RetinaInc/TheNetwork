@@ -1,6 +1,6 @@
 <%-- 
     Document   : include_navbar
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
     Description: This page is included at the top of all other pages to add the correct navbar, depending on the user who is logged in.
 --%>
 <%@page import="activeRecord.NormalUserActiveRecord"%>

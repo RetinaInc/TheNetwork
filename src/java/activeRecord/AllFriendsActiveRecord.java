@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Frank Steiler <frank@steiler.eu>
+ * Copyright (C) 2014 Frank Steiler <frank.steiler@steilerdev.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ package activeRecord;
 
 /**
  * This class represents a row of the AllFriends view and provides functions to check if two users are friends or not.
- * @author Frank Steiler <frank@steiler.eu>
+ * @author Frank Steiler <frank.steiler@steilerdev.de>
  */
 public class AllFriendsActiveRecord extends DatabaseUtility {
     

@@ -1,7 +1,7 @@
 <%-- 
     Document   : doVote
     Description: This JSP is returned after a comment or post was voted using an AJAX command.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 
 <%@page import="activeRecord.CommentActiveRecord"%>

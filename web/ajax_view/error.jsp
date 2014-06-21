@@ -1,7 +1,7 @@
 <%-- 
     Document   : error
     Description: This JSP is called if an AJAX command produces an error.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 
 <% if(request.getAttribute("errorCode") != null)

@@ -1,7 +1,7 @@
 <%-- 
     Document   : include_advertisment
     Description: This file is included at the positions where an advertisment needs to be shown.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 
 <%  if(request.getSession().getAttribute("userID") != null)

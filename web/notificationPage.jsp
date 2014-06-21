@@ -1,7 +1,7 @@
 <%-- 
     Document   : notificationPage
     Description: This page will display all notifications of a user.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>

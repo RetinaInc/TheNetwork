@@ -1,7 +1,7 @@
 <%-- 
     Document   : pageEditProfile
     Description: This page provides the possibility for the page admin to edit his page.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 <%@page import="activeRecord.FanpageActiveRecord"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>

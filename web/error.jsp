@@ -1,6 +1,6 @@
 <%-- 
     Document   : error
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
     Description: This page gets called whenever an unexpected error happens. It tries to provide an error description.
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>

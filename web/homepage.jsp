@@ -1,7 +1,7 @@
 <%-- 
     Document   : homepage
     Description: This page provides the homepage of every user, presenting the most recent posts of friends.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>

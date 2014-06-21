@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Frank Steiler <frank@steiler.eu>
+ * Copyright (C) 2014 Frank Steiler <frank.steiler@steilerdev.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 /**
  * This class is a JSP custom tag handler iterating through an ArrayList. The item which can be used in the body is stored in the PageContext as attribute named according to the itemName variable.
- * @author Frank Steiler <frank@steiler.eu>
+ * @author Frank Steiler <frank.steiler@steilerdev.de>
  */
 public class ArrayListJSP extends BodyTagSupport {
     

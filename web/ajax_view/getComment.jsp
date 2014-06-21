@@ -1,7 +1,7 @@
 <%-- 
     Document   : getComment
     Description: This JSP is called to create and return a list of comments.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 
 <%@taglib prefix="cst" uri="/WEB-INF/tlds/TheNetwork_tl.tld" %>

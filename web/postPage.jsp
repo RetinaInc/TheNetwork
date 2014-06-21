@@ -1,7 +1,7 @@
 <%-- 
     Document   : postPage
     Description: This JSP shows a single post with all his comments.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 
 <%@page import="activeRecord.PostActiveRecord"%>

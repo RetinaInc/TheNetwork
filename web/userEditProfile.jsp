@@ -1,7 +1,7 @@
 <%-- 
     Document   : userEditProfile
     Description: This page provides the possibility for the user to edit his profile.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 <%@page import="activeRecord.SysAdminActiveRecordFactory"%>
 <%@page import="activeRecord.FanpageActiveRecordFactory"%>

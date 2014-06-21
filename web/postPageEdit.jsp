@@ -1,7 +1,7 @@
 <%-- 
     Document   : postPageEdit
     Description: This JSP provides the possibility to edit a specific post.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 
 <%@page import="activeRecord.PostActiveRecord"%>

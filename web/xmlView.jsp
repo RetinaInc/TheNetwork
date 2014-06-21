@@ -1,7 +1,7 @@
 <%-- 
     Document   : xmlView
     Description: This xml page is returned to the desktop client providing a set of posts.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 
 <%@page contentType="text/xml" pageEncoding="UTF-8"%>

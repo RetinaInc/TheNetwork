@@ -1,7 +1,7 @@
 <%-- 
     Document   : getPageListItem
     Description: This JSP is called to create and return a list of fanpages within a list.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 
 <%@page import="activeRecord.FanpageActiveRecord"%>

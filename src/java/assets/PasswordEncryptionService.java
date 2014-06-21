@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Frank Steiler <frank@steiler.eu>
+ * Copyright (C) 2014 Frank Steiler <frank.steiler@steilerdev.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ import javax.crypto.spec.PBEKeySpec;
 
 /**
  * This class encrypts the user password using the PBKDF2 algorithm with SHA-2 as hashing method. On top of that the class can check if the given password is equal to the encrypted using the salt and the encrypted password.
- * @author Frank Steiler <frank@steiler.eu>
+ * @author Frank Steiler <frank.steiler@steilerdev.de>
  */
 public class PasswordEncryptionService {
 

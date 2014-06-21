@@ -1,7 +1,7 @@
 <%-- 
     Document   : getProfileButtons
     Description: This JSP is called to adjust the buttons of a user within a list, based on the connection between the viewing user and the other user.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 
 <%@page import="activeRecord.SysAdminActiveRecordFactory"%>

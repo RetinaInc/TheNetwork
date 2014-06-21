@@ -1,7 +1,7 @@
 <%-- 
     Document   : login
     Description: This JSP is the welcome page for every user. Unregistered user can subscribe, existing user can log into their account.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>

@@ -1,7 +1,7 @@
 <%-- 
     Document   : include_footer
     Description: This file is included at the bottom of every page and contains the footer information.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 
 <div id="footer">

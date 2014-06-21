@@ -1,7 +1,7 @@
 <%-- 
     Document   : loginSecondStep
     Description: This JSP is called if the log in failed because the credentials were incorrect or the email address is used by several accounts.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>

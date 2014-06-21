@@ -1,7 +1,7 @@
 <%-- 
     Document   : userProfile
     Description: This page presents a profile page with all his posts and user information.
-    Author     : Frank Steiler <frank@steiler.eu>
+    Author     : Frank Steiler <frank.steiler@steilerdev.de>
 --%>
 <%@page import="activeRecord.NormalUserActiveRecord"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
